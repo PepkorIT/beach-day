@@ -1,0 +1,19 @@
+{
+    "name": "beachday",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@bitbucket.org/leftandrightsoftware/beachday.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "homepage": "https://bitbucket.org/leftandrightsoftware/beachday#readme",
+    "devDependencies": {
+        "jasmine": "^2.4.1"
+    }
+}
