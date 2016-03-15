@@ -75,9 +75,13 @@ export class BeachDayReporter{
 
     private buildReport(data:IDataStore):void {
         // Strip the parents in the specs
-        this.recurse(data.suites, function(source, property){
-            delete source.parent;
-        });
+        this.recurseSuitesSumUp(data.suites);
+
+
+
+
+
+
 
         var reportDir = path.join(process.cwd(), "reports");
         if (!fs.existsSync(reportDir)){
@@ -93,17 +97,16 @@ export class BeachDayReporter{
     UTIL FUNCTIONS
     --------------------------------------------
     */
-    private recurse(data:any, cb:any):void {
-        if (data instanceof Array){
-            for (var i = 0; i < data.length; i++) {
-                if (typeof data[i] == "object") this.recurse(data[i], cb);
-            }
-        }
-        else {
-            for (var propName in data){
-                cb(data, propName);
-                if (typeof data[propName] == "object") this.recurse(data[propName], cb);
-            }
+    private static recurseSuitesSumUp(data:Array<ICustomSuite>):void {
+        for (let i = 0; i < data.length; i++){
+            var suite = data[i];
+            if (suite.childSuites) this.recurseSuitesSumUp(suite.childSuites);
+
+            // Populate data based on children
+
+
+            // Delete circular reference before we finish
+            delete suite.parent;
         }
     }
 }
