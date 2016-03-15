@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "sourceMap": false,
+        "removeComments": false,
+        "preserveConstEnums": true
+    },
+    "filesGlob": [
+        "lib/**/*.ts",
+        "index.ts",
+        "spec/**/*.ts",
+        "node_modules/**/*.d.ts",
+        "typings/main.d.ts"
+    ],
+    "files": [
+        "typings/main.d.ts",
+        "lib/index.ts",
+        "lib/reporter/BeachDayReporter.ts",
+        "lib/utils/JasmineAsyncEnv.ts",
+        "spec/jasmine_examples/JonSpec.ts"
+    ]
+}
