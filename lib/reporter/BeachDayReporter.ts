@@ -75,7 +75,7 @@ export class BeachDayReporter{
 
     private buildReport(data:IDataStore):void {
         // Strip the parents in the specs
-        this.recurseSuitesSumUp(data.suites);
+        BeachDayReporter.recurseSuitesSumUp(data.suites);
 
 
 
@@ -103,7 +103,7 @@ export class BeachDayReporter{
             if (suite.childSuites) this.recurseSuitesSumUp(suite.childSuites);
 
             // Populate data based on children
-
+            
 
             // Delete circular reference before we finish
             delete suite.parent;
