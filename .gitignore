@@ -3,3 +3,6 @@ reports
 typings
 lib/**/*.js
 spec/**/*.js
+
+# Special case JS file
+!lib/utils/BasicConfig.js
