@@ -1,3 +1,4 @@
+"use strict";
 var index_1 = require("../../lib/index");
 describe("Category 1", function () {
     var env = new index_1.JasmineAsyncEnv();

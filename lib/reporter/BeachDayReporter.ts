@@ -1,8 +1,6 @@
 import * as _ from "lodash";
 import * as fs from "fs";
 import * as path from "path";
-import Suite = jasmine.Suite;
-
 
 interface IDataStore {
     suiteInfo:ISuiteInfo;
@@ -103,7 +101,7 @@ export class BeachDayReporter{
             if (suite.childSuites) this.recurseSuitesSumUp(suite.childSuites);
 
             // Populate data based on children
-            
+
 
             // Delete circular reference before we finish
             delete suite.parent;

@@ -10,7 +10,6 @@
         "lib/**/*.ts",
         "index.ts",
         "spec/**/*.ts",
-        "node_modules/**/*.d.ts",
         "typings/main.d.ts"
     ],
     "files": [
