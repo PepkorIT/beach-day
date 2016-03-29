@@ -1,5 +1,5 @@
 export * from "./utils/JasmineAsyncEnv";
 export * from "./reporter/BeachDayReporter";
 
-// Javasript implementation
+// Javascript implementation
 exports.BasicConfig = require("./utils/BasicConfig");

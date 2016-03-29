@@ -13,10 +13,11 @@
         "typings/main.d.ts"
     ],
     "files": [
+        "lib/utils/JasmineAsyncEnv.d.ts",
         "typings/main.d.ts",
         "lib/index.ts",
         "lib/reporter/BeachDayReporter.ts",
         "lib/utils/JasmineAsyncEnv.ts",
-        "spec/jasmine_examples/JonSpec.ts"
+        "spec/framework/ReportSpec.ts"
     ]
 }

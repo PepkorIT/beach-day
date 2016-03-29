@@ -2,6 +2,10 @@
 var index_1 = require("../../lib/index");
 describe("Category 1", function () {
     var env = new index_1.JasmineAsyncEnv();
+    it("Run async test", env.wrap(function (env) {
+        expect("jon").toBe("jon");
+        setTimeout(env.done, 1000);
+    }));
     it("1: Test something that is gonna throw an error", env.wrap(function (env) {
         this["expected"](false).toBe(true);
         env.done();
@@ -14,10 +18,9 @@ describe("Category 1", function () {
         it("Run test 1", env.wrap(function (env) {
             expect("jon").toBe("jon");
             expect("Beech").toBe("beech");
-            env.failed = true;
             env.done();
         }));
-        it("Run test 2", env.wrap(function (env) {
+        xit("Skipped test", env.wrap(function (env) {
             expect("jon").toBe("Jon");
             env.done();
         }));
