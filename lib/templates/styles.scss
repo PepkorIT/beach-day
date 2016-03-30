@@ -13,6 +13,9 @@ p.summary{
 .green {
     color: green;
 }
+pre{
+    width: 100%;
+}
 pre hr{
     margin: 7px 0 -10px 0;
     border-top: 1px dashed #333;
@@ -44,7 +47,7 @@ Structural
     }
 }
 
-.suite{
+.suite, .spec{
     background-color: #ffffff;
     border: 1px solid #DDD;
     border-radius: 4px;
@@ -77,10 +80,12 @@ Structural
                 font-size: 14px;
                 font-weight: normal;
             }
+
+            >span.glyphicon{
+                margin-right: 8px;
+            }
         }
     }
-
-
 }
 
 /*
@@ -98,9 +103,7 @@ Structural
     margin-right: 10px;
 }
 
-.wrapper > h2 > a > span.glyphicon{
-    margin-right: 8px;
-}
+
 
 .wrapper.test > h2 > a > span.glyphicon{
     margin-right: 5px;

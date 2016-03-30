@@ -12,6 +12,9 @@
 
 <script type="text/javascript">
     $(function(){
+
+        var reportId = "{{id}}";
+
         $("h2 a").click(function(e){
             e.preventDefault();
             var $this   = $(this);
@@ -37,32 +40,47 @@
                 openArr.sort();
                 var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
                 if (openArr.length > 0){
-                    newurl += "?open=" + openArr.join(",");
+                    newurl += "?open=" + openArr.join(",") + "&reportId=" + reportId;
                 }
                 window.history.pushState({path:newurl}, "", newurl);
-                console.log("setting new url: ", newurl);
+                //console.log("setting new url: ", newurl);
             }
         });
 
         // On page load open certain sections
-        var location = window.location.href;
-        if (location.indexOf("?") != -1){
-            var query       = location.split("?")[1];
-            var sections    = query.split("&");
-            for (var i = 0; i < sections.length; i++) {
-                var keyVal  = sections[i].split("=");
-                if (keyVal[0] == "open"){
-                    var openArr = keyVal[1].split(",");
-                    var jqStr   = "";
-                    for (var p = 0; p < openArr.length; p++) {
-                        if (p > 0) jqStr += ", ";
-                        jqStr += "#" + openArr[p];
+        var urlReportId = getQueryValue("reportId");
+        var open        = getQueryValue("open");
+        if (urlReportId == reportId && open != null){
+            var openArr = open.split(",");
+            var jqStr   = "";
+            for (var p = 0; p < openArr.length; p++) {
+                if (p > 0) jqStr += ", ";
+                jqStr += "#" + openArr[p];
+            }
+            //console.log("Removing closed class from: " + jqStr);
+            $(jqStr).removeClass("closed");
+        }
+        // Clear url for new report
+        else if ((urlReportId != null || open != null) && urlReportId != reportId){
+            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.pushState({path:newurl}, "", newurl);
+        }
+
+        function getQueryValue(name){
+            var result = null;
+            var location = window.location.href;
+            if (location.indexOf("?") != -1){
+                var query       = location.split("?")[1];
+                var sections    = query.split("&");
+                for (var i = 0; i < sections.length; i++) {
+                    var keyVal  = sections[i].split("=");
+                    if (keyVal[0] == name){
+                        result = keyVal[1];
+                        break;
                     }
-                    console.log("Removing closed class from: " + jqStr);
-                    $(jqStr).removeClass("closed");
-                    break;
                 }
             }
+            return result;
         }
     })
 </script>

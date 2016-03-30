@@ -2,6 +2,7 @@ import * as fs from "fs";
 import { IDataStore, ReporterConfig } from "./BeachDayReporter";
 import * as sass from "node-sass";
 import * as mustache from "mustache";
+import * as _ from "lodash";
 
 export function generate(viewModel?:IDataStore, config?:ReporterConfig):void {
     var opts = {encoding:"utf8"};
@@ -27,17 +28,21 @@ export function generate(viewModel?:IDataStore, config?:ReporterConfig):void {
         indentWidth : 4
     }).css.toString();
 
-    //console.log("Styles:\n", stylesStr);
-
     // Now lets build up the templates to pass
     var partials    = {header: headerStr, title:titleStr, suite:suiteStr, summary:summaryStr};
 
     // Now the model
-    var model       = {styles:stylesStr, tree:viewModel, title:config.reportName};
+    _.extend(viewModel, {
+        styles  : stylesStr,
+        title   : config.reportName
+    });
 
     // Render with mustache
-    var result      = mustache.render(indexStr, model, partials);
+    var result      = mustache.render(indexStr, viewModel, partials);
 
     // Write out the report
+    if (!fs.existsSync(config.reportDir)){
+        fs.mkdirSync(config.reportDir);
+    }
     fs.writeFileSync(config.reportPath, result, opts);
 }

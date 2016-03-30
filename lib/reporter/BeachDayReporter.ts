@@ -15,6 +15,7 @@ Declarations
 */
 export interface IDataStore extends IViewData{
     suiteInfo:ISuiteInfo;
+    id:string;
 }
 export interface ISuiteInfo {
     totalSpecsDefined:number;
@@ -27,12 +28,10 @@ export interface ICustomSpec extends jasmine.Spec, IViewData {
 }
 
 export interface IViewData{
-    index?:number;
+    isSpec:boolean;
 
     parent?:ICustomSuite;
-    childSuites?:Array<ICustomSuite>;
-    specList?:Array<ICustomSpec>;
-    viewChildren?:Array<any>;
+    viewChildren?:Array<IViewData>;
 
     startTime?:Date;
     startTimeFormatted?:string;
@@ -92,6 +91,9 @@ export class ReporterConfig implements IReporterConfig{
 
     public get reportDir():string {
         return path.dirname(this.reportPath);
+    }
+    public get viewDataDir():string {
+        return path.dirname(this.viewDataPath);
     }
 }
 
@@ -163,8 +165,9 @@ export class ReporterConsole{
     }
 }
 
-var reporterConsole = new ReporterConsole();
-export var console = reporterConsole;
+var reporterConsole             = new ReporterConsole();
+reporterConsole.logToConsole    = false;
+export var console              = reporterConsole;
 
 
 
@@ -174,7 +177,6 @@ export class BeachDayReporter{
     private _currentEnvironment:JasmineAsyncEnv;
     private currentSpec:ICustomSpec;
     private config:ReporterConfig;
-    private index:number = 1;
 
     constructor(config?:IReporterConfig){
         if (config && !(config instanceof ReporterConfig)){
@@ -217,7 +219,7 @@ export class BeachDayReporter{
     */
     public jasmineStarted(suiteInfo:ISuiteInfo):void {
         this.wrap(() => {
-            this.dataStore = {suiteInfo:suiteInfo};
+            this.dataStore = {suiteInfo:suiteInfo, isSpec:false, id:(new Date()).getTime() + ""};
             this.initIViewData(this.dataStore);
         })
     }
@@ -225,18 +227,15 @@ export class BeachDayReporter{
     public suiteStarted(result:ICustomSuite):void {
         this.wrap(() => {
             result.startTime = new Date();
-            // Build a tree
-            result.childSuites = [];
-            result.specList = [];
 
             // Assign the parent and child
             if (this.currentSuite) {
                 result.parent = this.currentSuite;
-                this.currentSuite.childSuites.push(result);
+                this.currentSuite.viewChildren.push(result);
             }
             else {
                 result.parent = null;
-                this.dataStore.childSuites.push(result);
+                this.dataStore.viewChildren.push(result);
             }
             // Set the current suite for the end or for the next suite
             this.currentSuite = result;
@@ -254,10 +253,11 @@ export class BeachDayReporter{
 
     public specStarted(result:ICustomSpec):void {
         this.wrap(() => {
-            result.startTime = new Date();
-            this.currentSpec = result;
+            result.startTime    = new Date();
+            result.isSpec       = true;
+            this.currentSpec    = result;
             this.initIViewData(this.currentSpec);
-            this.currentSuite.specList.push(result);
+            this.currentSuite.viewChildren.push(result);
             reporterConsole.currentSpec = this.currentSpec;
         });
     }
@@ -292,13 +292,14 @@ export class BeachDayReporter{
             // Strip the parents in the specs
             this.recurseSuitesPopulateViewData(this.dataStore);
 
-            // TODO: Remove
-            if (!fs.existsSync(this.config.reportDir)){
-                fs.mkdirSync(this.config.reportDir);
+            // Generate HTML report
+            generateReport(this.dataStore, this.config);
+
+            // Generate JSON from view data
+            if (!fs.existsSync(this.config.viewDataDir)){
+                fs.mkdirSync(this.config.viewDataDir);
             }
             fs.writeFileSync(this.config.viewDataPath, JSON.stringify(this.dataStore, null, 4), {encoding:"utf8"});
-
-            generateReport(this.dataStore, this.config);
         });
     }
 
@@ -310,17 +311,14 @@ export class BeachDayReporter{
     --------------------------------------------
     */
     private recurseSuitesPopulateViewData(data:IViewData):void {
-
-        data.childSuites.forEach((suite) => {
-            data.viewChildren.push(suite);
-
-            // Recurse to the next level
-            this.recurseSuitesPopulateViewData(suite);
-
-            suite.specList.forEach((spec) => {
-                suite.viewChildren.push(spec);
-
+        data.viewChildren.forEach((specOrSuite:IViewData) => {
+            if (!specOrSuite.isSpec){
+                delete specOrSuite.parent;
+                this.recurseSuitesPopulateViewData(specOrSuite);
+            }
+            else{
                 // Build up data
+                var spec                = <ICustomSpec> specOrSuite;
                 spec.durationMilli      = spec.endTime.getTime() - spec.startTime.getTime();
                 spec.skippedCount       = spec.beachStatus == "pending" ? 1 : 0;
                 spec.failedCount        = spec.beachStatus == "failed" ? 1 : 0;
@@ -329,36 +327,32 @@ export class BeachDayReporter{
                 spec.allPassed          = spec.passedCount == 1;
 
                 // Add implementation errors if there are any
-                if (spec["failedExpectations"]){
+                if (spec["failedExpectations"] && spec["failedExpectations"].length > 0){
+                    // Set the spec so the logs go to the right place
+                    reporterConsole.currentSpec = spec;
+
+                    console.log("Errors:");
+                    console.log("<hr />");
                     for (var i = 0; i < spec["failedExpectations"].length; i++) {
                         var expect = spec["failedExpectations"][i];
                         // If we find any failed expectations without a matcher name it means a runtime error
                         if (expect.matcherName == "" || expect.matcherName == null){
                             spec.implementationErrorCount = 1;
+                            reporterConsole.log("[IMPLEMENTATION ERROR] - " + expect.stack);
+                        }
+                        else{
+                            reporterConsole.log("[ERROR] - " + expect.message);
                         }
                     }
                 }
-                // Pretty formatting
-                this.prettyProps(spec);
 
                 this.stringLogs(spec);
-
-                // Copy spec data onto parent suite
-                this.incrementIViewData(spec, suite);
-            });
-
-            // Copy data from child suite to parent suite
-            this.incrementIViewData(suite, data);
-
-            // Pretty formatting
-            this.prettyProps(suite);
-
-            // Delete circular reference before we finish
-            delete suite.parent;
+            }
+            // Increment and format values as all children have been processed
+            this.incrementIViewData(specOrSuite, data);
+            this.prettyProps(specOrSuite);
         });
 
-        // Pretty formatting
-        data.durationFormatted = this.formatDuration(data.durationMilli);
         this.prettyProps(data);
     }
 
@@ -385,13 +379,10 @@ export class BeachDayReporter{
 
     private initIViewData(value:IViewData):IViewData {
         if (value){
-            if (value.index == null) {
-                value.index = this.index;
-                this.index++;
+            if (!value.hasOwnProperty("isSpec")) {
+                value.isSpec = false;
             }
             if (value.viewChildren == null) value.viewChildren = [];
-            if (value.childSuites == null) value.childSuites = [];
-            if (value.specList == null) value.specList = [];
             if (value.durationMilli == null) value.durationMilli = 0;
             if (value.failedCount == null) value.failedCount = 0;
             if (value.skippedCount == null) value.skippedCount = 0;
