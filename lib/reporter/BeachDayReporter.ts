@@ -1,27 +1,32 @@
 import * as _ from "lodash";
 import * as fs from "fs";
 import * as path from "path";
-import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
+import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
+import { generate as generateReport } from "./ReportGenerator"
 
-interface IDataStore extends IViewData{
+var moment = require("moment");
+
+export interface IDataStore extends IViewData{
     suiteInfo:ISuiteInfo;
 }
-interface ISuiteInfo {
+export interface ISuiteInfo {
     totalSpecsDefined:number;
 }
 
-interface ICustomSuite extends jasmine.Suite, IViewData {
+export interface ICustomSuite extends jasmine.Suite, IViewData {
 }
-interface ICustomSpec extends jasmine.Spec, IViewData {
+export interface ICustomSpec extends jasmine.Spec, IViewData {
 }
 
-interface IViewData{
+export interface IViewData{
     parent?:ICustomSuite;
     childSuites?:Array<ICustomSuite>;
     specList?:Array<ICustomSpec>;
 
     startTime?:Date;
+    startTimeFormatted?:string;
     endTime?:Date;
+    endTimeFormatted?:string;
 
     durationMilli?:number;
     durationFormatted?:string;
@@ -33,6 +38,40 @@ interface IViewData{
     implementationErrorCount?:number;
 
     debugData?:Array<string>;
+}
+
+export interface IReporterConfig {
+    reportPath?:string;
+    viewDataPath?:string;
+    headerTemplatePath?:string;
+    indexTemplatePath?:string;
+    reportTreeTemplatePath?:string;
+    stylesPath?:string;
+    titleTemplatePath?:string;
+}
+export class ReporterConfig implements IReporterConfig{
+    public reportPath:string;
+    public viewDataPath:string;
+    public headerTemplatePath:string;
+    public indexTemplatePath:string;
+    public reportTreeTemplatePath:string;
+    public stylesPath:string;
+    public titleTemplatePath:string;
+
+    constructor(config:IReporterConfig = {}){
+        // Default to sensible locations and templates
+        this.reportPath             = config.reportPath ? config.reportPath : path.join(process.cwd(), "reports", "report.html");
+        this.viewDataPath           = path.join(process.cwd(), "reports", "data.json");
+        this.headerTemplatePath     = config.headerTemplatePath ? config.headerTemplatePath : path.resolve(__dirname, "../templates/header.mustache");
+        this.indexTemplatePath      = config.indexTemplatePath ? config.indexTemplatePath : path.resolve(__dirname, "../templates/index.mustache");
+        this.reportTreeTemplatePath = config.reportTreeTemplatePath ? config.reportTreeTemplatePath : path.resolve(__dirname, "../templates/reportTree.mustache");
+        this.stylesPath             = config.stylesPath ? config.stylesPath : path.resolve(__dirname, "../templates/styles.scss");
+        this.titleTemplatePath      = config.titleTemplatePath ? config.titleTemplatePath : path.resolve(__dirname, "../templates/title.mustache");
+    }
+
+    public get reportDir():string {
+        return path.dirname(this.reportPath);
+    }
 }
 
 // Hook to allow the env to register itself with the reporter
@@ -49,8 +88,10 @@ export class BeachDayReporter{
     private currentSuite:ICustomSuite;
     private _currentEnvironment:JasmineAsyncEnv;
     private currentSpec:ICustomSpec;
+    private config:ReporterConfig;
 
-    constructor(){
+    constructor(config?:ReporterConfig){
+        this.config         = config == null ? new ReporterConfig() : config;
         lastCreatedInstance = this;
     }
 
@@ -120,22 +161,24 @@ export class BeachDayReporter{
 
     public jasmineDone(result:any):void {
         try{
-            this.buildReport(this.dataStore);
+            this.buildReport();
         }
         catch (e){
             console.error(e.stack);
         }
     }
 
-    private buildReport(data:IDataStore):void {
+    private buildReport():void {
         // Strip the parents in the specs
-        this.recurseSuitesPopulateViewData(data);
+        this.recurseSuitesPopulateViewData(this.dataStore);
 
-        var reportDir = path.join(process.cwd(), "reports");
-        if (!fs.existsSync(reportDir)){
-            fs.mkdirSync(reportDir);
+        // TODO: Remove
+        if (!fs.existsSync(this.config.reportDir)){
+            fs.mkdirSync(this.config.reportDir);
         }
-        fs.writeFileSync(reportDir +  "/data.json", JSON.stringify(data, null, 4), {encoding:"utf8"});
+        fs.writeFileSync(this.config.viewDataPath, JSON.stringify(this.dataStore, null, 4), {encoding:"utf8"});
+
+        generateReport(this.dataStore, this.config);
     }
 
 
@@ -155,12 +198,12 @@ export class BeachDayReporter{
             suite.specList.forEach((spec) => {
 
                 // Build up data
-                spec.durationMilli              = spec.endTime.getTime() - spec.startTime.getTime();
-                spec.skippedCount               = spec["status"] == "skipped" ? 1 : 0;
-                spec.failedCount                = spec["status"] == "failed" ? 1 : 0;
-                spec.notRunCount                = spec["status"] == "notRun" ? 1 : 0;
-                spec.passedCount                = spec["status"] == "passed" ? 1 : 0;
-                spec.debugData                  = []; // TODO: Implement
+                spec.durationMilli      = spec.endTime.getTime() - spec.startTime.getTime();
+                spec.skippedCount       = spec["status"] == "skipped" ? 1 : 0;
+                spec.failedCount        = spec["status"] == "failed" ? 1 : 0;
+                spec.notRunCount        = spec["status"] == "notRun" ? 1 : 0;
+                spec.passedCount        = spec["status"] == "passed" ? 1 : 0;
+                spec.debugData          = []; // TODO: Implement
 
                 // Add implementation errors if there are any
                 if (spec["failedExpectations"]){
@@ -172,8 +215,8 @@ export class BeachDayReporter{
                         }
                     }
                 }
-
-                // TODO: Populate spec duration formatted
+                // Pretty formatting
+                this.prettyProps(spec);
 
                 // Copy spec data onto parent suite
                 this.incrementIViewData(spec, suite);
@@ -182,12 +225,37 @@ export class BeachDayReporter{
             // Copy data from child suite to parent suite
             this.incrementIViewData(suite, data);
 
-            // TODO: Populate duration formatted for suite
-
+            // Pretty formatting
+            this.prettyProps(suite);
 
             // Delete circular reference before we finish
             delete suite.parent;
         });
+
+        // Pretty formatting
+        data.durationFormatted = this.formatDuration(data.durationMilli);
+        this.prettyProps(data);
+    }
+
+    private prettyProps(data:IViewData):void {
+        data.durationFormatted  = this.formatDuration(data.durationMilli);
+        data.startTimeFormatted = moment(data.startTime).format("Do MMMM YYYY, HH:mm:ss");
+        data.endTimeFormatted   = moment(data.endTime).format("Do MMMM YYYY, HH:mm:ss");
+    }
+
+    private formatDuration(durationMilli:number):string {
+        var seconds = Math.floor(durationMilli / (1000));
+        var mili    = durationMilli - seconds * 1000;
+        var miliStr = _.padStart(mili + "", 3, "0");
+
+        var secondsStr  = seconds + "";
+        if (seconds > 60){
+            var mins    = Math.floor(seconds / 60);
+            seconds     = seconds - mins * 60;
+            secondsStr  = mins + "m " + secondsStr;
+        }
+
+        return secondsStr + "." + miliStr + "s";
     }
 
     private initIViewData(value:IViewData):IViewData {

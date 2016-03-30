@@ -1,0 +1,28 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+
+<style type="text/css">
+    {{&styles}}
+</style>
+
+<script type="text/javascript" src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    $(function(){
+        $("h2 a").click(function(e){
+            e.preventDefault();
+            var $this   = $(this);
+            var parent  = $this.parent().parent();
+            parent.toggleClass("closed");
+
+            // On the close, close all of the children
+            if (parent.hasClass("closed")){
+                parent.find(".wrapper").addClass("closed");
+            }
+            //$this.html(parent.hasClass("closed") ? "Open" : "Close");
+        });
+    })
+</script>
