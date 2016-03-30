@@ -14,13 +14,14 @@ export function generate(viewModel?:IDataStore, config?:ReporterConfig):void {
     }
 
     // First lets load up all the templates
-    var headerStr       = fs.readFileSync(config.headerTemplatePath, opts);
-    var indexStr        = fs.readFileSync(config.indexTemplatePath, opts);
-    var reportTreeStr   = fs.readFileSync(config.reportTreeTemplatePath, opts);
-    var titleStr        = fs.readFileSync(config.titleTemplatePath, opts);
+    var headerStr   = fs.readFileSync(config.headerTemplatePath, opts);
+    var indexStr    = fs.readFileSync(config.indexTemplatePath, opts);
+    var suiteStr    = fs.readFileSync(config.suiteTemplatePath, opts);
+    var titleStr    = fs.readFileSync(config.titleTemplatePath, opts);
+    var summaryStr  = fs.readFileSync(config.summaryTemplatePath, opts);
 
     // Lets convert the scss into CSS
-    var stylesStr       = sass.renderSync({
+    var stylesStr   = sass.renderSync({
         file        : config.stylesPath,
         outputStyle : "expanded",
         indentWidth : 4
@@ -29,13 +30,13 @@ export function generate(viewModel?:IDataStore, config?:ReporterConfig):void {
     //console.log("Styles:\n", stylesStr);
 
     // Now lets build up the templates to pass
-    var partials = {header: headerStr, title:titleStr, reportTree:reportTreeStr};
+    var partials    = {header: headerStr, title:titleStr, suite:suiteStr, summary:summaryStr};
 
     // Now the model
-    var model    = {styles:stylesStr, tree:viewModel, title:config.reportName};
+    var model       = {styles:stylesStr, tree:viewModel, title:config.reportName};
 
     // Render with mustache
-    var result   = mustache.render(indexStr, model, partials);
+    var result      = mustache.render(indexStr, model, partials);
 
     // Write out the report
     fs.writeFileSync(config.reportPath, result, opts);

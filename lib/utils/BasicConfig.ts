@@ -2,7 +2,7 @@ import {BeachDayReporter} from "../reporter/BeachDayReporter";
 var Jasmine             = require("jasmine");
 var SpecReporter        = require("jasmine-spec-reporter");
 
-export function getBasicConfig(configFile:string = "spec/jasmine.json", timeout:number = 10100, autoExecute:boolean = true){
+export function getBasicConfig(reportName:string, configFile:string = "spec/jasmine.json", timeout:number = 10100, autoExecute:boolean = true){
 
     var jasmineInst = new Jasmine();
     global["jasmine"].DEFAULT_TIMEOUT_INTERVAL = timeout;
@@ -21,7 +21,8 @@ export function getBasicConfig(configFile:string = "spec/jasmine.json", timeout:
 
     // Add our custom HTML reporter
     jasmineInst.addReporter(new BeachDayReporter({
-        includeAllConsoleLogs: false
+        reportName              : reportName,
+        includeAllConsoleLogs   : false
     }));
 
     jasmineInst.loadConfigFile(configFile);

@@ -23,6 +23,46 @@
                 parent.find(".wrapper").addClass("closed");
             }
             //$this.html(parent.hasClass("closed") ? "Open" : "Close");
+
+            // Save the open sections
+            if (history.pushState) {
+                var openArr = [];
+                $(".suite, .spec").each(function(index, item){
+                    var $el = $(item);
+                    if (!$el.hasClass("closed")){
+                        openArr.push($el.attr("id"));
+                    }
+                });
+
+                openArr.sort();
+                var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                if (openArr.length > 0){
+                    newurl += "?open=" + openArr.join(",");
+                }
+                window.history.pushState({path:newurl}, "", newurl);
+                console.log("setting new url: ", newurl);
+            }
         });
+
+        // On page load open certain sections
+        var location = window.location.href;
+        if (location.indexOf("?") != -1){
+            var query       = location.split("?")[1];
+            var sections    = query.split("&");
+            for (var i = 0; i < sections.length; i++) {
+                var keyVal  = sections[i].split("=");
+                if (keyVal[0] == "open"){
+                    var openArr = keyVal[1].split(",");
+                    var jqStr   = "";
+                    for (var p = 0; p < openArr.length; p++) {
+                        if (p > 0) jqStr += ", ";
+                        jqStr += "#" + openArr[p];
+                    }
+                    console.log("Removing closed class from: " + jqStr);
+                    $(jqStr).removeClass("closed");
+                    break;
+                }
+            }
+        }
     })
 </script>

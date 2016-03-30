@@ -27,9 +27,12 @@ export interface ICustomSpec extends jasmine.Spec, IViewData {
 }
 
 export interface IViewData{
+    index?:number;
+
     parent?:ICustomSuite;
     childSuites?:Array<ICustomSuite>;
     specList?:Array<ICustomSpec>;
+    viewChildren?:Array<any>;
 
     startTime?:Date;
     startTimeFormatted?:string;
@@ -44,6 +47,7 @@ export interface IViewData{
     notRunCount?:number;
     passedCount?:number;
     implementationErrorCount?:number;
+    allPassed?:boolean;
 
     debugData?:Array<any>;
 }
@@ -54,9 +58,10 @@ export interface IReporterConfig {
     viewDataPath?:string;
     headerTemplatePath?:string;
     indexTemplatePath?:string;
-    reportTreeTemplatePath?:string;
+    suiteTemplatePath?:string;
     stylesPath?:string;
     titleTemplatePath?:string;
+    summaryTemplatePath?:string;
     includeAllConsoleLogs?:boolean;
 }
 export class ReporterConfig implements IReporterConfig{
@@ -65,9 +70,10 @@ export class ReporterConfig implements IReporterConfig{
     public viewDataPath:string;
     public headerTemplatePath:string;
     public indexTemplatePath:string;
-    public reportTreeTemplatePath:string;
+    public suiteTemplatePath:string;
     public stylesPath:string;
     public titleTemplatePath:string;
+    public summaryTemplatePath:string;
     public includeAllConsoleLogs:boolean;
 
     constructor(config:IReporterConfig = {}){
@@ -77,9 +83,10 @@ export class ReporterConfig implements IReporterConfig{
         this.viewDataPath           = config.viewDataPath ? config.viewDataPath : path.join(process.cwd(), "reports", "data.json");
         this.headerTemplatePath     = config.headerTemplatePath ? config.headerTemplatePath : path.resolve(__dirname, "../templates/header.mustache");
         this.indexTemplatePath      = config.indexTemplatePath ? config.indexTemplatePath : path.resolve(__dirname, "../templates/index.mustache");
-        this.reportTreeTemplatePath = config.reportTreeTemplatePath ? config.reportTreeTemplatePath : path.resolve(__dirname, "../templates/reportTree.mustache");
+        this.suiteTemplatePath      = config.suiteTemplatePath ? config.suiteTemplatePath : path.resolve(__dirname, "../templates/suite.mustache");
         this.stylesPath             = config.stylesPath ? config.stylesPath : path.resolve(__dirname, "../templates/styles.scss");
         this.titleTemplatePath      = config.titleTemplatePath ? config.titleTemplatePath : path.resolve(__dirname, "../templates/title.mustache");
+        this.summaryTemplatePath    = config.summaryTemplatePath ? config.summaryTemplatePath : path.resolve(__dirname, "../templates/summary.mustache");
         this.includeAllConsoleLogs  = config.hasOwnProperty("includeAllConsoleLogs") ? config.includeAllConsoleLogs : false;
     }
 
@@ -159,12 +166,15 @@ export class ReporterConsole{
 var reporterConsole = new ReporterConsole();
 export var console = reporterConsole;
 
+
+
 export class BeachDayReporter{
     private dataStore:IDataStore;
     private currentSuite:ICustomSuite;
     private _currentEnvironment:JasmineAsyncEnv;
     private currentSpec:ICustomSpec;
     private config:ReporterConfig;
+    private index:number = 1;
 
     constructor(config?:IReporterConfig){
         if (config && !(config instanceof ReporterConfig)){
@@ -201,6 +211,10 @@ export class BeachDayReporter{
         }
     }
 
+    /*
+    Jasmine methods
+    --------------------------------------------
+    */
     public jasmineStarted(suiteInfo:ISuiteInfo):void {
         this.wrap(() => {
             this.dataStore = {suiteInfo:suiteInfo};
@@ -298,11 +312,13 @@ export class BeachDayReporter{
     private recurseSuitesPopulateViewData(data:IViewData):void {
 
         data.childSuites.forEach((suite) => {
+            data.viewChildren.push(suite);
 
             // Recurse to the next level
             this.recurseSuitesPopulateViewData(suite);
 
             suite.specList.forEach((spec) => {
+                suite.viewChildren.push(spec);
 
                 // Build up data
                 spec.durationMilli      = spec.endTime.getTime() - spec.startTime.getTime();
@@ -310,6 +326,7 @@ export class BeachDayReporter{
                 spec.failedCount        = spec.beachStatus == "failed" ? 1 : 0;
                 spec.notRunCount        = spec.beachStatus == "notRun" ? 1 : 0;
                 spec.passedCount        = spec.beachStatus == "passed" ? 1 : 0;
+                spec.allPassed          = spec.passedCount == 1;
 
                 // Add implementation errors if there are any
                 if (spec["failedExpectations"]){
@@ -368,6 +385,11 @@ export class BeachDayReporter{
 
     private initIViewData(value:IViewData):IViewData {
         if (value){
+            if (value.index == null) {
+                value.index = this.index;
+                this.index++;
+            }
+            if (value.viewChildren == null) value.viewChildren = [];
             if (value.childSuites == null) value.childSuites = [];
             if (value.specList == null) value.specList = [];
             if (value.durationMilli == null) value.durationMilli = 0;
@@ -377,6 +399,7 @@ export class BeachDayReporter{
             if (value.passedCount == null) value.passedCount = 0;
             if (value.implementationErrorCount == null) value.implementationErrorCount = 0;
             if (value.debugData == null) value.debugData = [];
+            if (!value.hasOwnProperty("allPassed")) value.allPassed = true;
         }
         return value;
     }
@@ -391,6 +414,9 @@ export class BeachDayReporter{
             dest.notRunCount                += source.notRunCount;
             dest.passedCount                += source.passedCount;
             dest.implementationErrorCount   += source.implementationErrorCount;
+            if (!source.allPassed){
+                dest.allPassed = false;
+            }
         }
     }
 

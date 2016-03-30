@@ -1,7 +1,20 @@
 <div class="main-title">
     <h2>{{title}}</h2>
     <p class="summary">
-        {{#tree.implementationErrorCount}}<span class="imp-error">{{tree.implementationErrorCount}} Test Implementation Problem(s), </span>{{/tree.implementationErrorCount}}{{tree.passedCount}} Passed,{{tree.failedCount}} Failed{{#tree.notRunCount}}, {{tree.notRunCount}} Not Run{{/tree.notRunCount}}{{#tree.skippedCount}}, {{tree.skippedCount}} Skipped{{/tree.skippedCount}}
+        {{>summary}}
+        <table>
+            <tr>
+                <td>Run Time:</td>
+                <td>{{tree.durationFormatted}}</td>
+            </tr>
+            <tr>
+                <td>Start Time:</td>
+                <td>{{tree.startTimeFormatted}}</td>
+            </tr>
+            <tr>
+                <td>End Time:</td>
+                <td>{{tree.endTimeFormatted}}</td>
+            </tr>
+        </table>
     </p>
-    {{{runTimeFormatted}}}
 </div>

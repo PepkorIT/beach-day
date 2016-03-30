@@ -4,7 +4,8 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "test": "tsc && node ./test_boot.js"
+    "test": "tsc && node ./test_boot.js",
+    "report": "tsc && node ./lib/reporter/TestReport.js"
   },
   "repository": {
     "type": "git",

@@ -9,7 +9,11 @@
     <div class="container">
         {{>title}}
 
-        <!--{{>reportTree}}-->
+        <div class="clearfix"></div>
+
+        {{#tree.childSuites}}
+            {{>suite}}
+        {{/tree.childSuites}}
     </div>
 </body>
 </html>

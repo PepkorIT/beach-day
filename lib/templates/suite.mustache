@@ -1,0 +1,17 @@
+<div class="suite closed" id="{{id}}">
+    <h2 class="{{#allPassed}}green{{/allPassed}}{{^allPassed}}red{{/allPassed}}">
+        <a href="#">
+            <span class="glyphicon {{#allPassed}}glyphicon-ok green{{/allPassed}}{{^allPassed}}glyphicon-remove red{{/allPassed}}"></span>{{&description}}
+            <div class="time-taken">{{durationFormatted}}</div>
+        </a>
+    </h2>
+    <p class="summary">
+        {{>summary}}
+    </p>
+
+    <div class="content">
+        {{#childSuites}}
+            {{>suite}}
+        {{/childSuites}}
+    </div>
+</div>
