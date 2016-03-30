@@ -2,7 +2,3 @@ node_modules
 reports
 typings
 **/*.js
-
-# Special case JS file
-!lib/utils/BasicConfig.js
-!test_boot.js

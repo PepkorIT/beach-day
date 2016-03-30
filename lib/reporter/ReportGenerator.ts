@@ -32,7 +32,7 @@ export function generate(viewModel?:IDataStore, config?:ReporterConfig):void {
     var partials = {header: headerStr, title:titleStr, reportTree:reportTreeStr};
 
     // Now the model
-    var model    = {styles:stylesStr, tree:viewModel};
+    var model    = {styles:stylesStr, tree:viewModel, title:config.reportName};
 
     // Render with mustache
     var result   = mustache.render(indexStr, model, partials);

@@ -49,6 +49,7 @@ export interface IViewData{
 }
 
 export interface IReporterConfig {
+    reportName?:string;
     reportPath?:string;
     viewDataPath?:string;
     headerTemplatePath?:string;
@@ -59,6 +60,7 @@ export interface IReporterConfig {
     includeAllConsoleLogs?:boolean;
 }
 export class ReporterConfig implements IReporterConfig{
+    public reportName:string;
     public reportPath:string;
     public viewDataPath:string;
     public headerTemplatePath:string;
@@ -70,8 +72,9 @@ export class ReporterConfig implements IReporterConfig{
 
     constructor(config:IReporterConfig = {}){
         // Default to sensible locations and templates
-        this.reportPath             = config.reportPath ? config.reportPath : path.join(process.cwd(), "reports", "report.html");
-        this.viewDataPath           = path.join(process.cwd(), "reports", "data.json");
+        this.reportName             = config.reportName ? config.reportName : "Report: " + (new Date()).toString();
+        this.reportPath             = config.reportPath ? config.reportPath : path.join(process.cwd(), "reports", "beach-day-report.html");
+        this.viewDataPath           = config.viewDataPath ? config.viewDataPath : path.join(process.cwd(), "reports", "data.json");
         this.headerTemplatePath     = config.headerTemplatePath ? config.headerTemplatePath : path.resolve(__dirname, "../templates/header.mustache");
         this.indexTemplatePath      = config.indexTemplatePath ? config.indexTemplatePath : path.resolve(__dirname, "../templates/index.mustache");
         this.reportTreeTemplatePath = config.reportTreeTemplatePath ? config.reportTreeTemplatePath : path.resolve(__dirname, "../templates/reportTree.mustache");
@@ -163,11 +166,11 @@ export class BeachDayReporter{
     private currentSpec:ICustomSpec;
     private config:ReporterConfig;
 
-    constructor(config?:ReporterConfig){
+    constructor(config?:IReporterConfig){
         if (config && !(config instanceof ReporterConfig)){
             config = new ReporterConfig(config);
         }
-        this.config             = config == null ? new ReporterConfig() : config;
+        this.config             = config == null ? new ReporterConfig() : <ReporterConfig> config;
         lastCreatedInstance     = this;
 
         // Override with our local proxy
@@ -256,7 +259,9 @@ export class BeachDayReporter{
             if (this._currentEnvironment){
                 // If the environment is already failed, then set the status to not run
                 if (this._currentEnvironment.failed === true){
-                    result.beachStatus = "notRun";
+                    if (result.beachStatus != "pending"){
+                        result.beachStatus = "notRun";
+                    }
                 }
                 else{
                     // If the test failed, fail the entire environment
@@ -301,7 +306,7 @@ export class BeachDayReporter{
 
                 // Build up data
                 spec.durationMilli      = spec.endTime.getTime() - spec.startTime.getTime();
-                spec.skippedCount       = spec.beachStatus == "skipped" ? 1 : 0;
+                spec.skippedCount       = spec.beachStatus == "pending" ? 1 : 0;
                 spec.failedCount        = spec.beachStatus == "failed" ? 1 : 0;
                 spec.notRunCount        = spec.beachStatus == "notRun" ? 1 : 0;
                 spec.passedCount        = spec.beachStatus == "passed" ? 1 : 0;

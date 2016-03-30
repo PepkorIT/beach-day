@@ -7,10 +7,12 @@
         "preserveConstEnums": true
     },
     "filesGlob": [
-        "lib/**/*.ts",
-        "index.ts",
-        "spec/**/*.ts",
-        "typings/main.d.ts"
+        "**/*.ts",
+        "typings/main.d.ts",
+        "!typings/browser.d.ts",
+        "!typings/main/**/*",
+        "!typings/browser/**/*",
+        "!node_modules/**/*"
     ],
     "files": [
         "lib/utils/JasmineAsyncEnv.d.ts",
@@ -19,7 +21,9 @@
         "lib/reporter/BeachDayReporter.ts",
         "lib/reporter/ReportGenerator.ts",
         "lib/reporter/TestReport.ts",
+        "lib/utils/BasicConfig.ts",
         "lib/utils/JasmineAsyncEnv.ts",
-        "spec/framework/ReportSpec.ts"
+        "spec/framework/ReportSpec.ts",
+        "test_boot.ts"
     ]
 }

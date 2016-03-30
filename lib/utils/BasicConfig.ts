@@ -1,11 +1,13 @@
-module.exports = function(configFile, timeout, autoExecute) {
-    var Jasmine             = require("jasmine");
-    var SpecReporter        = require("jasmine-spec-reporter");
-    var BeachDayReporter    = require("../reporter/BeachDayReporter").BeachDayReporter;
+import {BeachDayReporter} from "../reporter/BeachDayReporter";
+var Jasmine             = require("jasmine");
+var SpecReporter        = require("jasmine-spec-reporter");
 
-    var jasmineInst         = new Jasmine();
+export function getBasicConfig(configFile:string = "spec/jasmine.json", timeout:number = 10100, autoExecute:boolean = true){
 
-    console.log("Settign up new default JASMINE Suite :)");
+    var jasmineInst = new Jasmine();
+    global["jasmine"].DEFAULT_TIMEOUT_INTERVAL = timeout;
+
+    console.log("Setting up new default JASMINE Suite :)");
     console.log("----------------------------------------------------");
 
 
@@ -22,12 +24,7 @@ module.exports = function(configFile, timeout, autoExecute) {
         includeAllConsoleLogs: false
     }));
 
-    jasmineInst.loadConfigFile(configFile || "spec/jasmine.json");
-
-
-    if (timeout == null) timeout = 10100;
-    global.jasmine.DEFAULT_TIMEOUT_INTERVAL = timeout;
-    //console.log("Set the timeout to: ", global.jasmine.DEFAULT_TIMEOUT_INTERVAL);
+    jasmineInst.loadConfigFile(configFile);
 
     // Run this config in a setTimeout so it happens after the implementer
     // has added any necessary changes

@@ -1,8 +1,7 @@
 <div class="main-title">
     <h2>{{title}}</h2>
     <p class="summary">
-        {{#implementation}}<span class="imp-error">{{implementation}} Test Implementation Problem(s), </span>{{/implementation}}
-        {{passed}} Passed, {{failed}} Failed{{#skippedTests}}, {{skippedTests}} Not Run{{/skippedTests}}
+        {{#tree.implementationErrorCount}}<span class="imp-error">{{tree.implementationErrorCount}} Test Implementation Problem(s), </span>{{/tree.implementationErrorCount}}{{tree.passedCount}} Passed,{{tree.failedCount}} Failed{{#tree.notRunCount}}, {{tree.notRunCount}} Not Run{{/tree.notRunCount}}{{#tree.skippedCount}}, {{tree.skippedCount}} Skipped{{/tree.skippedCount}}
     </p>
     {{{runTimeFormatted}}}
 </div>
