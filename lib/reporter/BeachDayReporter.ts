@@ -4,8 +4,15 @@ import * as path from "path";
 import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
 import { generate as generateReport } from "./ReportGenerator"
 
-var moment = require("moment");
+// Non typescript dependencies
+var moment          = require("moment");
+var stringifyObject = require("stringify-object");
 
+
+/*
+Declarations
+--------------------------------------------
+*/
 export interface IDataStore extends IViewData{
     suiteInfo:ISuiteInfo;
 }
@@ -16,6 +23,7 @@ export interface ISuiteInfo {
 export interface ICustomSuite extends jasmine.Suite, IViewData {
 }
 export interface ICustomSpec extends jasmine.Spec, IViewData {
+    beachStatus:string;
 }
 
 export interface IViewData{
@@ -37,7 +45,7 @@ export interface IViewData{
     passedCount?:number;
     implementationErrorCount?:number;
 
-    debugData?:Array<string>;
+    debugData?:Array<any>;
 }
 
 export interface IReporterConfig {
@@ -48,6 +56,7 @@ export interface IReporterConfig {
     reportTreeTemplatePath?:string;
     stylesPath?:string;
     titleTemplatePath?:string;
+    includeAllConsoleLogs?:boolean;
 }
 export class ReporterConfig implements IReporterConfig{
     public reportPath:string;
@@ -57,6 +66,7 @@ export class ReporterConfig implements IReporterConfig{
     public reportTreeTemplatePath:string;
     public stylesPath:string;
     public titleTemplatePath:string;
+    public includeAllConsoleLogs:boolean;
 
     constructor(config:IReporterConfig = {}){
         // Default to sensible locations and templates
@@ -67,12 +77,18 @@ export class ReporterConfig implements IReporterConfig{
         this.reportTreeTemplatePath = config.reportTreeTemplatePath ? config.reportTreeTemplatePath : path.resolve(__dirname, "../templates/reportTree.mustache");
         this.stylesPath             = config.stylesPath ? config.stylesPath : path.resolve(__dirname, "../templates/styles.scss");
         this.titleTemplatePath      = config.titleTemplatePath ? config.titleTemplatePath : path.resolve(__dirname, "../templates/title.mustache");
+        this.includeAllConsoleLogs  = config.hasOwnProperty("includeAllConsoleLogs") ? config.includeAllConsoleLogs : false;
     }
 
     public get reportDir():string {
         return path.dirname(this.reportPath);
     }
 }
+
+/*
+API
+--------------------------------------------
+*/
 
 // Hook to allow the env to register itself with the reporter
 var lastCreatedInstance:BeachDayReporter;
@@ -83,6 +99,63 @@ export function registerImplementationError():void {
     lastCreatedInstance.registerImplementationError();
 }
 
+// Store refs before they are overridden
+var consoleOrig = global.console;
+var logOrig     = global.console.log;
+var infoOrig    = global.console.info;
+var debugOrig   = global.console.debug;
+var warnOrig    = global.console.warn;
+var errorOrig   = global.console.error;
+
+export class ReporterConsole{
+
+    public logToConsole:boolean = true;
+
+    private _currentSpec:ICustomSpec;
+    private cache:Array<any>;
+
+    log = (...args: any[]):void => {
+        this.store(args, logOrig);
+    };
+    info = (...args: any[]):void => {
+        this.store(args, infoOrig);
+    };
+    debug = (...args: any[]):void => {
+        this.store(args, debugOrig);
+    };
+    warn = (...args: any[]):void => {
+        this.store(args, warnOrig);
+    };
+    error = (...args: any[]):void => {
+        this.store(args, errorOrig);
+    };
+
+    public set currentSpec(value:ICustomSpec) {
+        this._currentSpec = value;
+        // Append the cached log lines
+        if (this.cache){
+            this._currentSpec.debugData = this._currentSpec.debugData.concat(this.cache);
+            this.cache = null;
+        }
+    }
+
+    private store(args:Array<any>, logger:Function):void{
+        if (this._currentSpec) {
+            this._currentSpec.debugData.push(args);
+        }
+        else {
+            if (this.cache == null) this.cache = [];
+            this.cache.push(args);
+        }
+        if (this.logToConsole){
+            logger.apply(consoleOrig, args);
+        }
+    }
+}
+
+var reporterConsole = new ReporterConsole();
+export var console = reporterConsole;
+
 export class BeachDayReporter{
     private dataStore:IDataStore;
     private currentSuite:ICustomSuite;
@@ -91,8 +164,20 @@ export class BeachDayReporter{
     private config:ReporterConfig;
 
     constructor(config?:ReporterConfig){
-        this.config         = config == null ? new ReporterConfig() : config;
-        lastCreatedInstance = this;
+        if (config && !(config instanceof ReporterConfig)){
+            config = new ReporterConfig(config);
+        }
+        this.config             = config == null ? new ReporterConfig() : config;
+        lastCreatedInstance     = this;
+
+        // Override with our local proxy
+        if (config.includeAllConsoleLogs){
+            global.console.log      = reporterConsole.log;
+            global.console.info     = reporterConsole.info;
+            global.console.debug    = reporterConsole.debug;
+            global.console.warn     = reporterConsole.warn;
+            global.console.error    = reporterConsole.error;
+        }
     }
 
     public set currentEnvironment(env:JasmineAsyncEnv) {
@@ -104,81 +189,98 @@ export class BeachDayReporter{
         this.currentSpec.implementationErrorCount += 1;
     }
 
+    private wrap(cb:Function):void {
+        try{
+            cb();
+        }
+        catch (e){
+            console.log(e.stack);
+        }
+    }
+
     public jasmineStarted(suiteInfo:ISuiteInfo):void {
-        this.dataStore = {suiteInfo:suiteInfo};
-        this.initIViewData(this.dataStore);
+        this.wrap(() => {
+            this.dataStore = {suiteInfo:suiteInfo};
+            this.initIViewData(this.dataStore);
+        })
     }
 
     public suiteStarted(result:ICustomSuite):void {
-        result.startTime    = new Date();
-        // Build a tree
-        result.childSuites  = [];
-        result.specList     = [];
+        this.wrap(() => {
+            result.startTime = new Date();
+            // Build a tree
+            result.childSuites = [];
+            result.specList = [];
 
-        // Assign the parent and child
-        if (this.currentSuite){
-            result.parent   = this.currentSuite;
-            this.currentSuite.childSuites.push(result);
-        }
-        else{
-            result.parent   = null;
-            this.dataStore.childSuites.push(result);
-        }
-        // Set the current suite for the end or for the next suite
-        this.currentSuite  = result;
-        this.initIViewData(this.currentSuite);
+            // Assign the parent and child
+            if (this.currentSuite) {
+                result.parent = this.currentSuite;
+                this.currentSuite.childSuites.push(result);
+            }
+            else {
+                result.parent = null;
+                this.dataStore.childSuites.push(result);
+            }
+            // Set the current suite for the end or for the next suite
+            this.currentSuite = result;
+            this.initIViewData(this.currentSuite);
+        });
     }
 
     public suiteDone(result:ICustomSuite):void {
-        // Reassign back to the parent, may be null
-        this.currentSuite   = result.parent;
-        result.endTime      = new Date();
+        this.wrap(() => {
+            // Reassign back to the parent, may be null
+            this.currentSuite = result.parent;
+            result.endTime = new Date();
+        });
     }
 
     public specStarted(result:ICustomSpec):void {
-        result.startTime    = new Date();
-        this.currentSpec    = result;
-        this.initIViewData(this.currentSpec);
-        this.currentSuite.specList.push(result);
+        this.wrap(() => {
+            result.startTime = new Date();
+            this.currentSpec = result;
+            this.initIViewData(this.currentSpec);
+            this.currentSuite.specList.push(result);
+            reporterConsole.currentSpec = this.currentSpec;
+        });
     }
 
     public specDone(result:ICustomSpec):void {
-        result.endTime      = new Date();
-        this.currentSpec    = null;
-        if (this._currentEnvironment){
-            // If the environment is already failed, then set the status to not run
-            if (this._currentEnvironment.failed === true){
-                result["status"] = "notRun";
-            }
-            else{
-                // If the test failed, fail the entire environment
-                if (result["status"] == "failed"){
-                    this._currentEnvironment.failed = true;
+        this.wrap(() => {
+            result.endTime      = new Date();
+            this.currentSpec    = null;
+
+            // Clone the status so we can edit it without interfering with other reporters
+            result.beachStatus  = result["status"];
+
+            if (this._currentEnvironment){
+                // If the environment is already failed, then set the status to not run
+                if (this._currentEnvironment.failed === true){
+                    result.beachStatus = "notRun";
+                }
+                else{
+                    // If the test failed, fail the entire environment
+                    if (result.beachStatus == "failed"){
+                        this._currentEnvironment.failed = true;
+                    }
                 }
             }
-        }
+        })
     }
 
     public jasmineDone(result:any):void {
-        try{
-            this.buildReport();
-        }
-        catch (e){
-            console.error(e.stack);
-        }
-    }
+        this.wrap(() => {
+            // Strip the parents in the specs
+            this.recurseSuitesPopulateViewData(this.dataStore);
 
-    private buildReport():void {
-        // Strip the parents in the specs
-        this.recurseSuitesPopulateViewData(this.dataStore);
+            // TODO: Remove
+            if (!fs.existsSync(this.config.reportDir)){
+                fs.mkdirSync(this.config.reportDir);
+            }
+            fs.writeFileSync(this.config.viewDataPath, JSON.stringify(this.dataStore, null, 4), {encoding:"utf8"});
 
-        // TODO: Remove
-        if (!fs.existsSync(this.config.reportDir)){
-            fs.mkdirSync(this.config.reportDir);
-        }
-        fs.writeFileSync(this.config.viewDataPath, JSON.stringify(this.dataStore, null, 4), {encoding:"utf8"});
-
-        generateReport(this.dataStore, this.config);
+            generateReport(this.dataStore, this.config);
+        });
     }
 
 
@@ -199,11 +301,10 @@ export class BeachDayReporter{
 
                 // Build up data
                 spec.durationMilli      = spec.endTime.getTime() - spec.startTime.getTime();
-                spec.skippedCount       = spec["status"] == "skipped" ? 1 : 0;
-                spec.failedCount        = spec["status"] == "failed" ? 1 : 0;
-                spec.notRunCount        = spec["status"] == "notRun" ? 1 : 0;
-                spec.passedCount        = spec["status"] == "passed" ? 1 : 0;
-                spec.debugData          = []; // TODO: Implement
+                spec.skippedCount       = spec.beachStatus == "skipped" ? 1 : 0;
+                spec.failedCount        = spec.beachStatus == "failed" ? 1 : 0;
+                spec.notRunCount        = spec.beachStatus == "notRun" ? 1 : 0;
+                spec.passedCount        = spec.beachStatus == "passed" ? 1 : 0;
 
                 // Add implementation errors if there are any
                 if (spec["failedExpectations"]){
@@ -217,6 +318,8 @@ export class BeachDayReporter{
                 }
                 // Pretty formatting
                 this.prettyProps(spec);
+
+                this.stringLogs(spec);
 
                 // Copy spec data onto parent suite
                 this.incrementIViewData(spec, suite);
@@ -301,6 +404,26 @@ export class BeachDayReporter{
             else{
                 return date2;
             }
+        }
+    }
+
+    private stringLogs(data:IViewData):void {
+        for (var i = 0; i < data.debugData.length; i++) {
+            var args:Array<any>         = data.debugData[i];
+            var newArgs:Array<string>   = [];
+
+            for (var a = 0; a < args.length; a++) {
+                var item = args[a];
+                if (typeof item == "object"){
+                    var result = stringifyObject(item, {singleQuotes:false}).replace(/(\r\n|\n|\r|\t)/gm,"");
+                    newArgs.push(result);
+                }
+                else{
+                    newArgs.push(item);
+                }
+            }
+
+            data.debugData[i] = newArgs.join(" ");
         }
     }
 }

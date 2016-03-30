@@ -1,4 +1,4 @@
-import { JasmineAsyncEnv } from "../../lib/index";
+import { JasmineAsyncEnv, console } from "../../lib/index";
 
 describe("Category 1", function(){
 
@@ -6,6 +6,9 @@ describe("Category 1", function(){
 
     it("Run async test", env.wrap(function(env){
         expect("jon").toBe("jon");
+        var logObj      = {name:"jon", circle:null};
+        logObj.circle   = logObj;
+        console.log("Something going to be logged out", logObj);
         setTimeout(env.done, 100);
     }));
 
