@@ -6,7 +6,7 @@ describe("Category 1", function(){
 
     it("Run async test", env.wrap(function(env){
         expect("jon").toBe("jon");
-        setTimeout(env.done, 1000);
+        setTimeout(env.done, 10000);
     }));
 
     it("1: Test something that is gonna throw an error", env.wrap(function(env) {

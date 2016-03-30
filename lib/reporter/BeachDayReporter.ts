@@ -55,7 +55,7 @@ export class BeachDayReporter{
     }
 
     public set currentEnvironment(env:JasmineAsyncEnv) {
-        console.log("New envonment set on the reporter: ", env);
+        //console.log("New envonment set on the reporter: ", env);
         this._currentEnvironment = env;
     }
 
