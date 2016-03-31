@@ -7,7 +7,7 @@
                 {{#skippedCount}}(Skipped){{/skippedCount}}
                 {{#implementationErrorCount}}<span class="imp-error">(Test Implementation Problem)</span>{{/implementationErrorCount}}
 
-                <div class="time-taken">{{durationFormatted}}</div>
+                <div class="time-taken{{#durationWarning}} red{{/durationWarning}}">{{#durationWarning}}* {{/durationWarning}}{{durationFormatted}}</div>
             </a>
         </h2>
         <div class="content">
@@ -22,7 +22,7 @@
         <h2 class="{{#allPassed}}green{{/allPassed}}{{^allPassed}}red{{/allPassed}}">
             <a href="#">
                 <span class="glyphicon {{#allPassed}}glyphicon-ok green{{/allPassed}}{{^allPassed}}glyphicon-remove red{{/allPassed}}"></span>{{&description}}
-                <div class="time-taken">{{durationFormatted}}</div>
+                <div class="time-taken{{#durationWarning}} red{{/durationWarning}}">{{#durationWarning}}* {{/durationWarning}}{{durationFormatted}}</div>
             </a>
         </h2>
         <p class="summary">

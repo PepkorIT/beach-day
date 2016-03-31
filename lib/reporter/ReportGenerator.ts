@@ -39,8 +39,8 @@ export function generate(viewModel?:IDataStore, config?:ReporterConfig):void {
     });
 
     // Render with mustache
-    var reportResult    = mustache.render(indexStr, viewModel, partials);
-    var latestResult    = mustache.render(latestStr, {latestReportName:config.reportDynamicName});
+    var reportResult        = mustache.render(indexStr, viewModel, partials);
+    var latestResult        = mustache.render(latestStr, {latestReportName:config.latestReportName});
 
     // Write out the report
     if (!fs.existsSync(config.reportDir)){

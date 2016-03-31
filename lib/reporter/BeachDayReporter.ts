@@ -41,6 +41,7 @@ export interface IViewData{
 
     durationMilli?:number;
     durationFormatted?:string;
+    durationWarning?:boolean;
 
     failedCount?:number;
     skippedCount?:number;
@@ -64,6 +65,7 @@ export interface IReporterConfig {
     summaryTemplatePath?:string;
     latestTemplatePath?:string;
     includeAllConsoleLogs?:boolean;
+    maxTestTime?:number;
 }
 export class ReporterConfig implements IReporterConfig{
     public reportName:string;
@@ -77,6 +79,7 @@ export class ReporterConfig implements IReporterConfig{
     public summaryTemplatePath:string;
     public latestTemplatePath:string;
     public includeAllConsoleLogs:boolean;
+    public maxTestTime:number;
 
     constructor(config:IReporterConfig = {}){
         // Default to sensible locations and templates
@@ -91,6 +94,7 @@ export class ReporterConfig implements IReporterConfig{
         this.summaryTemplatePath    = config.summaryTemplatePath ? config.summaryTemplatePath : path.resolve(__dirname, "../templates/summary.mustache");
         this.latestTemplatePath     = config.latestTemplatePath ? config.latestTemplatePath : path.resolve(__dirname, "../templates/latest.mustache");
         this.includeAllConsoleLogs  = config.hasOwnProperty("includeAllConsoleLogs") ? config.includeAllConsoleLogs : false;
+        this.maxTestTime            = config.maxTestTime; // Default is not set
     }
 
     public get viewDataDir():string {
@@ -110,6 +114,14 @@ export class ReporterConfig implements IReporterConfig{
         }
         else{
             return null;
+        }
+    }
+    public get latestReportName():string {
+        if (this.reportDynamicName){
+            return this.reportDynamicName;
+        }
+        else{
+            return "beach-day-report.html";
         }
     }
     public get reportStaticPath():string {
@@ -354,6 +366,11 @@ export class BeachDayReporter{
                 spec.passedCount        = spec.beachStatus == BeachDayReporter.STATUS_PASSED ? 1 : 0;
                 spec.allPassed          = spec.passedCount == 1;
 
+                if (this.config.maxTestTime != null && spec.durationMilli > this.config.maxTestTime){
+                    spec.durationWarning = true;
+                }
+                this.prettyProps(specOrSuite);
+
                 // Add log debug data
                 var topLogs             = [];
                 var addHeader = (name:string) => {
@@ -363,7 +380,7 @@ export class BeachDayReporter{
 
                 if (spec.beachStatus == BeachDayReporter.STATUS_PASSED || spec.beachStatus == BeachDayReporter.STATUS_FAILED) {
                     addHeader("Timing:");
-                    topLogs.push(["Run Time:", this.formatDuration(spec.durationMilli)]);
+                    topLogs.push(["Run Time:", specOrSuite.durationFormatted]);
                     topLogs.push(["Start Time:", moment(spec.startTime).format("HH:mm:ss.SSS")]);
                     topLogs.push(["End Time:", moment(spec.endTime).format("HH:mm:ss.SSS")]);
                 }
@@ -445,6 +462,7 @@ export class BeachDayReporter{
             if (value.implementationErrorCount == null) value.implementationErrorCount = 0;
             if (value.debugData == null) value.debugData = [];
             if (!value.hasOwnProperty("allPassed")) value.allPassed = true;
+            if (!value.hasOwnProperty("durationWarning")) value.durationWarning = false;
         }
         return value;
     }
@@ -461,6 +479,9 @@ export class BeachDayReporter{
             dest.implementationErrorCount   += source.implementationErrorCount;
             if (!source.allPassed){
                 dest.allPassed = false;
+            }
+            if (source.durationWarning){
+                dest.durationWarning = true;
             }
         }
     }
