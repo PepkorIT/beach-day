@@ -13,6 +13,9 @@ p.summary{
 .green {
     color: green !important;
 }
+.muted{
+    color: #999;
+}
 pre{
     width: 100%;
     hr{
@@ -82,6 +85,7 @@ Structural
             }
 
             >span.glyphicon{
+                margin-top: 2px;
                 margin-right: 5px;
             }
         }

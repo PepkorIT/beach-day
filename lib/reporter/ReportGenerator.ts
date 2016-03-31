@@ -34,8 +34,8 @@ export function generate(viewModel?:IDataStore, config?:ReporterConfig):void {
 
     // Now the model
     _.extend(viewModel, {
-        styles  : stylesStr,
-        title   : config.reportName
+        styles      : stylesStr,
+        title       : config.reportName
     });
 
     // Render with mustache

@@ -1,8 +1,8 @@
 {{#isSpec}}
     <div class="spec wrapper closed" id="{{id}}">
-        <h2 class="{{#allPassed}}green{{/allPassed}}{{^allPassed}}red{{/allPassed}}">
+        <h2 class="{{colorClass}}">
             <a href="#">
-                <span class="glyphicon {{#allPassed}}glyphicon-ok green{{/allPassed}}{{^allPassed}}glyphicon-remove red{{/allPassed}}"></span>Test: {{&description}}
+                <span class="glyphicon {{iconClass}}"></span>Test: {{&description}}
                 {{#notRunCount}}(Not Run){{/notRunCount}}
                 {{#skippedCount}}(Skipped){{/skippedCount}}
                 {{#implementationErrorCount}}<span class="imp-error">(Test Implementation Problem)</span>{{/implementationErrorCount}}
@@ -19,9 +19,9 @@
 
 {{^isSpec}}
     <div class="suite wrapper closed level-{{level}}" id="{{id}}">
-        <h2 class="{{#allPassed}}green{{/allPassed}}{{^allPassed}}red{{/allPassed}}">
+        <h2 class="{{colorClass}}">
             <a href="#">
-                <span class="glyphicon {{#allPassed}}glyphicon-ok green{{/allPassed}}{{^allPassed}}glyphicon-remove red{{/allPassed}}"></span>{{&description}}
+                <span class="glyphicon {{iconClass}}"></span>{{&description}}
                 <div class="time-taken{{#durationWarning}} red{{/durationWarning}}">{{#durationWarning}}* {{/durationWarning}}{{durationFormatted}}</div>
             </a>
         </h2>

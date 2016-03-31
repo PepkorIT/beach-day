@@ -16,6 +16,7 @@ Declarations
 export interface IDataStore extends IViewData{
     suiteInfo:ISuiteInfo;
     id:string;
+    maxTestTime?:string;
 }
 export interface ISuiteInfo {
     totalSpecsDefined:number;
@@ -49,6 +50,8 @@ export interface IViewData{
     passedCount?:number;
     implementationErrorCount?:number;
     allPassed?:boolean;
+    colorClass?:Function;
+    iconClass?:Function;
 
     debugData?:Array<any>;
 }
@@ -329,6 +332,10 @@ export class BeachDayReporter{
             // Strip the parents in the specs
             this.recurseSuitesPopulateViewData(this.dataStore);
 
+            if (this.config.maxTestTime){
+                this.dataStore.maxTestTime = this.formatDuration(this.config.maxTestTime)
+            }
+
             // Generate HTML report
             generateReport(this.dataStore, this.config);
 
@@ -463,6 +470,35 @@ export class BeachDayReporter{
             if (value.debugData == null) value.debugData = [];
             if (!value.hasOwnProperty("allPassed")) value.allPassed = true;
             if (!value.hasOwnProperty("durationWarning")) value.durationWarning = false;
+
+            value.colorClass = function(){
+                if (this.isSpec && this.failedCount == 0 && this.notRunCount == 0 && this.skippedCount == 0){
+                    return "green";
+                }
+                else if (!this.isSpec && this.passedCount > 0 && this.failedCount == 0 && this.notRunCount == 0){
+                    return "green";
+                }
+                else if (this.failedCount > 0){
+                    return "red";
+                }
+                else{
+                    return "muted";
+                }
+            };
+            value.iconClass = function(){
+                if (this.isSpec && this.failedCount == 0 && this.notRunCount == 0 && this.skippedCount == 0){
+                    return "glyphicon-ok green";
+                }
+                else if (!this.isSpec && this.passedCount > 0 && this.failedCount == 0 && this.notRunCount == 0){
+                    return "glyphicon-ok green";
+                }
+                else if (this.failedCount > 0){
+                    return "glyphicon-remove red";
+                }
+                else{
+                    return "glyphicon-question-sign muted";
+                }
+            };
         }
         return value;
     }
