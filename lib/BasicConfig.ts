@@ -1,4 +1,4 @@
-import {BeachDayReporter} from "../reporter/BeachDayReporter";
+import {BeachDayReporter} from "./reporter/BeachDayReporter";
 var Jasmine             = require("jasmine");
 var SpecReporter        = require("jasmine-spec-reporter");
 

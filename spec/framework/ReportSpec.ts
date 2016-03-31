@@ -1,4 +1,5 @@
 import { JasmineAsyncEnv, console } from "../../lib/index";
+import * as request from "request";
 
 describe("Category 1", function(){
 
@@ -39,8 +40,8 @@ describe("Category 1", function(){
         }));
 
         describe("Further inner suite", function(){
-            it("Test something", env.wrap(function(){
-
+            it("Test something", env.wrap(function(env){
+                env.done();
             }))
         })
 
@@ -49,9 +50,9 @@ describe("Category 1", function(){
 
 describe("Category 2", function(){
 
-    var env = new JasmineAsyncEnv();
+    var env2 = new JasmineAsyncEnv();
 
-    it("Run async test", env.wrap(function(env){
+    it("Run async test", env2.wrap(function(env){
         expect("jon").toBe("jon");
         var logObj      = {name:"jon", circle:null};
         logObj.circle   = logObj;
@@ -59,7 +60,7 @@ describe("Category 2", function(){
         setTimeout(env.done, 10);
     }));
 
-    it("Test something that is gonna throw an error", env.wrap(function(env) {
+    it("Test something that is gonna throw an error", env2.wrap(function(env) {
         this["expected"](false).toBe(true);
         env.done();
     }));

@@ -142,8 +142,8 @@ var lastCreatedInstance:BeachDayReporter;
 export function setCurrentEnvironment(env:JasmineAsyncEnv):void {
     lastCreatedInstance.currentEnvironment = env;
 }
-export function registerImplementationError():void {
-    lastCreatedInstance.registerImplementationError();
+export function clearCurrentEnvironment():void {
+    lastCreatedInstance.currentEnvironment = null;
 }
 
 // Store refs before they are overridden
@@ -236,12 +236,8 @@ export class BeachDayReporter{
     }
 
     public set currentEnvironment(env:JasmineAsyncEnv) {
-        //console.log("New envonment set on the reporter: ", env);
         this._currentEnvironment = env;
-    }
-
-    public registerImplementationError():void {
-        this.currentSpec.implementationErrorCount += 1;
+        //consoleOrig.log("----------> Setting current environment: ", env);
     }
 
     private wrap(cb:Function):void {
@@ -306,6 +302,10 @@ export class BeachDayReporter{
         this.wrap(() => {
             result.endTime      = new Date();
             this.currentSpec    = null;
+
+            // Clear out the current environment
+            // as this should be set by every env.wrap execution
+            this.currentEnvironment = null;
 
             // Clone the status so we can edit it without interfering with other reporters
             result.beachStatus  = result["status"];
@@ -402,7 +402,12 @@ export class BeachDayReporter{
                         // If we find any failed expectations without a matcher name it means a runtime error
                         if (expect.matcherName == "" || expect.matcherName == null){
                             spec.implementationErrorCount = 1;
-                            topLogs.push("[IMPLEMENTATION ERROR] - " + expect.stack);
+                            topLogs.push("[TEST IMPLEMENTATION ERROR] - " + expect.stack);
+                        }
+                        // Specific matcher that throws implementation errors
+                        else if (expect.matcherName == "throwImplementationError"){
+                            spec.implementationErrorCount = 1;
+                            topLogs.push("[TEST IMPLEMENTATION ERROR] - " + expect.message);
                         }
                         else{
                             topLogs.push("[ERROR] - " + expect.message);

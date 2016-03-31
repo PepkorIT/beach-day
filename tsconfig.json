@@ -15,15 +15,19 @@
         "!node_modules/**/*"
     ],
     "files": [
-        "lib/utils/JasmineAsyncEnv.d.ts",
+        "lib/utils/Matchers.d.ts",
         "typings/main.d.ts",
+        "lib/BasicConfig.ts",
         "lib/index.ts",
+        "lib/network/CallConfigFactory.ts",
         "lib/reporter/BeachDayReporter.ts",
         "lib/reporter/ReportGenerator.ts",
         "lib/reporter/TestReport.ts",
-        "lib/utils/BasicConfig.ts",
         "lib/utils/JasmineAsyncEnv.ts",
+        "lib/utils/Matchers.ts",
+        "lib/utils/ObjectUtils.ts",
         "spec/framework/ReportSpec.ts",
+        "spec/framework/UtilsSpec.ts",
         "test_boot.ts"
     ]
 }

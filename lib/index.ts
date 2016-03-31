@@ -1,3 +1,3 @@
 export * from "./utils/JasmineAsyncEnv";
 export * from "./reporter/BeachDayReporter";
-export * from "./utils/BasicConfig";
+export * from "./utils/Matchers";

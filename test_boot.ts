@@ -1,2 +1,2 @@
-import {getBasicConfig} from "./lib/index";
+import {getBasicConfig} from "./lib/BasicConfig";
 getBasicConfig("Framework Report");
