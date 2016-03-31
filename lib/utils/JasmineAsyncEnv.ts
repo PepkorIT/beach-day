@@ -22,7 +22,7 @@ export class JasmineAsyncEnv{
                             compare: function(actual:JasmineAsyncEnv){
                                 return {
                                     pass    : !actual.failed,
-                                    message : "Expected the environment to be in a passing state"
+                                    message : "Expected all previous tests to have passed"
                                 }
                             }
                         };

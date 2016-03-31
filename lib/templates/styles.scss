@@ -15,13 +15,13 @@ p.summary{
 }
 pre{
     width: 100%;
-}
-pre hr{
-    margin: 7px 0 -10px 0;
-    border-top: 1px dashed #333;
-}
-pre hr.short{
-    width: 20%;
+    hr{
+        margin: 7px 0 -10px 0;
+        border-top: 1px dashed #333;
+        &.short{
+            width: 20%;
+        }
+    }
 }
 .imp-error{
     color: #666 !important;
@@ -82,34 +82,25 @@ Structural
             }
 
             >span.glyphicon{
-                margin-right: 8px;
+                margin-right: 5px;
             }
         }
     }
+
+    &.level-1 > h2{
+        font-size: 20px;
+    }
+    &.level-2 > h2{
+        font-size: 18px;
+    }
+    &.level-3 > h2{
+        font-size: 16px;
+    }
 }
 
-/*
-.wrapper.test{
+.spec{
     padding: 10px 10px;
+    h2{
+        font-size: 14px;
+    }
 }
-.wrapper.test > h2{
-    font-size: 14px;
-}
-.wrapper.category > h2{
-    font-size: 20px;
-}
-
-.wrapper.category > h2 > a > span.glyphicon{
-    margin-right: 10px;
-}
-
-
-
-.wrapper.test > h2 > a > span.glyphicon{
-    margin-right: 5px;
-}
-
-.wrapper.category > h2 .time-taken{
-    padding-top: 7px;
-}
-*/

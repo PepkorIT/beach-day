@@ -29,6 +29,7 @@ export interface ICustomSpec extends jasmine.Spec, IViewData {
 
 export interface IViewData{
     isSpec:boolean;
+    level:number;
 
     parent?:ICustomSuite;
     viewChildren?:Array<IViewData>;
@@ -53,7 +54,7 @@ export interface IViewData{
 
 export interface IReporterConfig {
     reportName?:string;
-    reportPath?:string;
+    reportDir?:string;
     viewDataPath?:string;
     headerTemplatePath?:string;
     indexTemplatePath?:string;
@@ -61,11 +62,12 @@ export interface IReporterConfig {
     stylesPath?:string;
     titleTemplatePath?:string;
     summaryTemplatePath?:string;
+    latestTemplatePath?:string;
     includeAllConsoleLogs?:boolean;
 }
 export class ReporterConfig implements IReporterConfig{
     public reportName:string;
-    public reportPath:string;
+    public reportDir:string;
     public viewDataPath:string;
     public headerTemplatePath:string;
     public indexTemplatePath:string;
@@ -73,12 +75,13 @@ export class ReporterConfig implements IReporterConfig{
     public stylesPath:string;
     public titleTemplatePath:string;
     public summaryTemplatePath:string;
+    public latestTemplatePath:string;
     public includeAllConsoleLogs:boolean;
 
     constructor(config:IReporterConfig = {}){
         // Default to sensible locations and templates
         this.reportName             = config.reportName ? config.reportName : "Report: " + (new Date()).toString();
-        this.reportPath             = config.reportPath ? config.reportPath : path.join(process.cwd(), "reports", "beach-day-report.html");
+        this.reportDir              = config.reportDir ? config.reportDir : path.join(process.cwd(), "reports");
         this.viewDataPath           = config.viewDataPath ? config.viewDataPath : path.join(process.cwd(), "reports", "data.json");
         this.headerTemplatePath     = config.headerTemplatePath ? config.headerTemplatePath : path.resolve(__dirname, "../templates/header.mustache");
         this.indexTemplatePath      = config.indexTemplatePath ? config.indexTemplatePath : path.resolve(__dirname, "../templates/index.mustache");
@@ -86,14 +89,31 @@ export class ReporterConfig implements IReporterConfig{
         this.stylesPath             = config.stylesPath ? config.stylesPath : path.resolve(__dirname, "../templates/styles.scss");
         this.titleTemplatePath      = config.titleTemplatePath ? config.titleTemplatePath : path.resolve(__dirname, "../templates/title.mustache");
         this.summaryTemplatePath    = config.summaryTemplatePath ? config.summaryTemplatePath : path.resolve(__dirname, "../templates/summary.mustache");
+        this.latestTemplatePath     = config.latestTemplatePath ? config.latestTemplatePath : path.resolve(__dirname, "../templates/latest.mustache");
         this.includeAllConsoleLogs  = config.hasOwnProperty("includeAllConsoleLogs") ? config.includeAllConsoleLogs : false;
     }
 
-    public get reportDir():string {
-        return path.dirname(this.reportPath);
-    }
     public get viewDataDir():string {
         return path.dirname(this.viewDataPath);
+    }
+    public get reportDynamicName():string {
+        if (process.env.BEACH_DAY_REPORT_NAME){
+            return process.env.BEACH_DAY_REPORT_NAME + ".html";
+        }
+        else{
+            return null;
+        }
+    }
+    public get reportDynamicPath():string {
+        if (this.reportDynamicName){
+            return path.join(this.reportDir, this.reportDynamicName);
+        }
+        else{
+            return null;
+        }
+    }
+    public get reportStaticPath():string {
+        return path.join(this.reportDir, "beach-day-report.html");
     }
 }
 
@@ -178,6 +198,11 @@ export class BeachDayReporter{
     private currentSpec:ICustomSpec;
     private config:ReporterConfig;
 
+    private static STATUS_PASSED    = "passed";
+    private static STATUS_FAILED    = "failed";
+    private static STATUS_SKIPPED   = "pending";
+    private static STATUS_NOT_RUN   = "notRun";
+
     constructor(config?:IReporterConfig){
         if (config && !(config instanceof ReporterConfig)){
             config = new ReporterConfig(config);
@@ -219,7 +244,7 @@ export class BeachDayReporter{
     */
     public jasmineStarted(suiteInfo:ISuiteInfo):void {
         this.wrap(() => {
-            this.dataStore = {suiteInfo:suiteInfo, isSpec:false, id:(new Date()).getTime() + ""};
+            this.dataStore = {suiteInfo:suiteInfo, isSpec:false, id:(new Date()).getTime() + "", level:0};
             this.initIViewData(this.dataStore);
         })
     }
@@ -273,13 +298,13 @@ export class BeachDayReporter{
             if (this._currentEnvironment){
                 // If the environment is already failed, then set the status to not run
                 if (this._currentEnvironment.failed === true){
-                    if (result.beachStatus != "pending"){
-                        result.beachStatus = "notRun";
+                    if (result.beachStatus != BeachDayReporter.STATUS_SKIPPED){
+                        result.beachStatus = BeachDayReporter.STATUS_NOT_RUN;
                     }
                 }
                 else{
                     // If the test failed, fail the entire environment
-                    if (result.beachStatus == "failed"){
+                    if (result.beachStatus == BeachDayReporter.STATUS_FAILED){
                         this._currentEnvironment.failed = true;
                     }
                 }
@@ -310,47 +335,76 @@ export class BeachDayReporter{
     UTIL FUNCTIONS
     --------------------------------------------
     */
-    private recurseSuitesPopulateViewData(data:IViewData):void {
+    private recurseSuitesPopulateViewData(data:IViewData, level:number = 1):void {
         data.viewChildren.forEach((specOrSuite:IViewData) => {
+            specOrSuite.level = level;
+
             if (!specOrSuite.isSpec){
                 delete specOrSuite.parent;
-                this.recurseSuitesPopulateViewData(specOrSuite);
+                this.recurseSuitesPopulateViewData(specOrSuite, level + 1);
+                this.prettyProps(specOrSuite);
             }
             else{
                 // Build up data
                 var spec                = <ICustomSpec> specOrSuite;
                 spec.durationMilli      = spec.endTime.getTime() - spec.startTime.getTime();
-                spec.skippedCount       = spec.beachStatus == "pending" ? 1 : 0;
-                spec.failedCount        = spec.beachStatus == "failed" ? 1 : 0;
-                spec.notRunCount        = spec.beachStatus == "notRun" ? 1 : 0;
-                spec.passedCount        = spec.beachStatus == "passed" ? 1 : 0;
+                spec.skippedCount       = spec.beachStatus == BeachDayReporter.STATUS_SKIPPED ? 1 : 0;
+                spec.failedCount        = spec.beachStatus == BeachDayReporter.STATUS_FAILED ? 1 : 0;
+                spec.notRunCount        = spec.beachStatus == BeachDayReporter.STATUS_NOT_RUN ? 1 : 0;
+                spec.passedCount        = spec.beachStatus == BeachDayReporter.STATUS_PASSED ? 1 : 0;
                 spec.allPassed          = spec.passedCount == 1;
 
-                // Add implementation errors if there are any
-                if (spec["failedExpectations"] && spec["failedExpectations"].length > 0){
-                    // Set the spec so the logs go to the right place
-                    reporterConsole.currentSpec = spec;
+                // Add log debug data
+                var topLogs             = [];
+                var addHeader = (name:string) => {
+                    if (topLogs.length > 0) topLogs.push("");
+                    topLogs.push(name, "<hr />");
+                };
 
-                    console.log("Errors:");
-                    console.log("<hr />");
+                if (spec.beachStatus == BeachDayReporter.STATUS_PASSED || spec.beachStatus == BeachDayReporter.STATUS_FAILED) {
+                    addHeader("Timing:");
+                    topLogs.push(["Run Time:", this.formatDuration(spec.durationMilli)]);
+                    topLogs.push(["Start Time:", moment(spec.startTime).format("HH:mm:ss.SSS")]);
+                    topLogs.push(["End Time:", moment(spec.endTime).format("HH:mm:ss.SSS")]);
+                }
+
+                // Add implementation errors if there are any
+                addHeader("Results:");
+                if (spec.beachStatus == "failed"){
+                    // Set the spec so the logs go to the right place
+
                     for (var i = 0; i < spec["failedExpectations"].length; i++) {
                         var expect = spec["failedExpectations"][i];
                         // If we find any failed expectations without a matcher name it means a runtime error
                         if (expect.matcherName == "" || expect.matcherName == null){
                             spec.implementationErrorCount = 1;
-                            reporterConsole.log("[IMPLEMENTATION ERROR] - " + expect.stack);
+                            topLogs.push("[IMPLEMENTATION ERROR] - " + expect.stack);
                         }
                         else{
-                            reporterConsole.log("[ERROR] - " + expect.message);
+                            topLogs.push("[ERROR] - " + expect.message);
                         }
                     }
                 }
+                else if (spec.beachStatus == "notRun") {
+                    topLogs.push("Test was not run due to failing tests before it");
+                }
+                else if (spec.beachStatus == "pending") {
+                    topLogs.push("Test was skipped by the developer");
+                }
+                else if (spec.beachStatus == "passed") {
+                    topLogs.push("All passed");
+                }
+
+                if (spec.debugData.length > 0) {
+                    addHeader("Debug Data:");
+                }
+                spec.debugData = topLogs.concat(spec.debugData);
 
                 this.stringLogs(spec);
             }
+
             // Increment and format values as all children have been processed
             this.incrementIViewData(specOrSuite, data);
-            this.prettyProps(specOrSuite);
         });
 
         this.prettyProps(data);
@@ -431,18 +485,23 @@ export class BeachDayReporter{
 
     private stringLogs(data:IViewData):void {
         for (var i = 0; i < data.debugData.length; i++) {
-            var args:Array<any>         = data.debugData[i];
             var newArgs:Array<string>   = [];
+            if (data.debugData[i] instanceof Array){
+                var args:Array<any>         = data.debugData[i];
 
-            for (var a = 0; a < args.length; a++) {
-                var item = args[a];
-                if (typeof item == "object"){
-                    var result = stringifyObject(item, {singleQuotes:false}).replace(/(\r\n|\n|\r|\t)/gm,"");
-                    newArgs.push(result);
+                for (var a = 0; a < args.length; a++) {
+                    var item = args[a];
+                    if (typeof item == "object"){
+                        var result = stringifyObject(item, {singleQuotes:false}).replace(/(\r\n|\n|\r|\t)/gm,"");
+                        newArgs.push(result);
+                    }
+                    else{
+                        newArgs.push(item);
+                    }
                 }
-                else{
-                    newArgs.push(item);
-                }
+            }
+            else{
+                newArgs.push(data.debugData[i]);
             }
 
             data.debugData[i] = newArgs.join(" ");

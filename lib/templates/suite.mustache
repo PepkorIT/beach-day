@@ -3,7 +3,10 @@
         <h2 class="{{#allPassed}}green{{/allPassed}}{{^allPassed}}red{{/allPassed}}">
             <a href="#">
                 <span class="glyphicon {{#allPassed}}glyphicon-ok green{{/allPassed}}{{^allPassed}}glyphicon-remove red{{/allPassed}}"></span>Test: {{&description}}
-                {{#implementationErrorCount}}<span class="imp-error">- Test Implementation Problem</span>{{/implementationErrorCount}}
+                {{#notRunCount}}(Not Run){{/notRunCount}}
+                {{#skippedCount}}(Skipped){{/skippedCount}}
+                {{#implementationErrorCount}}<span class="imp-error">(Test Implementation Problem)</span>{{/implementationErrorCount}}
+
                 <div class="time-taken">{{durationFormatted}}</div>
             </a>
         </h2>
@@ -15,7 +18,7 @@
 
 
 {{^isSpec}}
-    <div class="suite wrapper closed" id="{{id}}">
+    <div class="suite wrapper closed level-{{level}}" id="{{id}}">
         <h2 class="{{#allPassed}}green{{/allPassed}}{{^allPassed}}red{{/allPassed}}">
             <a href="#">
                 <span class="glyphicon {{#allPassed}}glyphicon-ok green{{/allPassed}}{{^allPassed}}glyphicon-remove red{{/allPassed}}"></span>{{&description}}

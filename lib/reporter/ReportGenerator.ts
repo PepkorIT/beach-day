@@ -20,6 +20,7 @@ export function generate(viewModel?:IDataStore, config?:ReporterConfig):void {
     var suiteStr    = fs.readFileSync(config.suiteTemplatePath, opts);
     var titleStr    = fs.readFileSync(config.titleTemplatePath, opts);
     var summaryStr  = fs.readFileSync(config.summaryTemplatePath, opts);
+    var latestStr   = fs.readFileSync(config.latestTemplatePath, opts);
 
     // Lets convert the scss into CSS
     var stylesStr   = sass.renderSync({
@@ -38,11 +39,14 @@ export function generate(viewModel?:IDataStore, config?:ReporterConfig):void {
     });
 
     // Render with mustache
-    var result      = mustache.render(indexStr, viewModel, partials);
+    var reportResult    = mustache.render(indexStr, viewModel, partials);
+    var latestResult    = mustache.render(latestStr, {latestReportName:config.reportDynamicName});
 
     // Write out the report
     if (!fs.existsSync(config.reportDir)){
         fs.mkdirSync(config.reportDir);
     }
-    fs.writeFileSync(config.reportPath, result, opts);
+    if (config.reportDynamicPath) fs.writeFileSync(config.reportDynamicPath, reportResult, opts);
+    fs.writeFileSync(config.reportStaticPath, reportResult, opts);
+    fs.writeFileSync(config.reportDir + "/latest.html", latestResult, opts);
 }

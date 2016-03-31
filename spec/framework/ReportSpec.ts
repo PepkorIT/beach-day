@@ -12,12 +12,15 @@ describe("Category 1", function(){
         setTimeout(env.done, 10);
     }));
 
-    it("1: Test something that is gonna throw an error", env.wrap(function(env) {
-        this["expected"](false).toBe(true);
+    it("Run an assertion that will show", env.wrap(function(env) {
+        expect("this").toBe("that");
+        expect("someone").toBe("there");
+        expect("anyone").toBe("there");
+        console.log("Some data from the test here...");
         env.done();
     }));
 
-    it("1: Test something that is gonna expect fail", env.wrap(function(env){
+    it("Test something that is gonna expect fail", env.wrap(function(env){
         expect(false).toBe(true);
         env.done();
     }));
@@ -35,6 +38,12 @@ describe("Category 1", function(){
             env.done();
         }));
 
+        describe("Further inner suite", function(){
+            it("Test something", env.wrap(function(){
+
+            }))
+        })
+
     });
 });
 
@@ -48,5 +57,10 @@ describe("Category 2", function(){
         logObj.circle   = logObj;
         console.log("Something going to be logged out", logObj);
         setTimeout(env.done, 10);
+    }));
+
+    it("Test something that is gonna throw an error", env.wrap(function(env) {
+        this["expected"](false).toBe(true);
+        env.done();
     }));
 });
