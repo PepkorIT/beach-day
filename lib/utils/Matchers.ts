@@ -1,3 +1,4 @@
+/// <reference path="../../custom_typings/utils/MatcherHelper.d.ts" />
 import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
 import {console} from "../reporter/BeachDayReporter";
 import ObjectUtils from "./ObjectUtils";

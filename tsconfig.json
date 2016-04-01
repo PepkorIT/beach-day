@@ -2,24 +2,26 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es5",
+        "declaration": true,
         "sourceMap": false,
         "removeComments": false,
         "preserveConstEnums": true
     },
     "filesGlob": [
-        "**/*.ts",
+        "lib/**/*.ts",
+        "!lib/**/*.d.ts",
+        "spec/**/*.ts",
+        "!spec/**/*.d.ts",
+        "custom_typings/utils/MatcherHelper.d.ts",
         "typings/main.d.ts",
-        "!typings/browser.d.ts",
-        "!typings/main/**/*",
-        "!typings/browser/**/*",
-        "!node_modules/**/*"
+        "test_boot.ts"
     ],
     "files": [
-        "lib/utils/Matchers.d.ts",
+        "custom_typings/utils/MatcherHelper.d.ts",
         "typings/main.d.ts",
         "lib/BasicConfig.ts",
         "lib/index.ts",
-        "lib/network/CallConfigFactory.ts",
+        "lib/network/CallRunner.ts",
         "lib/network/ExtendingObject.ts",
         "lib/reporter/BeachDayReporter.ts",
         "lib/reporter/ReportGenerator.ts",
@@ -27,9 +29,6 @@
         "lib/utils/JasmineAsyncEnv.ts",
         "lib/utils/Matchers.ts",
         "lib/utils/ObjectUtils.ts",
-        "spec/framework/ConfigSpec.ts",
-        "spec/framework/ReportSpec.ts",
-        "spec/framework/UtilsSpec.ts",
         "test_boot.ts"
     ]
 }
