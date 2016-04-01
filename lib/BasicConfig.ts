@@ -22,6 +22,7 @@ export function getBasicConfig(reportName:string, configFile:string = "jasmine_c
     // Add our custom HTML reporter
     jasmineInst.addReporter(new BeachDayReporter({
         reportName              : reportName,
+        logToConsole            : true,
         includeAllConsoleLogs   : false,
         //maxTestTime             : 800
     }));

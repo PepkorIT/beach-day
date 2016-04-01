@@ -45,6 +45,7 @@ export interface IReporterConfig {
     titleTemplatePath?: string;
     summaryTemplatePath?: string;
     latestTemplatePath?: string;
+    logToConsole?: boolean;
     includeAllConsoleLogs?: boolean;
     maxTestTime?: number;
 }
@@ -59,6 +60,7 @@ export declare class ReporterConfig implements IReporterConfig {
     titleTemplatePath: string;
     summaryTemplatePath: string;
     latestTemplatePath: string;
+    logToConsole: boolean;
     includeAllConsoleLogs: boolean;
     maxTestTime: number;
     constructor(config?: IReporterConfig);

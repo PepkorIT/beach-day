@@ -67,6 +67,7 @@ export interface IReporterConfig {
     titleTemplatePath?:string;
     summaryTemplatePath?:string;
     latestTemplatePath?:string;
+    logToConsole?:boolean;
     includeAllConsoleLogs?:boolean;
     maxTestTime?:number;
 }
@@ -81,6 +82,7 @@ export class ReporterConfig implements IReporterConfig{
     public titleTemplatePath:string;
     public summaryTemplatePath:string;
     public latestTemplatePath:string;
+    public logToConsole:boolean;
     public includeAllConsoleLogs:boolean;
     public maxTestTime:number;
 
@@ -96,6 +98,7 @@ export class ReporterConfig implements IReporterConfig{
         this.titleTemplatePath      = config.titleTemplatePath ? config.titleTemplatePath : path.resolve(__dirname, "../templates/title.mustache");
         this.summaryTemplatePath    = config.summaryTemplatePath ? config.summaryTemplatePath : path.resolve(__dirname, "../templates/summary.mustache");
         this.latestTemplatePath     = config.latestTemplatePath ? config.latestTemplatePath : path.resolve(__dirname, "../templates/latest.mustache");
+        this.logToConsole           = config.hasOwnProperty("logToConsole") ? config.logToConsole : true;
         this.includeAllConsoleLogs  = config.hasOwnProperty("includeAllConsoleLogs") ? config.includeAllConsoleLogs : false;
         this.maxTestTime            = config.maxTestTime; // Default is not set
     }
@@ -206,7 +209,7 @@ export var console              = reporterConsole;
 
 
 
-export class BeachDayReporter{
+export class  BeachDayReporter{
     private dataStore:IDataStore;
     private currentSuite:ICustomSuite;
     private _currentEnvironment:JasmineAsyncEnv;
@@ -224,6 +227,8 @@ export class BeachDayReporter{
         }
         this.config             = config == null ? new ReporterConfig() : <ReporterConfig> config;
         lastCreatedInstance     = this;
+
+        reporterConsole.logToConsole = config.logToConsole;
 
         // Override with our local proxy
         if (config.includeAllConsoleLogs){

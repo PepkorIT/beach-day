@@ -29,6 +29,8 @@
         "lib/utils/JasmineAsyncEnv.ts",
         "lib/utils/Matchers.ts",
         "lib/utils/ObjectUtils.ts",
+        "lib/utils/RandomUtils.ts",
+        "lib/utils/SwaggerUtils.ts",
         "test_boot.ts"
     ]
 }

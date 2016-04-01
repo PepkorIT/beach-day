@@ -6,6 +6,7 @@ import * as request from "request";
 import {ExtendingObject} from "./ExtendingObject";
 import {Request} from "request";
 import {throwExpectError} from "../utils/Matchers";
+import {console} from "../reporter/BeachDayReporter";
 var urlJoin = require("url-join");
 
 export interface ICallConfigParams{
@@ -16,7 +17,7 @@ export interface ICallConfigParams{
     endPoint?:string;
 
     // Headers array
-    headers?:Array<IKeyValue>
+    headers?:any;
 
     // Call HTTP method to use, defaults to POST
     method?:string;
@@ -52,10 +53,6 @@ export interface ICallConfigParams{
 export interface IAssertFunc{
     (env:JasmineAsyncEnv, res:IncomingMessage, body?:any):void;
 }
-export interface IKeyValue{
-    key:string;
-    value:string;
-}
 export interface IDataFunc{
     (env:JasmineAsyncEnv):any;
 }
@@ -66,7 +63,7 @@ export interface IObfuscateFunc{
 export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams{
     public baseURL:string;
     public endPoint:string;
-    public headers:Array<IKeyValue>;
+    public headers:any;
     public method:string = "post";
     public waits:number;
     public status:number = 200;
@@ -143,7 +140,7 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     }
 
     public get fullURL():string {
-        return this.baseURL && this.endPoint ? urlJoin(this.baseURL, this.endPoint) : null;
+        return this.baseURL != null && this.endPoint != null ? urlJoin(this.baseURL, this.endPoint) : null;
     }
 
     public extend(params:ICallConfigParams):CallConfig {
@@ -165,9 +162,15 @@ export class CallRunner {
 
         // Default header to use json
         var headers = {
-            "Content-type:": "application/json"
+            "Content-Type": "application/json"
         };
-        if (call.headers) call.headers.forEach(keyVal => headers[keyVal.key] = keyVal.value);
+        if (call.headers) {
+            for (var propName in call.headers){
+                if (!headers.hasOwnProperty(propName.toLowerCase())){
+                    headers[propName] = call.headers[propName];
+                }
+            }
+        }
 
         var requestPased = true;
 
@@ -196,7 +199,10 @@ export class CallRunner {
 
             request(options, (error:any, response:IncomingMessage, body:any) => {
                 if (error){
-
+                    // Log out the request and response
+                    this.logRequestResponse(error, response, body);
+                    throwExpectError("Expected HTTP call to be successful");
+                    console.log("HTTP call made with parameters: ", options);
                 }
                 else{
                     // Assert the status
@@ -232,48 +238,29 @@ export class CallRunner {
                     call.assertFuncImpl(env, response, body);
 
                     //expect(body).toNotHaveAnyStringNulls();
-
-                    // Lastly call done()
-                    env.done();
                 }
+
+                // Lastly call done()
+                env.done();
             });
         }
     }
 
-    public logRequestResponse(error:any, res:IncomingMessage, body:any){
-
+    public logRequestResponse(error:any, res:any, body:any){
         if (res) {
-            /*if (res.request) {
-                //console.log("URL: ", res.request.href);
-                //console.log("Request Headers:\n", JSON.stringify(res.request.headers, null, 4));
-            }
-            if (res.headers) {
-                //console.log("Response Headers:\n", JSON.stringify(res.headers, null, 4));
-            }
-            if (body) {
-                //console.log("Response Body:\n", JSON.stringify(body, null, 4));
-            }*/
-            //console.log("Elapsed Time: ", res.elapsedTime);
-
-            //var requestBody = JSON.parse("\"" + res.request.body + "\"")
-            //console.log(requestBody)
-
-            /*arr.push(
-                "<strong>REQUEST</strong>",
-                "<hr class='short' />",
-                "URL: " + res.request.uri.href,
-                "Method: " + res.request.method,
-                "Request Headers:\n" + pretty(res.request.headers),
-                "Body:\n" + res.request.body,
-                "",
-                "<strong>RESPONSE</strong>",
-                "<hr class='short' />",
-                "Status Code: " + res.statusCode,
-                "Response Headers:\n" + pretty(res.headers),
-                "Body:\n" + pretty(body),
-                "<hr />"
-            );*/
-            console.log("REQUEST: " + JSON.stringify(res, null, 4));
+            console.log("<strong>REQUEST</strong>");
+            console.log("<hr class='short' />");
+            console.log("URL: " + res.request.uri.href);
+            console.log("Method: " + res.request.method);
+            console.log("Request Headers:\n" + JSON.stringify(res.request.headers, null, 4));
+            console.log("Body:\n" + res.request.body);
+            console.log("");
+            console.log("<strong>RESPONSE</strong>");
+            console.log("<hr class='short' />");
+            console.log("Status Code: " + res.statusCode);
+            console.log("Response Headers:\n" + JSON.stringify(res.headers, null, 4));
+            console.log("Body:\n" + JSON.stringify(body, null, 4));
+            console.log("");
         }
         else{
             console.log("HTTP Error => " + JSON.stringify(error, null, 4));
