@@ -3,7 +3,6 @@ import {IncomingMessage} from "http";
 import * as _ from "lodash";
 import * as path from "path";
 import {ExtendingObject} from "./ExtendingObject";
-
 var urlJoin = require("url-join");
 
 export interface ICallConfigParams{
@@ -145,7 +144,6 @@ export class CallRunner {
     public defaultConfig:CallConfig;
 
     public run(call:ICallConfigParams):void {
-
         if (call.endPoint == null) throw new Error("endPoint is a required field for your CallConfig");
         if (call.baseURL == null) throw new Error("baseURL is a required field for your CallConfig");
 
