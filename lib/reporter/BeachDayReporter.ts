@@ -245,7 +245,7 @@ export class BeachDayReporter{
             cb();
         }
         catch (e){
-            console.log(e.stack);
+            consoleOrig.log(e.stack);
         }
     }
 
