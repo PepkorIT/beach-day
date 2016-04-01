@@ -55,6 +55,22 @@ export function throwImplementationError(message:string):void {
     expect(true).throwImplementationError(message)
 }
 
+export function isValidISO8601DateFormat(data):boolean {
+    var dateReg = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
+    // Valid for null
+    if (data == null){
+        return true;
+    }
+    // Invalid for empty string
+    else if (data == ""){
+        return false;
+    }
+    // Otherwise test against value
+    else{
+        return dateReg.test(data);
+    }
+}
+
 export function validateSwaggerSchema(data:any, swaggerObject:Object, endPoint:string, method:string, statusCode?:number):boolean {
     var valid = false;
     var schema;
@@ -80,6 +96,11 @@ export function validateSwaggerSchema(data:any, swaggerObject:Object, endPoint:s
         throwImplementationError(`Expected to be able to test schema for ${method.toUpperCase()} ${endPoint}${statusCode != null ? ":" + statusCode : ""} but unable to find schema object in the swagger.`);
     }
     else{
+        tv4.addFormat("date-time", function (data, schema) {
+            var valid = isValidISO8601DateFormat(data);
+            return valid ? null : "Expected '" + data + "' to be a full valid ISO-8601 including timezone.";
+        });
+
         //console.log("Checking schema using: ", data, schema);
         var result  = tv4.validateMultiple(data, schema);
         valid       = result.valid;
