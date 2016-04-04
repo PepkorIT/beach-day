@@ -22,7 +22,9 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/leftandrightsoftware/beachday#readme",
   "devDependencies": {
-    "tsconfig": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.12.2",
+    "tsconfig-glob": "^0.4.3",
     "typescript": "^1.8.9",
     "typings": "^0.7.11"
   },

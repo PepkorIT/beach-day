@@ -10,8 +10,8 @@
     "filesGlob": [
         "lib/**/*.ts",
         "!lib/**/*.d.ts",
-        "spec/**/*.ts",
-        "!spec/**/*.d.ts",
+        "tests/**/*.ts",
+        "!tests/**/*.d.ts",
         "custom_typings/utils/MatcherHelper.d.ts",
         "typings/main.d.ts",
         "test_boot.ts"
@@ -31,6 +31,9 @@
         "lib/utils/ObjectUtils.ts",
         "lib/utils/RandomUtils.ts",
         "lib/utils/SwaggerUtils.ts",
+        "tests/framework/ConfigTest.ts",
+        "tests/framework/ReportTest.ts",
+        "tests/framework/UtilsTest.ts",
         "test_boot.ts"
     ]
 }
