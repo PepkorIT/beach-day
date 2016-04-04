@@ -1,6 +1,6 @@
 {
   "name": "beach-day",
-  "version": "0.1.27",
+  "version": "0.1.35",
   "description": "",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -22,7 +22,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/leftandrightsoftware/beachday#readme",
   "devDependencies": {
-    "tsconfig": "^2.2.0",
+    "tsconfig-glob": "^0.4.3",
     "typescript": "^1.8.9",
     "typings": "^0.7.11"
   },
