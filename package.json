@@ -1,6 +1,6 @@
 {
   "name": "beach-day",
-  "version": "0.1.37",
+  "version": "0.1.38",
   "description": "",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -23,6 +23,7 @@
   "homepage": "https://bitbucket.org/leftandrightsoftware/beachday#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
     "gulp-typescript": "^2.12.2",
     "tsconfig-glob": "^0.4.3",
     "typescript": "^1.8.9",

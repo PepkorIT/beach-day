@@ -9,15 +9,18 @@
     },
     "filesGlob": [
         "lib/**/*.ts",
-        "!lib/**/*.d.ts",
+        "!lib/*.d.ts",
+        "!lib/network/**/*.d.ts",
+        "!lib/reporter/**/*.d.ts",
+        "!lib/template/**/*.d.ts",
+        "!lib/utils/**/*.d.ts",
         "tests/**/*.ts",
         "!tests/**/*.d.ts",
-        "custom_typings/utils/MatcherHelper.d.ts",
         "typings/main.d.ts",
         "test_boot.ts"
     ],
     "files": [
-        "custom_typings/utils/MatcherHelper.d.ts",
+        "lib/custom_typings/utils/MatcherHelper.d.ts",
         "typings/main.d.ts",
         "lib/BasicConfig.ts",
         "lib/index.ts",
