@@ -5,7 +5,7 @@ import * as path from "path";
 import * as request from "request";
 import {ExtendingObject} from "./ExtendingObject";
 import {Request} from "request";
-import {throwExpectError} from "../utils/Matchers";
+import {throwExpectError} from "../utils/TestUtils";
 import {console} from "../reporter/BeachDayReporter";
 var urlJoin = require("url-join");
 
