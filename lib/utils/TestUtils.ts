@@ -50,21 +50,13 @@ export function validateSwaggerSchema(data:any, swaggerObject:Object, endPoint:s
         throwImplementationError(`Expected to be able to test schema for ${method.toUpperCase()} ${endPoint}${statusCode != null ? ":" + statusCode : ""} but unable to find schema object in the swagger.`);
     }
     else{
-        var result = validateSchema(data, schema, statusCode);
-        if (!result.valid) {
-            if (statusCode == null) {
-                throwImplementationError("Expected REQUEST body to match the JSON schema defined");
-            }
-            else {
-                throwExpectError("Expected response body to match the JSON schema defined");
-            }
-        }
+        valid = validateSchema(data, schema, (statusCode == null)).valid;
     }
 
     return valid;
 }
 
-export function validateSchema(data:any, schema:tv4.JsonSchema, statusCode?:number) {
+export function validateSchema(data:any, schema:tv4.JsonSchema, isRequest:boolean) {
 
     tv4.addFormat("date-time", function (data, schema) {
         var valid = isValidISO8601DateFormat(data);
@@ -72,6 +64,7 @@ export function validateSchema(data:any, schema:tv4.JsonSchema, statusCode?:numb
     });
 
     var result  = tv4.validateMultiple(data, schema);
+
     if (!result.valid) {
         // Invalid for a REQUEST should register an implementation error in the reporter
 
@@ -79,9 +72,16 @@ export function validateSchema(data:any, schema:tv4.JsonSchema, statusCode?:numb
         // TODO: Maybe remove this as the typings say stack is not there...
         // Remove the stack trace as it just clogs up the reports
         if (result.errors) result.errors.forEach((error:any) => { delete error.stack; });
-        console.log(`${statusCode == null ? "Request" : "Response"} Schema Failure Result:`);
+        console.log(`${isRequest? "Request" : "Response"} Schema Failure Result:`);
         console.log("<hr />");
         console.log(JSON.stringify(result, null, 4));
+
+        if (isRequest) {
+            throwImplementationError("Expected REQUEST body to match the JSON schema defined");
+        }
+        else {
+            throwExpectError("Expected RESPONSE body to match the JSON schema defined");
+        }
     }
 
     return result;
