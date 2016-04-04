@@ -25,7 +25,7 @@ export interface ICallConfigParams{
     // Amount of time to wait before executing the call
     waits?:number;
 
-    // Status code expected for the reponse of this call, defaults to 200
+    // Status code expected for the response of this call, defaults to 200
     status?:number;
 
     // Array of data objects / functions to be sent with the call, either a function that will be evoked to get the result or an object
@@ -172,18 +172,18 @@ export class CallRunner {
             }
         }
 
-        var requestPased = true;
+        var requestPassed = true;
 
         var sendBody;
         if (call.method != "GET"){
             var data = call.getDataImpl(env);
             if (data) {
-                requestPased    = call.checkSchemaImpl(data, true);
+                requestPassed   = call.checkSchemaImpl(data, true);
                 sendBody        = JSON.stringify(data);
             }
         }
 
-        if (!requestPased){
+        if (!requestPassed){
             // Just complete the request if there are any errors
             env.done();
         }
