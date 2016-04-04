@@ -1,4 +1,4 @@
-import {validateSwaggerSchema} from "../../lib/index";
+import * as TestUtils from "../../lib/utils/TestUtils";
 
 describe("Utilities used in the framework", function(){
 
@@ -13,11 +13,11 @@ describe("Utilities used in the framework", function(){
     };
 
     it("Expect missing schema - expect fail", function(){
-        validateSwaggerSchema({}, {}, "/fetch/user", "Get");
+        TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get");
     });
 
     it("Expect missing schema for response - expect fail", function(){
-        validateSwaggerSchema({}, {}, "/fetch/user", "Get", 200);
+        TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get", 200);
     });
 
     it("Expect an invalid schema - expect fail", function(){
@@ -34,7 +34,7 @@ describe("Utilities used in the framework", function(){
                 }
             }
         };
-        validateSwaggerSchema({name:100, age:"jon"}, swagger, "/fetch/user", "Get", 200);
+        TestUtils.validateSwaggerSchema({name:100, age:"jon"}, swagger, "/fetch/user", "Get", 200);
     });
 
     it("Expect an invalid request schema - expect fail", function(){
@@ -52,7 +52,7 @@ describe("Utilities used in the framework", function(){
                 }
             }
         };
-        validateSwaggerSchema({name:100, age:"jon"}, swagger, "/fetch/user", "Get");
+        TestUtils.validateSwaggerSchema({name:100, age:"jon"}, swagger, "/fetch/user", "Get");
     });
 
     it("Expect invalid status code - expect fail", function(){

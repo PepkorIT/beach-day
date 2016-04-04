@@ -11,14 +11,17 @@ describe("Config system used to power the framework calls", function () {
         var assertSpy2 = jasmine.createSpy("assert2");
         var obfuSpy1 = jasmine.createSpy("obfuSpy1");
         var obfuSpy2 = jasmine.createSpy("obfuSpy2");
-        var checkSchemaSpy = jasmine.createSpy("checkSchemaSpy");
+        var checkRequestSchemaSpy = jasmine.createSpy("checkRequestSchemaSpy");
+        var checkResponseSchemaSpy = jasmine.createSpy("checkResponseSchemaSpy");
         factory.defaultConfig = new index_1.CallConfig({
             baseURL: "http://www.something.com//",
             assertFuncArr: [assertSpy1],
             dataArr: [{ id: 1 }],
             obfuscateArr: [obfuSpy1],
-            checkSchemaFunc: checkSchemaSpy,
-            checkRequestSchema: true
+            checkRequestSchemaFunc: checkRequestSchemaSpy,
+            checkResponseSchemaFunc: checkResponseSchemaSpy,
+            checkRequestSchema: true,
+            checkResponseSchema: true
         });
         var config = factory.defaultConfig.extend({
             endPoint: "/fetch/user",
@@ -45,6 +48,8 @@ describe("Config system used to power the framework calls", function () {
         expect(obfuSpy2).toHaveBeenCalledWith(config, env, null, null);
         // Check schema execution
         config.checkSchemaImpl(env, true);
-        expect(checkSchemaSpy).toHaveBeenCalledWith(config, env, true);
+        expect(checkRequestSchemaSpy).toHaveBeenCalledWith(config, env, true);
+        config.checkSchemaImpl(env, false);
+        expect(checkResponseSchemaSpy).toHaveBeenCalledWith(config, env, true);
     });
 });
