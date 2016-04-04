@@ -31,6 +31,7 @@
         "lib/utils/ObjectUtils.ts",
         "lib/utils/RandomUtils.ts",
         "lib/utils/SwaggerUtils.ts",
+        "lib/utils/TestUtils.ts",
         "tests/framework/ConfigTest.ts",
         "tests/framework/ReportTest.ts",
         "tests/framework/UtilsTest.ts",
