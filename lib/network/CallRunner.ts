@@ -38,16 +38,21 @@ export interface ICallConfigParams{
     // should be used to obfuscate any sensitive data from the log
     obfuscateArr?:Array<IObfuscateFunc>;
 
-    // Function that will be called if checkSchema or checkRequestSchema are set to true
+    // Will be called if checkRequestSchema:true
     // It is up to the implementation to complete this method
     // It should return if the schema check passed or not
-    checkSchemaFunc?:(call:CallConfig, data:any, isRequest:boolean) => boolean;
+    checkRequestSchemaFunc?:(call:CallConfig, data:any) => boolean;
 
-    // If set to true checkSchemaFunc() will be called for the request data
+    // Will be called if checkResponseSchema:true
+    // It is up to the implementation to complete this method
+    // It should return if the schema check passed or not
+    checkResponseSchemaFunc?:(call:CallConfig, data:any) => boolean;
+
+    // If set to true checkRequestSchemaFunc() will be called for the request data
     checkRequestSchema?:boolean;
 
-    // If set to true checkSchemaFunc() will be called for the response data
-    checkSchema?:boolean;
+    // If set to true checkResponseSchemaFunc() will be called for the response data
+    checkResponseSchema?:boolean;
 }
 
 export interface IAssertFunc{
@@ -70,9 +75,10 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     public dataArr:Array<(env:JasmineAsyncEnv) => any | any>;
     public assertFuncArr:Array<IAssertFunc>;
     public obfuscateArr:Array<IObfuscateFunc>;
-    public checkSchemaFunc:(call:CallConfig, data:any, isRequest:boolean) => boolean;
+    public checkRequestSchemaFunc:(call:CallConfig, data:any) => boolean;
+    public checkResponseSchemaFunc:(call:CallConfig, data:any) => boolean;
     public checkRequestSchema:boolean;
-    public checkSchema:boolean;
+    public checkResponseSchema:boolean;
 
     // Get data proxy
     public getDataImpl(env:JasmineAsyncEnv):any {
@@ -128,11 +134,11 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
 
     // Easy schema check proxy
     public checkSchemaImpl(data:any, isRequest:boolean):boolean {
-        if (isRequest && this.checkRequestSchema && this.checkSchemaFunc != null){
-            return this.checkSchemaFunc(this, data, isRequest);
+        if (isRequest && this.checkRequestSchema && this.checkRequestSchemaFunc != null){
+            return this.checkRequestSchemaFunc(this, data);
         }
-        else if (!isRequest && this.checkSchema && this.checkSchemaFunc != null){
-            return this.checkSchemaFunc(this, data, isRequest);
+        else if (!isRequest && this.checkResponseSchema && this.checkResponseSchemaFunc != null){
+            return this.checkResponseSchemaFunc(this, data);
         }
         else{
             return true;

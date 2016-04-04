@@ -11,9 +11,10 @@ export interface ICallConfigParams {
     dataArr?: Array<IDataFunc | any>;
     assertFuncArr?: Array<IAssertFunc>;
     obfuscateArr?: Array<IObfuscateFunc>;
-    checkSchemaFunc?: (call: CallConfig, data: any, isRequest: boolean) => boolean;
+    checkRequestSchemaFunc?: (call: CallConfig, data: any) => boolean;
+    checkResponseSchemaFunc?: (call: CallConfig, data: any) => boolean;
     checkRequestSchema?: boolean;
-    checkSchema?: boolean;
+    checkResponseSchema?: boolean;
 }
 export interface IAssertFunc {
     (env: JasmineAsyncEnv, res: IncomingMessage, body?: any): void;
@@ -34,9 +35,10 @@ export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigP
     dataArr: Array<(env: JasmineAsyncEnv) => any | any>;
     assertFuncArr: Array<IAssertFunc>;
     obfuscateArr: Array<IObfuscateFunc>;
-    checkSchemaFunc: (call: CallConfig, data: any, isRequest: boolean) => boolean;
+    checkRequestSchemaFunc: (call: CallConfig, data: any) => boolean;
+    checkResponseSchemaFunc: (call: CallConfig, data: any) => boolean;
     checkRequestSchema: boolean;
-    checkSchema: boolean;
+    checkResponseSchema: boolean;
     getDataImpl(env: JasmineAsyncEnv): any;
     assertFuncImpl(env: JasmineAsyncEnv, res: IncomingMessage, body?: any): void;
     obfuscateFuncImpl(env: JasmineAsyncEnv, res: IncomingMessage, body?: any): void;
