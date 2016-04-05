@@ -11,19 +11,28 @@ export interface ICallConfigParams {
     dataArr?: Array<IDataFunc | any>;
     assertFuncArr?: Array<IAssertFunc>;
     obfuscateArr?: Array<IObfuscateFunc>;
-    checkRequestSchemaFunc?: (call: CallConfig, data: any) => boolean;
-    checkResponseSchemaFunc?: (call: CallConfig, data: any) => boolean;
+    checkRequestSchemaFunc?: ISchemaFunc;
+    checkResponseSchemaFunc?: ISchemaFunc;
     checkRequestSchema?: boolean;
     checkResponseSchema?: boolean;
 }
 export interface IAssertFunc {
-    (env: JasmineAsyncEnv, res: IncomingMessage, body?: any): void;
+    (env: JasmineAsyncEnv, call: CallConfig, body?: any): void;
+    (env: JasmineAsyncEnv, call: CallConfig): void;
+    (env: JasmineAsyncEnv): void;
 }
 export interface IDataFunc {
+    (env: JasmineAsyncEnv, call: CallConfig): any;
     (env: JasmineAsyncEnv): any;
 }
 export interface IObfuscateFunc {
-    (call: CallConfig, env: JasmineAsyncEnv, res?: IncomingMessage, body?: any): void;
+    (env: JasmineAsyncEnv, call: CallConfig, body?: any): void;
+    (env: JasmineAsyncEnv, call: CallConfig): void;
+    (env: JasmineAsyncEnv): void;
+}
+export interface ISchemaFunc {
+    (env: JasmineAsyncEnv, call: CallConfig, data: any): boolean;
+    (env: JasmineAsyncEnv, call: CallConfig): boolean;
 }
 export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams {
     baseURL: string;
@@ -35,14 +44,14 @@ export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigP
     dataArr: Array<IDataFunc | any>;
     assertFuncArr: Array<IAssertFunc>;
     obfuscateArr: Array<IObfuscateFunc>;
-    checkRequestSchemaFunc: (call: CallConfig, data: any) => boolean;
-    checkResponseSchemaFunc: (call: CallConfig, data: any) => boolean;
+    checkRequestSchemaFunc: ISchemaFunc;
+    checkResponseSchemaFunc: ISchemaFunc;
     checkRequestSchema: boolean;
     checkResponseSchema: boolean;
     getDataImpl(env: JasmineAsyncEnv): any;
     assertFuncImpl(env: JasmineAsyncEnv, res: IncomingMessage, body?: any): void;
     obfuscateFuncImpl(env: JasmineAsyncEnv, res: IncomingMessage, body?: any): void;
-    checkSchemaImpl(data: any, isRequest: boolean): boolean;
+    checkSchemaImpl(env: JasmineAsyncEnv, data: any, isRequest: boolean): boolean;
     fullURL: string;
     extend(params: ICallConfigParams): CallConfig;
 }

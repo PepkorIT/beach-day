@@ -41,12 +41,12 @@ export interface ICallConfigParams{
     // Will be called if checkRequestSchema:true
     // It is up to the implementation to complete this method
     // It should return if the schema check passed or not
-    checkRequestSchemaFunc?:(call:CallConfig, data:any) => boolean;
+    checkRequestSchemaFunc?:ISchemaFunc;
 
     // Will be called if checkResponseSchema:true
     // It is up to the implementation to complete this method
     // It should return if the schema check passed or not
-    checkResponseSchemaFunc?:(call:CallConfig, data:any) => boolean;
+    checkResponseSchemaFunc?:ISchemaFunc;
 
     // If set to true checkRequestSchemaFunc() will be called for the request data
     checkRequestSchema?:boolean;
@@ -56,13 +56,23 @@ export interface ICallConfigParams{
 }
 
 export interface IAssertFunc{
-    (env:JasmineAsyncEnv, res:IncomingMessage, body?:any):void;
+    (env:JasmineAsyncEnv, call:CallConfig, body?:any):void;
+    (env:JasmineAsyncEnv, call:CallConfig):void;
+    (env:JasmineAsyncEnv):void;
 }
 export interface IDataFunc{
+    (env:JasmineAsyncEnv, call:CallConfig):any;
     (env:JasmineAsyncEnv):any;
 }
 export interface IObfuscateFunc{
-    (call:CallConfig, env:JasmineAsyncEnv, res?:IncomingMessage, body?:any):void;
+    (env:JasmineAsyncEnv, call:CallConfig, body?:any):void;
+    (env:JasmineAsyncEnv, call:CallConfig):void;
+    (env:JasmineAsyncEnv):void;
+}
+
+export interface ISchemaFunc{
+    (env:JasmineAsyncEnv, call:CallConfig, data:any):boolean;
+    (env:JasmineAsyncEnv, call:CallConfig):boolean;
 }
 
 export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams{
@@ -75,8 +85,8 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     public dataArr:Array<IDataFunc | any>;
     public assertFuncArr:Array<IAssertFunc>;
     public obfuscateArr:Array<IObfuscateFunc>;
-    public checkRequestSchemaFunc:(call:CallConfig, data:any) => boolean;
-    public checkResponseSchemaFunc:(call:CallConfig, data:any) => boolean;
+    public checkRequestSchemaFunc:ISchemaFunc;
+    public checkResponseSchemaFunc:ISchemaFunc;
     public checkRequestSchema:boolean;
     public checkResponseSchema:boolean;
 
@@ -116,7 +126,7 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
         if (this.assertFuncArr){
             for (var i = 0; i < this.assertFuncArr.length; i++) {
                 var func = this.assertFuncArr[i];
-                func(env, res, body);
+                func(env, this, body);
             }
         }
     }
@@ -126,19 +136,19 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
         if (this.obfuscateArr){
             for (var i = 0; i < this.obfuscateArr.length; i++) {
                 var func = this.obfuscateArr[i];
-                func(this, env, res, body);
+                func(env, this, body);
             }
         }
     }
 
 
     // Easy schema check proxy
-    public checkSchemaImpl(data:any, isRequest:boolean):boolean {
+    public checkSchemaImpl(env:JasmineAsyncEnv, data:any, isRequest:boolean):boolean {
         if (isRequest && this.checkRequestSchema && this.checkRequestSchemaFunc != null){
-            return this.checkRequestSchemaFunc(this, data);
+            return this.checkRequestSchemaFunc(env, this, data);
         }
         else if (!isRequest && this.checkResponseSchema && this.checkResponseSchemaFunc != null){
-            return this.checkResponseSchemaFunc(this, data);
+            return this.checkResponseSchemaFunc(env, this, data);
         }
         else{
             return true;
@@ -184,7 +194,7 @@ export class CallRunner {
         if (call.method != "GET"){
             var data = call.getDataImpl(env);
             if (data) {
-                requestPassed   = call.checkSchemaImpl(data, true);
+                requestPassed   = call.checkSchemaImpl(env, data, true);
                 sendBody        = JSON.stringify(data);
             }
         }
@@ -238,7 +248,7 @@ export class CallRunner {
                     this.logRequestResponse(error, response, body);
 
                     // Check schemas if setup
-                    call.checkSchemaImpl(body, false);
+                    call.checkSchemaImpl(env, body, false);
 
                     // Run assertions
                     call.assertFuncImpl(env, response, body);

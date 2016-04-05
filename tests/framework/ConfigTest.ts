@@ -48,20 +48,20 @@ describe("Config system used to power the framework calls", function(){
 
         // Check assert functions
         config.assertFuncImpl(env, null, null);
-        expect(assertSpy1).toHaveBeenCalledWith(env, null, null);
-        expect(assertSpy2).toHaveBeenCalledWith(env, null, null);
+        expect(assertSpy1).toHaveBeenCalledWith(env, config, null);
+        expect(assertSpy2).toHaveBeenCalledWith(env, config, null);
 
         // Check obfuscate execution
         config.obfuscateFuncImpl(env, null, null);
-        expect(obfuSpy1).toHaveBeenCalledWith(config, env, null, null);
-        expect(obfuSpy2).toHaveBeenCalledWith(config, env, null, null);
+        expect(obfuSpy1).toHaveBeenCalledWith(env, config, null);
+        expect(obfuSpy2).toHaveBeenCalledWith(env, config, null);
 
         // Check schema execution
-        config.checkSchemaImpl(env, true);
-        expect(checkRequestSchemaSpy).toHaveBeenCalledWith(config, env, true);
+        config.checkSchemaImpl(env, null, true);
+        expect(checkRequestSchemaSpy).toHaveBeenCalledWith(env, config, null);
 
-        config.checkSchemaImpl(env, false);
-        expect(checkResponseSchemaSpy).toHaveBeenCalledWith(config, env, true);
+        config.checkSchemaImpl(env, null, false);
+        expect(checkResponseSchemaSpy).toHaveBeenCalledWith(env, config, null);
 
     });
 
