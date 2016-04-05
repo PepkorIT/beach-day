@@ -10,55 +10,69 @@ import {TestUtils} from "../utils/TestUtils";
 var urlJoin = require("url-join");
 
 export interface ICallConfigParams {
-    // API base url
+    /** API base url*/
     baseURL?:string;
 
-    // Only used when auto generating tests using a utility
+    /** Only used when auto generating tests using a utility*/
     testName?:string;
 
-    // Call endpoint
+    /**
+     * Only used when auto generating tests using a utility.
+     * Can be used to create xit() && fit() calls
+     */
+    testModifier?:string;
+
+    /** Call endpoint*/
     endPoint?:string;
 
-    // Headers array
+    /** Headers array*/
     headers?:any;
 
-    // Call HTTP method to use, defaults to POST
+    /** Call HTTP method to use, defaults to POST*/
     method?:string;
 
-    // Amount of time to wait before executing the call
+    /** Amount of time to wait before executing the call*/
     waits?:number;
 
-    // Status code expected for the response of this call, defaults to 200
+    /** Status code expected for the response of this call, defaults to 200*/
     status?:number;
 
-    // Array of functions that will be executed before the config is run
-    // Can be used to transform the config as a last stage
+    /**
+     * Array of functions that will be executed before the config is run
+     * Can be used to transform the config as a last stage
+     */
     beforeFuncArr?:Array<IBeforeFunc>;
 
-    // Array of data objects / functions to be sent with the call, either a function that will be evoked to get the result or an object
+    /** Array of data objects / functions to be sent with the call, either a function that will be evoked to get the result or an object*/
     dataArr?:Array<IDataFunc | any>;
 
-    // List of functions to run custom assertions for this call
+    /** List of functions to run custom assertions for this call*/
     assertFuncArr?:Array<IAssertFunc>;
 
-    // Array of obfuscation functions, will be called before any logging is done
-    // should be used to obfuscate any sensitive data from the log
+    /**
+     * Array of obfuscation functions, will be called before any logging is done
+     * should be used to obfuscate any sensitive data from the log
+     */
     obfuscateArr?:Array<IObfuscateFunc>;
 
-    // Will be called if checkRequestSchema:true
-    // It is up to the implementation to complete this method
-    // It should return if the schema check passed or not
+    /**
+     * Will be called if checkRequestSchema:true
+     * It is up to the implementation to complete this method
+     * It should return if the schema check passed or not
+     */
     checkRequestSchemaFunc?:ISchemaFunc;
 
-    // Will be called if checkResponseSchema:true
-    // It is up to the implementation to complete this method
-    // It should return if the schema check passed or not
+    /**
+     * Will be called if checkResponseSchema:true
+     * It is up to the implementation to complete this method
+     * It should return if the schema check passed or not
+     */
     checkResponseSchemaFunc?:ISchemaFunc;
 
-    // If set to true checkRequestSchemaFunc() will be called for the request data
+    /** If set to true checkRequestSchemaFunc() will be called for the request data*/
     checkRequestSchema?:boolean;
 
-    // If set to true checkResponseSchemaFunc() will be called for the response data
+    /** If set to true checkResponseSchemaFunc() will be called for the response data*/
     checkResponseSchema?:boolean;
 }
 
@@ -81,6 +95,7 @@ export interface ISchemaFunc{
 export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams{
     public baseURL:string;
     public testName:string;
+    public testModifier:string;
     public endPoint:string;
     public headers:any;
     public method:string;
@@ -100,7 +115,9 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
         super({method:"POST", status:200}, params);
     }
 
-    // Before proxy
+    /**
+     * Proxy for executing the beforeFuncArr calls
+     */
     public beforeProxy(env:JasmineAsyncEnv):void {
         if (this.beforeFuncArr){
             for (var i = 0; i < this.beforeFuncArr.length; i++) {
@@ -109,7 +126,9 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
         }
     }
 
-    // Get data proxy
+    /**
+     * Proxy for executing the dataArr calls
+     */
     public getDataImpl(env:JasmineAsyncEnv):any {
         if (this.dataArr == null){
             return null;
@@ -140,7 +159,9 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
 
     }
 
-    // Proxy for running all assertions
+    /**
+     * Proxy for running all assertions
+     */
     public assertFuncImpl(env:JasmineAsyncEnv, body:any, res:IncomingMessage):void {
         if (this.assertFuncArr){
             for (var i = 0; i < this.assertFuncArr.length; i++) {
@@ -150,7 +171,9 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
         }
     }
 
-    // Proxy for all obfuscations
+    /**
+     * Proxy for all obfuscations
+     */
     public obfuscateFuncImpl(env:JasmineAsyncEnv, body:any, res:IncomingMessage){
         if (this.obfuscateArr){
             for (var i = 0; i < this.obfuscateArr.length; i++) {
@@ -160,8 +183,9 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
         }
     }
 
-
-    // Easy schema check proxy
+    /**
+     * Proxy for running schema checks
+     */
     public checkSchemaImpl(env:JasmineAsyncEnv, data:any, isRequest:boolean, res:IncomingMessage):boolean {
         if (isRequest && this.checkRequestSchema && this.checkRequestSchemaFunc != null){
             return this.checkRequestSchemaFunc(env, this, data, null);
@@ -174,10 +198,18 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
         }
     }
 
+    /**
+     * Returns the full api url for running the call
+     */
     public get fullURL():string {
         return this.baseURL != null && this.endPoint != null ? urlJoin(this.baseURL, this.endPoint) : null;
     }
 
+    /**
+     * Used to generated a new CallConfig instance
+     * Properties are cascaded onto the new instance using
+     * the current object, then the passed params
+     */
     public extend(params:ICallConfigParams):CallConfig {
         var inst = new CallConfig();
         return super.extend(inst, params);
@@ -186,12 +218,14 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
 
 
 
-
 export class CallRunner {
     public defaultConfig:CallConfig;
     public timeout:number = 15 * 1000;
 
-
+    /**
+     * Utility helper method for executing a request package
+     * call using a CallConfig and an environment
+     */
     public run(call:CallConfig, env:JasmineAsyncEnv):void {
         if (call.endPoint == null) throw new Error("endPoint is a required field for your CallConfig");
         if (call.baseURL == null) throw new Error("baseURL is a required field for your CallConfig");
@@ -284,6 +318,9 @@ export class CallRunner {
         }
     }
 
+    /**
+     * Pretty logging for the reporter of the request and repsonse
+     */
     public logRequestResponse(error:any, res:any, body:any, options:any){
         if (res) {
             console.log("<strong>REQUEST</strong>");

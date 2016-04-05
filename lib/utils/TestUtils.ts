@@ -4,11 +4,11 @@ import * as tv4 from "tv4";
 
 export var TestUtils = {
     throwExpectError: function (message:string):void {
-        expect(true).throwExpectError(message)
+        expect(true).throwExpectError(message);
     },
 
     throwImplementationError: function (message:string):void {
-        expect(true).throwImplementationError(message)
+        expect(true).throwImplementationError(message);
     },
 
     isValidISO8601DateFormat: function (data):boolean {
