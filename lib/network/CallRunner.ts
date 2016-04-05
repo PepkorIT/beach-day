@@ -56,23 +56,17 @@ export interface ICallConfigParams{
 }
 
 export interface IAssertFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, body?:any):void;
-    (env:JasmineAsyncEnv, call:CallConfig):void;
-    (env:JasmineAsyncEnv):void;
+    (env?:JasmineAsyncEnv, call?:CallConfig, body?:any):void;
 }
 export interface IDataFunc{
-    (env:JasmineAsyncEnv, call:CallConfig):any;
-    (env:JasmineAsyncEnv):any;
+    (env?:JasmineAsyncEnv, call?:CallConfig):any;
 }
 export interface IObfuscateFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, body?:any):void;
-    (env:JasmineAsyncEnv, call:CallConfig):void;
-    (env:JasmineAsyncEnv):void;
+    (env?:JasmineAsyncEnv, call?:CallConfig, body?:any):void;
 }
 
 export interface ISchemaFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, data:any):boolean;
-    (env:JasmineAsyncEnv, call:CallConfig):boolean;
+    (env?:JasmineAsyncEnv, call?:CallConfig, data?:any):boolean;
 }
 
 export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams{
