@@ -52,4 +52,11 @@ describe("Config system used to power the framework calls", function () {
         config.checkSchemaImpl(env, null, false);
         expect(checkResponseSchemaSpy).toHaveBeenCalledWith(env, config, null);
     });
+    it("Test that the extension is working", function () {
+        var defaultConfig = new index_1.CallConfig({});
+        var callConfig = new index_1.CallConfig({ status: 500 });
+        index_1.console.log("Using callconfig in test: ", callConfig);
+        var useConfig = defaultConfig.extend(callConfig);
+        expect(useConfig.status).toBe(500);
+    });
 });

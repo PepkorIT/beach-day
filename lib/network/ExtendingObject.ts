@@ -3,10 +3,12 @@ import * as _ from "lodash";
 export class ExtendingObject<T,I> {
 
     constructor(defaults:I, params?:I){
-        if (params) _.assignInWith(this, defaults, params, this.extender);
+        // Note sources are applied from right to left, which makes no sense of course
+        if (params) _.assignInWith(this, params, defaults, this.extender);
     }
     public extend(instance:T, params:I):T {
-        _.assignInWith(<{}> instance, this, params, this.extender);
+        // Note sources are applied from right to left, which makes no sense of course
+        _.assignInWith(<{}> instance, params, this, this.extender);
         return instance;
     }
     extender = (objectValue: any, sourceValue: any, key?: string, object?: any, source?: any) => {

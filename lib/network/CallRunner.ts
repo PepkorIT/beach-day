@@ -179,7 +179,12 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     }
 
     public extend(params:ICallConfigParams):CallConfig {
-        return super.extend(new CallConfig(), params);
+        var inst = new CallConfig();
+        console.log("Extending:");
+        console.log(inst);
+        console.log(this);
+        console.log(params);
+        return super.extend(inst, params);
     }
 }
 
