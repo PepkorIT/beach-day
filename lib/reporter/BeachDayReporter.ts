@@ -219,6 +219,7 @@ export class  BeachDayReporter{
     private static STATUS_PASSED    = "passed";
     private static STATUS_FAILED    = "failed";
     private static STATUS_SKIPPED   = "pending";
+    private static STATUS_DISABLED  = "disabled";
     private static STATUS_NOT_RUN   = "notRun";
 
     constructor(config?:IReporterConfig){
@@ -306,10 +307,14 @@ export class  BeachDayReporter{
     public specDone(result:ICustomSpec):void {
         this.wrap(() => {
             result.endTime      = new Date();
-            this.currentSpec    = null;
 
             // Clone the status so we can edit it without interfering with other reporters
             result.beachStatus  = result["status"];
+
+            // Las the disabled status and simply treat as skipped
+            if (result.beachStatus == BeachDayReporter.STATUS_DISABLED){
+                result.beachStatus = BeachDayReporter.STATUS_SKIPPED;
+            }
 
             if (this._currentEnvironment){
                 // If the environment is already failed, then set the status to not run
@@ -329,6 +334,7 @@ export class  BeachDayReporter{
             // Clear out the current environment
             // as this should be set by every env.wrap execution
             this.currentEnvironment = null;
+            this.currentSpec        = null;
         })
     }
 

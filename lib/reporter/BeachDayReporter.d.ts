@@ -95,6 +95,7 @@ export declare class BeachDayReporter {
     private static STATUS_PASSED;
     private static STATUS_FAILED;
     private static STATUS_SKIPPED;
+    private static STATUS_DISABLED;
     private static STATUS_NOT_RUN;
     constructor(config?: IReporterConfig);
     currentEnvironment: JasmineAsyncEnv;
