@@ -209,7 +209,7 @@ export var console              = reporterConsole;
 
 
 
-export class  BeachDayReporter{
+export class BeachDayReporter{
     private dataStore:IDataStore;
     private currentSuite:ICustomSuite;
     private _currentEnvironment:JasmineAsyncEnv;

@@ -9,7 +9,7 @@ import {throwExpectError} from "../utils/TestUtils";
 import {console} from "../reporter/BeachDayReporter";
 var urlJoin = require("url-join");
 
-export interface ICallConfigParams{
+export interface ICallConfigParams {
     // API base url
     baseURL?:string;
 
@@ -30,6 +30,10 @@ export interface ICallConfigParams{
 
     // Status code expected for the response of this call, defaults to 200
     status?:number;
+
+    // Array of functions that will be executed before the config is run
+    // Can be used to transform the config as a last stage
+    beforeFuncArr?:Array<IBeforeFunc>;
 
     // Array of data objects / functions to be sent with the call, either a function that will be evoked to get the result or an object
     dataArr?:Array<IDataFunc | any>;
@@ -58,6 +62,9 @@ export interface ICallConfigParams{
     checkResponseSchema?:boolean;
 }
 
+export interface IBeforeFunc{
+    (env:JasmineAsyncEnv, call:CallConfig):void;
+}
 export interface IAssertFunc{
     (env:JasmineAsyncEnv, call:CallConfig, body:any):void;
 }
@@ -67,7 +74,6 @@ export interface IDataFunc{
 export interface IObfuscateFunc{
     (env:JasmineAsyncEnv, call:CallConfig, body:any):void;
 }
-
 export interface ISchemaFunc{
     (env:JasmineAsyncEnv, call:CallConfig, data:any):boolean;
 }
@@ -80,6 +86,7 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     public method:string = "post";
     public waits:number;
     public status:number = 200;
+    public beforeFuncArr:Array<IBeforeFunc>;
     public dataArr:Array<IDataFunc | any>;
     public assertFuncArr:Array<IAssertFunc>;
     public obfuscateArr:Array<IObfuscateFunc>;
@@ -87,6 +94,15 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     public checkResponseSchemaFunc:ISchemaFunc;
     public checkRequestSchema:boolean;
     public checkResponseSchema:boolean;
+
+    // Before proxy
+    public beforeProxy(env:JasmineAsyncEnv):void {
+        if (this.beforeFuncArr){
+            for (var i = 0; i < this.beforeFuncArr.length; i++) {
+                this.beforeFuncArr[i](env, this);
+            }
+        }
+    }
 
     // Get data proxy
     public getDataImpl(env:JasmineAsyncEnv):any {
@@ -174,6 +190,9 @@ export class CallRunner {
         if (call.endPoint == null) throw new Error("endPoint is a required field for your CallConfig");
         if (call.baseURL == null) throw new Error("baseURL is a required field for your CallConfig");
 
+        // Run the before calls for any last trasformations
+        call.beforeProxy(env);
+
         // Default header to use json
         var headers = {
             "Content-Type": "application/json"
@@ -214,9 +233,8 @@ export class CallRunner {
             request(options, (error:any, response:IncomingMessage, body:any) => {
                 if (error){
                     // Log out the request and response
-                    this.logRequestResponse(error, response, body);
+                    this.logRequestResponse(error, response, body, options);
                     throwExpectError("Expected HTTP call to be successful");
-                    console.log("HTTP call made with parameters: ", options);
                 }
                 else{
                     // Assert the status
@@ -243,7 +261,7 @@ export class CallRunner {
                     call.obfuscateFuncImpl(env, response, body);
 
                     // Log out the request and response
-                    this.logRequestResponse(error, response, body);
+                    this.logRequestResponse(error, response, body, options);
 
                     // Check schemas if setup
                     call.checkSchemaImpl(env, body, false);
@@ -260,7 +278,7 @@ export class CallRunner {
         }
     }
 
-    public logRequestResponse(error:any, res:any, body:any){
+    public logRequestResponse(error:any, res:any, body:any, options:any){
         if (res) {
             console.log("<strong>REQUEST</strong>");
             console.log("<hr class='short' />");
@@ -277,7 +295,26 @@ export class CallRunner {
             console.log("");
         }
         else{
-            console.log("HTTP Error => " + JSON.stringify(error, null, 4));
+            console.log("<strong>Request library error:</strong>");
+            console.log(JSON.stringify(error, null, 4));
+
+            console.log("<strong>REQUEST</strong>");
+            console.log("<hr class='short' />");
+            console.log("URL: " + options.uri);
+            console.log("Method: " + options.method);
+            console.log("Request Headers:\n" + JSON.stringify(options.headers, null, 4));
+            if (options.body){
+                var body = options.body;
+                for (var propName in options.headers){
+                    if (propName.toLowerCase() == "content-type" && options.headers[propName].toLowerCase().indexOf("application/json") != -1){
+                        body = JSON.stringify(JSON.parse(body), null, 4);
+                        break;
+                    }
+                }
+                console.log("Body:\n" + body);
+            }
+            console.log("Timeout: " + options.timeout);
+            console.log("");
         }
     }
 }

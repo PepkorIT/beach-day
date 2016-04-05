@@ -9,6 +9,7 @@ export interface ICallConfigParams {
     method?: string;
     waits?: number;
     status?: number;
+    beforeFuncArr?: Array<IBeforeFunc>;
     dataArr?: Array<IDataFunc | any>;
     assertFuncArr?: Array<IAssertFunc>;
     obfuscateArr?: Array<IObfuscateFunc>;
@@ -16,6 +17,9 @@ export interface ICallConfigParams {
     checkResponseSchemaFunc?: ISchemaFunc;
     checkRequestSchema?: boolean;
     checkResponseSchema?: boolean;
+}
+export interface IBeforeFunc {
+    (env: JasmineAsyncEnv, call: CallConfig): void;
 }
 export interface IAssertFunc {
     (env: JasmineAsyncEnv, call: CallConfig, body: any): void;
@@ -37,6 +41,7 @@ export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigP
     method: string;
     waits: number;
     status: number;
+    beforeFuncArr: Array<IBeforeFunc>;
     dataArr: Array<IDataFunc | any>;
     assertFuncArr: Array<IAssertFunc>;
     obfuscateArr: Array<IObfuscateFunc>;
@@ -44,6 +49,7 @@ export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigP
     checkResponseSchemaFunc: ISchemaFunc;
     checkRequestSchema: boolean;
     checkResponseSchema: boolean;
+    beforeProxy(env: JasmineAsyncEnv): void;
     getDataImpl(env: JasmineAsyncEnv): any;
     assertFuncImpl(env: JasmineAsyncEnv, res: IncomingMessage, body?: any): void;
     obfuscateFuncImpl(env: JasmineAsyncEnv, res: IncomingMessage, body?: any): void;
@@ -55,5 +61,5 @@ export declare class CallRunner {
     defaultConfig: CallConfig;
     timeout: number;
     run(call: CallConfig, env: JasmineAsyncEnv): void;
-    logRequestResponse(error: any, res: any, body: any): void;
+    logRequestResponse(error: any, res: any, body: any, options: any): void;
 }
