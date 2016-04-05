@@ -36,6 +36,7 @@
         "lib/utils/SwaggerUtils.ts",
         "lib/utils/TestUtils.ts",
         "tests/framework/ConfigTest.ts",
+        "tests/framework/EnvTest.ts",
         "tests/framework/ReportTest.ts",
         "tests/framework/UtilsTest.ts",
         "test_boot.ts"

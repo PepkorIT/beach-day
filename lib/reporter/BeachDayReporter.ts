@@ -150,7 +150,7 @@ export function clearCurrentEnvironment():void {
 }
 
 // Store refs before they are overridden
-var consoleOrig = global.console;
+export var consoleOrig = global.console;
 var logOrig     = global.console.log;
 var infoOrig    = global.console.info;
 var debugOrig   = global.console.debug;
@@ -308,10 +308,6 @@ export class  BeachDayReporter{
             result.endTime      = new Date();
             this.currentSpec    = null;
 
-            // Clear out the current environment
-            // as this should be set by every env.wrap execution
-            this.currentEnvironment = null;
-
             // Clone the status so we can edit it without interfering with other reporters
             result.beachStatus  = result["status"];
 
@@ -329,6 +325,10 @@ export class  BeachDayReporter{
                     }
                 }
             }
+
+            // Clear out the current environment
+            // as this should be set by every env.wrap execution
+            this.currentEnvironment = null;
         })
     }
 

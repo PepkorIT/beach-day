@@ -72,6 +72,7 @@ export declare class ReporterConfig implements IReporterConfig {
 }
 export declare function setCurrentEnvironment(env: JasmineAsyncEnv): void;
 export declare function clearCurrentEnvironment(): void;
+export declare var consoleOrig: Console;
 export declare class ReporterConsole {
     logToConsole: boolean;
     private _currentSpec;
