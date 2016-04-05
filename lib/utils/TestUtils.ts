@@ -26,11 +26,11 @@ export var TestUtils = {
             return dateReg.test(data);
         }
     },
-    validateSwaggerSchema: function (data:any, swaggerObject:Object, endPoint:string, method:string, statusCode?:number):boolean {
+    validateSwaggerSchema: function (data:any, swaggerObject:Object, endPoint:string, method:string, isResponse:boolean, statusCode?:number):boolean {
         var valid = false;
         var schema;
         // statusCode is populated means we need to look for a response object schema
-        if (statusCode != null){
+        if (isResponse){
             schema = ObjectUtils.getProp(swaggerObject, `paths.${endPoint}.${method.toLowerCase()}.responses.${statusCode}.schema`);
         }
         // Otherwise we need to look for the body parameter
@@ -47,17 +47,17 @@ export var TestUtils = {
             }
         }
         if (schema == null){
-            // null schema is a test implementation error±
-            this.throwImplementationError(`Expected to be able to test schema for ${method.toUpperCase()} ${endPoint}${statusCode != null ? ":" + statusCode : ""} but unable to find schema object in the swagger.`);
+            // null schema is a test implementation error
+            this.throwImplementationError(`Expected to be able to test ${isResponse ? "response" : "request"} schema for ${method.toUpperCase()} ${endPoint}${isResponse ? ":" + statusCode : ""} but unable to find schema object in the swagger.`);
         }
         else{
-            valid = this.validateSchema(data, schema, (statusCode == null)).valid;
+            valid = this.validateSchema(data, schema, isResponse).valid;
         }
 
         return valid;
     },
 
-    validateSchema: function (data:any, schema:tv4.JsonSchema, isRequest:boolean) {
+    validateSchema: function (data:any, schema:tv4.JsonSchema, isResponse:boolean) {
 
         tv4.addFormat("date-time", (data, schema) => {
             var valid = this.isValidISO8601DateFormat(data);
@@ -71,11 +71,11 @@ export var TestUtils = {
 
             // Remove the stack trace as it just clogs up the reports
             if (result.errors) result.errors.forEach((error:any) => { delete error.stack; });
-            console.log(`${isRequest? "Request" : "Response"} Schema Failure Result:`);
+            console.log(`${isResponse? "Response" : "Request"} Schema Failure Result:`);
             console.log("<hr />");
             console.log(JSON.stringify(result, null, 4));
 
-            if (isRequest) {
+            if (!isResponse) {
                 this.throwImplementationError("Expected REQUEST body to match the JSON schema defined");
             }
             else {

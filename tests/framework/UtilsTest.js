@@ -11,10 +11,10 @@ describe("Utilities used in the framework", function () {
         }
     };
     it("Expect missing schema - expect fail", function () {
-        TestUtils_1.TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get");
+        TestUtils_1.TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get", false);
     });
     it("Expect missing schema for response - expect fail", function () {
-        TestUtils_1.TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get", 200);
+        TestUtils_1.TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get", true, 200);
     });
     it("Expect an invalid schema - expect fail", function () {
         var swagger = {
@@ -30,7 +30,7 @@ describe("Utilities used in the framework", function () {
                 }
             }
         };
-        TestUtils_1.TestUtils.validateSwaggerSchema({ name: 100, age: "jon" }, swagger, "/fetch/user", "Get", 200);
+        TestUtils_1.TestUtils.validateSwaggerSchema({ name: 100, age: "jon" }, swagger, "/fetch/user", "Get", true, 200);
     });
     it("Expect an invalid request schema - expect fail", function () {
         var swagger = {
@@ -47,7 +47,7 @@ describe("Utilities used in the framework", function () {
                 }
             }
         };
-        TestUtils_1.TestUtils.validateSwaggerSchema({ name: 100, age: "jon" }, swagger, "/fetch/user", "Get");
+        TestUtils_1.TestUtils.validateSwaggerSchema({ name: 100, age: "jon" }, swagger, "/fetch/user", "Get", true);
     });
     it("Expect invalid status code - expect fail", function () {
         expect("200").statusCodeToBe(500);

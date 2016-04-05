@@ -191,11 +191,11 @@ export class ReporterConsole{
 
     private store(args:Array<any>, logger:Function):void{
         if (this._currentSpec) {
-            this._currentSpec.debugData.push(args);
+            this._currentSpec.debugData.push(stringLogArguments(args));
         }
         else {
             if (this.cache == null) this.cache = [];
-            this.cache.push(args);
+            this.cache.push(stringLogArguments(args));
         }
         if (this.logToConsole){
             logger.apply(consoleOrig, args);
@@ -206,6 +206,23 @@ export class ReporterConsole{
 var reporterConsole             = new ReporterConsole();
 reporterConsole.logToConsole    = false;
 export var console              = reporterConsole;
+
+
+
+function stringLogArguments(args:Array<any>):string {
+    var newArgs = [];
+    for (var a = 0; a < args.length; a++) {
+        var item = args[a];
+        if (typeof item == "object"){
+            var result = stringifyObject(item, {singleQuotes:false}).replace(/(\r\n|\n|\r|\t)/gm,"");
+            newArgs.push(result);
+        }
+        else{
+            newArgs.push(item);
+        }
+    }
+    return newArgs.join(", ");
+}
 
 
 
@@ -558,26 +575,10 @@ export class BeachDayReporter{
 
     private stringLogs(data:IViewData):void {
         for (var i = 0; i < data.debugData.length; i++) {
-            var newArgs:Array<string>   = [];
             if (data.debugData[i] instanceof Array){
-                var args:Array<any>         = data.debugData[i];
-
-                for (var a = 0; a < args.length; a++) {
-                    var item = args[a];
-                    if (typeof item == "object"){
-                        var result = stringifyObject(item, {singleQuotes:false}).replace(/(\r\n|\n|\r|\t)/gm,"");
-                        newArgs.push(result);
-                    }
-                    else{
-                        newArgs.push(item);
-                    }
-                }
+                var args:Array<any> = data.debugData[i];
+                data.debugData[i]   = stringLogArguments(args);
             }
-            else{
-                newArgs.push(data.debugData[i]);
-            }
-
-            data.debugData[i] = newArgs.join(" ");
         }
     }
 }

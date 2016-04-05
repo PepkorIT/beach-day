@@ -66,16 +66,16 @@ export interface IBeforeFunc{
     (env:JasmineAsyncEnv, call:CallConfig):void;
 }
 export interface IAssertFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, body:any):void;
+    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IncomingMessage):void;
 }
 export interface IDataFunc{
     (env:JasmineAsyncEnv, call:CallConfig):any;
 }
 export interface IObfuscateFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, body:any):void;
+    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IncomingMessage):void;
 }
 export interface ISchemaFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, data:any):boolean;
+    (env:JasmineAsyncEnv, call:CallConfig, data:any, res:IncomingMessage):boolean;
 }
 
 export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams{
@@ -141,33 +141,33 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     }
 
     // Proxy for running all assertions
-    public assertFuncImpl(env:JasmineAsyncEnv, res:IncomingMessage, body?:any):void {
+    public assertFuncImpl(env:JasmineAsyncEnv, body:any, res:IncomingMessage):void {
         if (this.assertFuncArr){
             for (var i = 0; i < this.assertFuncArr.length; i++) {
                 var func = this.assertFuncArr[i];
-                func(env, this, body);
+                func(env, this, body, res);
             }
         }
     }
 
     // Proxy for all obfuscations
-    public obfuscateFuncImpl(env:JasmineAsyncEnv, res:IncomingMessage, body?:any){
+    public obfuscateFuncImpl(env:JasmineAsyncEnv, body:any, res:IncomingMessage){
         if (this.obfuscateArr){
             for (var i = 0; i < this.obfuscateArr.length; i++) {
                 var func = this.obfuscateArr[i];
-                func(env, this, body);
+                func(env, this, body, res);
             }
         }
     }
 
 
     // Easy schema check proxy
-    public checkSchemaImpl(env:JasmineAsyncEnv, data:any, isRequest:boolean):boolean {
+    public checkSchemaImpl(env:JasmineAsyncEnv, data:any, isRequest:boolean, res:IncomingMessage):boolean {
         if (isRequest && this.checkRequestSchema && this.checkRequestSchemaFunc != null){
-            return this.checkRequestSchemaFunc(env, this, data);
+            return this.checkRequestSchemaFunc(env, this, data, null);
         }
         else if (!isRequest && this.checkResponseSchema && this.checkResponseSchemaFunc != null){
-            return this.checkResponseSchemaFunc(env, this, data);
+            return this.checkResponseSchemaFunc(env, this, data, res);
         }
         else{
             return true;
@@ -217,7 +217,7 @@ export class CallRunner {
         if (call.method != "GET"){
             var data = call.getDataImpl(env);
             if (data) {
-                requestPassed   = call.checkSchemaImpl(env, data, true);
+                requestPassed   = call.checkSchemaImpl(env, data, true, null);
                 sendBody        = JSON.stringify(data);
             }
         }
@@ -264,16 +264,16 @@ export class CallRunner {
                     env.currentBody = body;
 
                     // Run obfuscation
-                    call.obfuscateFuncImpl(env, response, body);
+                    call.obfuscateFuncImpl(env, body, response);
 
                     // Log out the request and response
                     this.logRequestResponse(error, response, body, options);
 
                     // Check schemas if setup
-                    call.checkSchemaImpl(env, body, false);
+                    call.checkSchemaImpl(env, body, false, response);
 
                     // Run assertions
-                    call.assertFuncImpl(env, response, body);
+                    call.assertFuncImpl(env, body, response);
 
                     //expect(body).toNotHaveAnyStringNulls();
                 }
