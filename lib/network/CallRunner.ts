@@ -5,8 +5,8 @@ import * as path from "path";
 import * as request from "request";
 import {ExtendingObject} from "./ExtendingObject";
 import {Request} from "request";
-import {throwExpectError} from "../utils/TestUtils";
 import {console} from "../reporter/BeachDayReporter";
+import {TestUtils} from "../utils/TestUtils";
 var urlJoin = require("url-join");
 
 export interface ICallConfigParams {
@@ -234,7 +234,7 @@ export class CallRunner {
                 if (error){
                     // Log out the request and response
                     this.logRequestResponse(error, response, body, options);
-                    throwExpectError("Expected HTTP call to be successful");
+                    TestUtils.throwExpectError("Expected HTTP call to be successful");
                 }
                 else{
                     // Assert the status
@@ -246,7 +246,7 @@ export class CallRunner {
                             body = JSON.parse(body);
                         }
                         catch (e){
-                            throwExpectError("Expected JSON parsing from the server to pass");
+                            TestUtils.throwExpectError("Expected JSON parsing from the server to pass");
                             console.log("JSON Parsing Error: ");
                             console.log(e.message);
                             console.log("Original data from server:");

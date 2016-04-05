@@ -1,4 +1,4 @@
-import * as TestUtils from "../../lib/utils/TestUtils";
+import {TestUtils} from "../../lib/utils/TestUtils";
 
 describe("Utilities used in the framework", function(){
 
