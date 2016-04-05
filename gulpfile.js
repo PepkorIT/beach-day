@@ -6,8 +6,9 @@ var concat  = require("gulp-concat");
 gulp.task("tsd-gen", function(){
     // Override the declaration to make sure we generate declaration files
     var tsProject = ts.createProject("tsconfig.json", {
-        declaration : true,
-        out         : "index.js"
+        declaration         : true,
+        moduleResolution    : "node",
+        out                 : "index.js"
     });
 
     // Prune out the test files
@@ -26,10 +27,10 @@ gulp.task("tsd-gen", function(){
 });
 
 gulp.task("merge-tsd", ["tsd-gen"], function(){
-    return gulp
-        .src(["./lib/custom_typings/**/*.d.ts", "./lib/index.d.ts"])
+    /*return gulp
+        .src(["./lib/custom_typings/!**!/!*.d.ts", "./lib/index.d.ts"])
         .pipe(concat("index.d.ts"))
-        .pipe(gulp.dest("./lib"))
+        .pipe(gulp.dest("./"))*/
 });
 
 gulp.task("default", ["merge-tsd"]);
