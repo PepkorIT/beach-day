@@ -49,6 +49,7 @@ export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigP
     checkResponseSchemaFunc: ISchemaFunc;
     checkRequestSchema: boolean;
     checkResponseSchema: boolean;
+    constructor(params?: ICallConfigParams);
     beforeProxy(env: JasmineAsyncEnv): void;
     getDataImpl(env: JasmineAsyncEnv): any;
     assertFuncImpl(env: JasmineAsyncEnv, res: IncomingMessage, body?: any): void;

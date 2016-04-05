@@ -83,9 +83,9 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     public testName:string;
     public endPoint:string;
     public headers:any;
-    public method:string = "post";
+    public method:string;
     public waits:number;
-    public status:number = 200;
+    public status:number;
     public beforeFuncArr:Array<IBeforeFunc>;
     public dataArr:Array<IDataFunc | any>;
     public assertFuncArr:Array<IAssertFunc>;
@@ -94,6 +94,11 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     public checkResponseSchemaFunc:ISchemaFunc;
     public checkRequestSchema:boolean;
     public checkResponseSchema:boolean;
+
+    constructor(params?:ICallConfigParams){
+        // Set defaults if not already done
+        super({method:"POST", status:200}, params);
+    }
 
     // Before proxy
     public beforeProxy(env:JasmineAsyncEnv):void {
