@@ -13,6 +13,9 @@ export interface ICallConfigParams{
     // API base url
     baseURL?:string;
 
+    // Only used when auto generating tests using a utility
+    testName?:string;
+
     // Call endpoint
     endPoint?:string;
 
@@ -71,6 +74,7 @@ export interface ISchemaFunc{
 
 export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams{
     public baseURL:string;
+    public testName:string;
     public endPoint:string;
     public headers:any;
     public method:string = "post";

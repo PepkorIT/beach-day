@@ -3,6 +3,7 @@ import { IncomingMessage } from "http";
 import { ExtendingObject } from "./ExtendingObject";
 export interface ICallConfigParams {
     baseURL?: string;
+    testName?: string;
     endPoint?: string;
     headers?: any;
     method?: string;
@@ -30,6 +31,7 @@ export interface ISchemaFunc {
 }
 export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams {
     baseURL: string;
+    testName: string;
     endPoint: string;
     headers: any;
     method: string;
