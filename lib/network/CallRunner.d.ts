@@ -32,7 +32,7 @@ export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigP
     method: string;
     waits: number;
     status: number;
-    dataArr: Array<(env: JasmineAsyncEnv) => any | any>;
+    dataArr: Array<IDataFunc | any>;
     assertFuncArr: Array<IAssertFunc>;
     obfuscateArr: Array<IObfuscateFunc>;
     checkRequestSchemaFunc: (call: CallConfig, data: any) => boolean;

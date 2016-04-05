@@ -72,7 +72,7 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     public method:string = "post";
     public waits:number;
     public status:number = 200;
-    public dataArr:Array<(env:JasmineAsyncEnv) => any | any>;
+    public dataArr:Array<IDataFunc | any>;
     public assertFuncArr:Array<IAssertFunc>;
     public obfuscateArr:Array<IObfuscateFunc>;
     public checkRequestSchemaFunc:(call:CallConfig, data:any) => boolean;
