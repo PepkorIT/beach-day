@@ -2,7 +2,7 @@ import * as _ from "lodash";
 
 export class ExtendingObject<T,I> {
 
-    constructor(defaults:I, params?:I){
+    constructor(defaults:I, params?:I) {
         // Note sources are applied from right to left, which makes no sense of course
         if (params) _.assignInWith(this, params, defaults, this.extender);
     }

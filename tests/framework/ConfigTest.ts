@@ -1,12 +1,12 @@
-import {CallRunner, CallConfig, JasmineAsyncEnv, console} from "../../lib/index";
+import {RequestRunner, CallConfig, JasmineAsyncEnv, console} from "../../lib/index";
 import {IncomingMessage} from "http";
 
 describe("Config system used to power the framework calls", function(){
-    var factory:CallRunner;
+    var factory:RequestRunner;
     var env = new JasmineAsyncEnv();
 
     beforeEach(function(){
-        factory = new CallRunner();
+        factory = new RequestRunner();
     });
 
     it("Build default config - expect pass", function(){
@@ -17,7 +17,7 @@ describe("Config system used to power the framework calls", function(){
         var checkRequestSchemaSpy   = jasmine.createSpy("checkRequestSchemaSpy");
         var checkResponseSchemaSpy  = jasmine.createSpy("checkResponseSchemaSpy");
 
-        factory.defaultConfig = new CallConfig({
+        var defaultConfig = new CallConfig({
             baseURL                 : "http://www.something.com//",
             assertFuncArr           : [assertSpy1],
             dataArr                 : [{id:1}],
@@ -28,7 +28,7 @@ describe("Config system used to power the framework calls", function(){
             checkResponseSchema     : true
         });
 
-        var config = factory.defaultConfig.extend({
+        var config = defaultConfig.extend({
             endPoint        : "/fetch/user",
             assertFuncArr   : [assertSpy2],
             dataArr         : [function(env:JasmineAsyncEnv){
@@ -37,7 +37,7 @@ describe("Config system used to power the framework calls", function(){
             obfuscateArr    : [obfuSpy2]
         });
 
-        expect(config.baseURL).toBe(factory.defaultConfig.baseURL);
+        expect(config.baseURL).toBe(defaultConfig.baseURL);
         expect(config.endPoint).toBe("/fetch/user");
         expect(config.fullURL).toBe("http://www.something.com/fetch/user");
 

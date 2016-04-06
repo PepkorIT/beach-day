@@ -4,7 +4,7 @@ describe("Config system used to power the framework calls", function () {
     var factory;
     var env = new index_1.JasmineAsyncEnv();
     beforeEach(function () {
-        factory = new index_1.CallRunner();
+        factory = new index_1.RequestRunner();
     });
     it("Build default config - expect pass", function () {
         var assertSpy1 = jasmine.createSpy("assert1");
@@ -13,7 +13,7 @@ describe("Config system used to power the framework calls", function () {
         var obfuSpy2 = jasmine.createSpy("obfuSpy2");
         var checkRequestSchemaSpy = jasmine.createSpy("checkRequestSchemaSpy");
         var checkResponseSchemaSpy = jasmine.createSpy("checkResponseSchemaSpy");
-        factory.defaultConfig = new index_1.CallConfig({
+        var defaultConfig = new index_1.CallConfig({
             baseURL: "http://www.something.com//",
             assertFuncArr: [assertSpy1],
             dataArr: [{ id: 1 }],
@@ -23,7 +23,7 @@ describe("Config system used to power the framework calls", function () {
             checkRequestSchema: true,
             checkResponseSchema: true
         });
-        var config = factory.defaultConfig.extend({
+        var config = defaultConfig.extend({
             endPoint: "/fetch/user",
             assertFuncArr: [assertSpy2],
             dataArr: [function (env) {
@@ -31,7 +31,7 @@ describe("Config system used to power the framework calls", function () {
                 }],
             obfuscateArr: [obfuSpy2]
         });
-        expect(config.baseURL).toBe(factory.defaultConfig.baseURL);
+        expect(config.baseURL).toBe(defaultConfig.baseURL);
         expect(config.endPoint).toBe("/fetch/user");
         expect(config.fullURL).toBe("http://www.something.com/fetch/user");
         // Check data expansion

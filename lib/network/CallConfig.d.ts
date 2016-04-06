@@ -2,8 +2,6 @@ import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
 import { IncomingMessage } from "http";
 import { ExtendingObject } from "./ExtendingObject";
 export interface ICallConfigParams {
-    /** API base url*/
-    baseURL?: string;
     /** Only used when auto generating tests using a utility*/
     testName?: string;
     /**
@@ -11,6 +9,10 @@ export interface ICallConfigParams {
      * Can be used to create xit() && fit() calls
      */
     testModifier?: string;
+    /** API base url*/
+    baseURL?: string;
+    /** Timeout used for the http call, defaults to 15s */
+    timeout?: number;
     /** Call endpoint*/
     endPoint?: string;
     /** Headers array*/
@@ -68,9 +70,10 @@ export interface ISchemaFunc {
     (env: JasmineAsyncEnv, call: CallConfig, data: any, res: IncomingMessage): boolean;
 }
 export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams {
-    baseURL: string;
     testName: string;
     testModifier: string;
+    baseURL: string;
+    timeout: number;
     endPoint: string;
     headers: any;
     method: string;
@@ -115,17 +118,4 @@ export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigP
      * the current object, then the passed params
      */
     extend(params: ICallConfigParams): CallConfig;
-}
-export declare class CallRunner {
-    defaultConfig: CallConfig;
-    timeout: number;
-    /**
-     * Utility helper method for executing a request package
-     * call using a CallConfig and an environment
-     */
-    run(call: CallConfig, env: JasmineAsyncEnv): void;
-    /**
-     * Pretty logging for the reporter of the request and repsonse
-     */
-    logRequestResponse(error: any, res: any, body: any, options: any): void;
 }
