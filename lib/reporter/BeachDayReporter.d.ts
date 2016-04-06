@@ -72,6 +72,7 @@ export declare class ReporterConfig implements IReporterConfig {
 }
 export declare function setCurrentEnvironment(env: JasmineAsyncEnv): void;
 export declare function clearCurrentEnvironment(): void;
+export declare function getCurrentSpecId(): string;
 export declare var consoleOrig: Console;
 export declare class ReporterConsole {
     logToConsole: boolean;
@@ -99,6 +100,7 @@ export declare class BeachDayReporter {
     private static STATUS_NOT_RUN;
     constructor(config?: IReporterConfig);
     currentEnvironment: JasmineAsyncEnv;
+    currentSpecId: string;
     private wrap(cb);
     jasmineStarted(suiteInfo: ISuiteInfo): void;
     suiteStarted(result: ICustomSuite): void;

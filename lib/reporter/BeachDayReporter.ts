@@ -148,6 +148,9 @@ export function setCurrentEnvironment(env:JasmineAsyncEnv):void {
 export function clearCurrentEnvironment():void {
     lastCreatedInstance.currentEnvironment = null;
 }
+export function getCurrentSpecId():string {
+    return lastCreatedInstance.currentSpecId
+}
 
 // Store refs before they are overridden
 export var consoleOrig = global.console;
@@ -240,6 +243,8 @@ export class BeachDayReporter{
     private static STATUS_NOT_RUN   = "notRun";
 
     constructor(config?:IReporterConfig){
+        if (lastCreatedInstance) throw new Error("You can only create 1 instance of the BeachDayReporter at a time");
+
         if (config && !(config instanceof ReporterConfig)){
             config = new ReporterConfig(config);
         }
@@ -261,6 +266,10 @@ export class BeachDayReporter{
     public set currentEnvironment(env:JasmineAsyncEnv) {
         this._currentEnvironment = env;
         //consoleOrig.log("----------> Setting current environment: ", env);
+    }
+
+    public get currentSpecId():string {
+        return this.currentSpec ? this.currentSpec.id + "" : null;
     }
 
     private wrap(cb:Function):void {

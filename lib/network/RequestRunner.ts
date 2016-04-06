@@ -7,6 +7,7 @@ import {CallConfig} from "./CallConfig";
 import * as _ from "lodash";
 import * as path from "path";
 import * as request from "request";
+import {getCurrentSpecId} from "../reporter/BeachDayReporter";
 
 export class RequestRunner {
 
@@ -19,6 +20,10 @@ export class RequestRunner {
     public static run(call:CallConfig, env:JasmineAsyncEnv):void {
         if (call.endPoint == null) throw new Error("endPoint is a required field for your CallConfig");
         if (call.baseURL == null) throw new Error("baseURL is a required field for your CallConfig");
+
+        // Fetch the current spec ID from the reporter so we can
+        // ensure the test is still running when we complete the request call
+        var currSpecId = getCurrentSpecId();
 
         call = RequestRunner.globalDefaults.extend(call);
 
@@ -63,6 +68,11 @@ export class RequestRunner {
             };
 
             request(options, (error:any, response:IncomingMessage, body:any) => {
+                // Ensure the same tests is still running
+                if (currSpecId != getCurrentSpecId()){
+                    TestUtils.throwImplementationError("HTTP callback was executed after the test had been completed. Please check your timeouts to make sure the test is not timing out before the HTTP request.");
+                    return;
+                }
                 if (error){
                     // Log out the request and response
                     RequestRunner.logRequestResponse(error, response, body, options);
