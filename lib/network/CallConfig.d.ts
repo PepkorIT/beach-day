@@ -10,6 +10,11 @@ export interface ICallConfigParams {
      * Can be used to create xit() && fit() calls
      */
     testModifier?: string;
+    /**
+     * Only used then auto generating tests using a utility.
+     * This can be used to set a timeout amount for your test
+     */
+    testTimeout?: number;
     /** API base url*/
     baseURL?: string;
     /** Timeout used for the http call, defaults to 15s */
@@ -79,6 +84,7 @@ export interface ISchemaFunc {
 export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams {
     testName: string;
     testModifier: string;
+    testTimeout: number;
     baseURL: string;
     timeout: number;
     endPoint: string;
@@ -122,8 +128,9 @@ export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigP
     fullURL: string;
     /**
      * Used to generated a new CallConfig instance
-     * Properties are cascaded onto the new instance using
+     * Properties are deeply cascaded onto the new instance using
      * the current object, then the passed params
+     * By deeply cascaded we mean, properties that are objects are extended, properties that are arrays are joined
      */
     extend(params: ICallConfigParams): CallConfig;
 }

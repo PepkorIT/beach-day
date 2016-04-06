@@ -84,7 +84,7 @@ export class RequestRunner {
                     expect(response.statusCode).statusCodeToBe(call.status);
 
                     // Try convert the json response
-                    if (body){
+                    if (body && typeof body == "string"){
                         try{
                             body = JSON.parse(body);
                         }

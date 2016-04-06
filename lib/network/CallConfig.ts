@@ -15,6 +15,12 @@ export interface ICallConfigParams {
      */
     testModifier?:string;
 
+    /**
+     * Only used then auto generating tests using a utility.
+     * This can be used to set a timeout amount for your test
+     */
+    testTimeout?:number;
+
     /** API base url*/
     baseURL?:string;
 
@@ -101,6 +107,7 @@ export interface ISchemaFunc{
 export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams{
     public testName:string;
     public testModifier:string;
+    public testTimeout:number;
     public baseURL:string;
     public timeout:number;
     public endPoint:string;
@@ -164,7 +171,6 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
             }
             return result;
         }
-
     }
 
     /**
@@ -215,8 +221,9 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
 
     /**
      * Used to generated a new CallConfig instance
-     * Properties are cascaded onto the new instance using
+     * Properties are deeply cascaded onto the new instance using
      * the current object, then the passed params
+     * By deeply cascaded we mean, properties that are objects are extended, properties that are arrays are joined
      */
     public extend(params:ICallConfigParams):CallConfig {
         var inst = new CallConfig();

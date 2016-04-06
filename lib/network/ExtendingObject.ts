@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import {type} from "os";
 
 export class ExtendingObject<T,I> {
 
@@ -6,14 +7,19 @@ export class ExtendingObject<T,I> {
         // Note sources are applied from right to left, which makes no sense of course
         if (params) _.assignInWith(this, params, defaults, this.extender);
     }
+
     public extend(instance:T, params:I):T {
         // Note sources are applied from right to left, which makes no sense of course
         _.assignInWith(<{}> instance, params, this, this.extender);
         return instance;
     }
+
     extender = (objectValue: any, sourceValue: any, key?: string, object?: any, source?: any) => {
         if (objectValue instanceof Array){
             return [].concat(sourceValue).concat(objectValue);
+        }
+        else if (typeof objectValue == "object"){
+            return _.extend({}, sourceValue, objectValue);
         }
         return _.isUndefined(objectValue) ? sourceValue : objectValue;
     };

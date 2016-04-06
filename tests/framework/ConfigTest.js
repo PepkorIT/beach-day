@@ -6,7 +6,7 @@ describe("Config system used to power the framework calls", function () {
     beforeEach(function () {
         factory = new index_1.RequestRunner();
     });
-    it("Build default config - expect pass", function () {
+    it("Build default config", function () {
         var assertSpy1 = jasmine.createSpy("assert1");
         var assertSpy2 = jasmine.createSpy("assert2");
         var obfuSpy1 = jasmine.createSpy("obfuSpy1");
@@ -55,8 +55,18 @@ describe("Config system used to power the framework calls", function () {
     it("Test that the extension is working", function () {
         var defaultConfig = new index_1.CallConfig({});
         var callConfig = new index_1.CallConfig({ status: 500 });
-        index_1.console.log("Using callconfig in test: ", callConfig);
+        index_1.console.log("Using call config in test: ", callConfig);
         var useConfig = defaultConfig.extend(callConfig);
         expect(useConfig.status).toBe(500);
+    });
+    it("Test object extension", function () {
+        var configOne = new index_1.CallConfig();
+        var configTwo = new index_1.CallConfig({ headers: { age: "10", name: "hello" }, requestOptions: { qs: "123", json: false } });
+        var configThree = new index_1.CallConfig({ headers: { age: "12" }, requestOptions: { json: true } });
+        var useConfig = configOne.extend(configTwo).extend(configThree);
+        expect(useConfig.headers.name).toBe("hello");
+        expect(useConfig.headers.age).toBe("12");
+        expect(useConfig.requestOptions.qs).toBe("123");
+        expect(useConfig.requestOptions.json).toBe(true);
     });
 });
