@@ -58,14 +58,15 @@ export class RequestRunner {
             env.done();
         }
         else{
-            var options = {
+            // Create the options from the options in the config then the derived data
+            var options = <request.UriOptions> _.extend({}, call.requestOptions, <request.CoreOptions> {
                 uri     : call.fullURL,
                 method  : call.method.toUpperCase(),
                 headers : headers,
                 json    : false, // This is done manually so we can catch errors
                 body    : sendBody,
                 timeout : call.timeout
-            };
+            });
 
             request(options, (error:any, response:IncomingMessage, body:any) => {
                 // Ensure the same tests is still running

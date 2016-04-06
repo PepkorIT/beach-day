@@ -1,6 +1,7 @@
 import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
 import { IncomingMessage } from "http";
 import { ExtendingObject } from "./ExtendingObject";
+import { CoreOptions } from "request";
 export interface ICallConfigParams {
     /** Only used when auto generating tests using a utility*/
     testName?: string;
@@ -53,6 +54,12 @@ export interface ICallConfigParams {
     checkRequestSchema?: boolean;
     /** If set to true checkResponseSchemaFunc() will be called for the response data*/
     checkResponseSchema?: boolean;
+    /**
+     * Object of additional options sent to the request framework
+     * Note: This will be the default options, then extended by the derived properties
+     * from this cnfig object like data, method, etc
+     */
+    requestOptions?: CoreOptions;
 }
 export interface IBeforeFunc {
     (env: JasmineAsyncEnv, call: CallConfig): void;
@@ -87,6 +94,7 @@ export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigP
     checkResponseSchemaFunc: ISchemaFunc;
     checkRequestSchema: boolean;
     checkResponseSchema: boolean;
+    requestOptions: CoreOptions;
     constructor(params?: ICallConfigParams);
     /**
      * Proxy for executing the beforeFuncArr calls

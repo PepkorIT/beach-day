@@ -1,12 +1,8 @@
 import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
 import {IncomingMessage} from "http";
 import * as _ from "lodash";
-import * as path from "path";
-import * as request from "request";
 import {ExtendingObject} from "./ExtendingObject";
-import {Request} from "request";
-import {console} from "../reporter/BeachDayReporter";
-import {TestUtils} from "../utils/TestUtils";
+import {CoreOptions} from "request";
 var urlJoin = require("url-join");
 
 export interface ICallConfigParams {
@@ -77,6 +73,13 @@ export interface ICallConfigParams {
 
     /** If set to true checkResponseSchemaFunc() will be called for the response data*/
     checkResponseSchema?:boolean;
+
+    /**
+     * Object of additional options sent to the request framework
+     * Note: This will be the default options, then extended by the derived properties
+     * from this cnfig object like data, method, etc
+     */
+    requestOptions?:CoreOptions;
 }
 
 export interface IBeforeFunc{
@@ -113,6 +116,7 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     public checkResponseSchemaFunc:ISchemaFunc;
     public checkRequestSchema:boolean;
     public checkResponseSchema:boolean;
+    public requestOptions:CoreOptions;
 
     constructor(params?:ICallConfigParams){
         // Set defaults if not already done
