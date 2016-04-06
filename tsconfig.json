@@ -22,7 +22,6 @@
     "files": [
         "lib/custom_typings/utils/MatcherHelper.d.ts",
         "typings/main.d.ts",
-        "lib/BasicConfig.ts",
         "lib/index.ts",
         "lib/network/CallConfig.ts",
         "lib/network/ExtendingObject.ts",
