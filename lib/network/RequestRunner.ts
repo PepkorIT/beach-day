@@ -18,8 +18,16 @@ export class RequestRunner {
      * call using a CallConfig and an environment
      */
     public static run(call:CallConfig, env:JasmineAsyncEnv):void {
-        if (call.endPoint == null) throw new Error("endPoint is a required field for your CallConfig");
-        if (call.baseURL == null) throw new Error("baseURL is a required field for your CallConfig");
+        if (call.endPoint == null) {
+            TestUtils.throwImplementationError("endPoint is a required field for your CallConfig: " + JSON.stringify(call, null, 4));
+            env.done();
+            return;
+        }
+        if (call.baseURL == null) {
+            TestUtils.throwImplementationError("baseURL is a required field for your CallConfig: " + JSON.stringify(call, null, 4));
+            env.done();
+            return;
+        }
 
         // Fetch the current spec ID from the reporter so we can
         // ensure the test is still running when we complete the request call
@@ -68,6 +76,9 @@ export class RequestRunner {
                 timeout : call.timeout
             });
 
+            //console.log("running request() with:");
+            //console.log(options);
+
             request(options, (error:any, response:IncomingMessage, body:any) => {
                 // Ensure the same tests is still running
                 if (currSpecId != getCurrentSpecId()){
@@ -76,6 +87,8 @@ export class RequestRunner {
                 }
                 if (error){
                     // Log out the request and response
+                    //console.log("request() timeout with:");
+                    //console.log(options);
                     RequestRunner.logRequestResponse(error, response, body, options);
                     TestUtils.throwExpectError("Expected HTTP call to be successful");
                 }

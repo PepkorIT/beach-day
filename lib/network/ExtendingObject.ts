@@ -1,26 +1,29 @@
 import * as _ from "lodash";
 import {type} from "os";
 
-export class ExtendingObject<T,I> {
+export class ExtendingObject {
 
-    constructor(defaults:I, params?:I) {
-        // Note sources are applied from right to left, which makes no sense of course
-        if (params) _.assignInWith(this, params, defaults, this.extender);
-    }
+    extender = (destValue: any, sourceValue: any, key?: string, object?: any, source?: any) => {
+        var bothPopulated   = destValue != null && destValue != undefined && sourceValue != null && sourceValue != undefined;
+        var bothArrays      = (destValue instanceof Array && sourceValue instanceof Array);
+        var bothObjects     = (typeof destValue == "object" && !(destValue instanceof Array) && typeof sourceValue == "object" && !(sourceValue instanceof Array));
 
-    public extend(instance:T, params:I):T {
-        // Note sources are applied from right to left, which makes no sense of course
-        _.assignInWith(<{}> instance, params, this, this.extender);
-        return instance;
-    }
-
-    extender = (objectValue: any, sourceValue: any, key?: string, object?: any, source?: any) => {
-        if (objectValue instanceof Array){
-            return [].concat(sourceValue).concat(objectValue);
+        var result:any;
+        if (bothArrays && bothPopulated) {
+            //if (key == "checkRequestSchema") console.log("array merge");
+            result      = [];
+            result      = result.concat(destValue);
+            result      = result.concat(sourceValue);
         }
-        else if (typeof objectValue == "object"){
-            return _.extend({}, sourceValue, objectValue);
+        else if (bothPopulated && bothObjects){
+            //if (key == "checkRequestSchema") console.log("object merge");
+            result = _.extend({}, destValue, sourceValue);
         }
-        return _.isUndefined(objectValue) ? sourceValue : objectValue;
+        else{
+            //if (key == "checkRequestSchema") console.log("undefined check");
+            result = sourceValue == undefined || sourceValue == null ? destValue : sourceValue;
+        }
+        //if (key == "checkRequestSchema") console.log(`merge for ${key} result: ${result}. destValue: ${destValue}, sourceValue: ${sourceValue}`);
+        return result;
     };
 }

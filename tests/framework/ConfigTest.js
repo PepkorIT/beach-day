@@ -23,6 +23,7 @@ describe("Config system used to power the framework calls", function () {
             checkRequestSchema: true,
             checkResponseSchema: true
         });
+        index_1.console.log("----------------------> Extend");
         var config = defaultConfig.extend({
             endPoint: "/fetch/user",
             assertFuncArr: [assertSpy2],
@@ -68,5 +69,26 @@ describe("Config system used to power the framework calls", function () {
         expect(useConfig.headers.age).toBe("12");
         expect(useConfig.requestOptions.qs).toBe("123");
         expect(useConfig.requestOptions.json).toBe(true);
+    });
+    it("Ensure no extension leakage", function () {
+        var configOne = new index_1.CallConfig({ dataArr: [{ id: "1" }] });
+        var configTwo = new index_1.CallConfig({ dataArr: [{ id: "2" }] });
+        var configThree = new index_1.CallConfig({ dataArr: [{ id: "3" }] });
+        var useConfig = configOne.extend(configTwo).extend(configThree);
+        expect(useConfig.getDataImpl(new index_1.JasmineAsyncEnv()).id).toBe("3");
+        index_1.console.log("configOne: ", configOne.dataArr);
+        index_1.console.log("configTwo: ", configTwo.dataArr);
+        index_1.console.log("configThree: ", configThree.dataArr);
+        expect(configOne.dataArr[0].id).toBe("1");
+        expect(configTwo.dataArr[0].id).toBe("2");
+        expect(configThree.dataArr[0].id).toBe("3");
+    });
+    it("Ensure boolean overrides working", function () {
+        var configOne = new index_1.CallConfig({ checkResponseSchema: false });
+        var defaultConfig = new index_1.CallConfig({ checkResponseSchema: true });
+        var globalDefault = new index_1.CallConfig({});
+        var useConfig = defaultConfig.extend(configOne);
+        useConfig = globalDefault.extend(useConfig);
+        expect(useConfig.checkResponseSchema).toEqual(false);
     });
 });

@@ -29,10 +29,11 @@ describe("Config system used to power the framework calls", function(){
             checkResponseSchema     : true
         });
 
+        console.log("----------------------> Extend")
         var config = defaultConfig.extend({
             endPoint        : "/fetch/user",
             assertFuncArr   : [assertSpy2],
-            dataArr         : [function(env:JasmineAsyncEnv){
+                dataArr         : [function(env:JasmineAsyncEnv){
                 return {name:"jon"};
             }],
             obfuscateArr    : [obfuSpy2]
@@ -82,6 +83,33 @@ describe("Config system used to power the framework calls", function(){
         expect(useConfig.headers.age).toBe("12");
         expect(useConfig.requestOptions.qs).toBe("123");
         expect(useConfig.requestOptions.json).toBe(true);
+    });
+
+    it("Ensure no extension leakage", function(){
+        var configOne       = new CallConfig({dataArr:[{id:"1"}]});
+        var configTwo       = new CallConfig({dataArr:[{id:"2"}]});
+        var configThree     = new CallConfig({dataArr:[{id:"3"}]});
+        var useConfig       = configOne.extend(configTwo).extend(configThree);
+
+        expect(useConfig.getDataImpl(new JasmineAsyncEnv()).id).toBe("3");
+
+        console.log("configOne: ", configOne.dataArr);
+        console.log("configTwo: ", configTwo.dataArr);
+        console.log("configThree: ", configThree.dataArr);
+
+        expect(configOne.dataArr[0].id).toBe("1");
+        expect(configTwo.dataArr[0].id).toBe("2");
+        expect(configThree.dataArr[0].id).toBe("3");
+    });
+
+    it("Ensure boolean overrides working", function(){
+        var configOne       = new CallConfig({checkResponseSchema:false});
+        var defaultConfig   = new CallConfig({checkResponseSchema:true});
+        var globalDefault   = new CallConfig({});
+
+        var useConfig       = defaultConfig.extend(configOne);
+        useConfig           = globalDefault.extend(useConfig);
+        expect(useConfig.checkResponseSchema).toEqual(false);
     });
 
 });

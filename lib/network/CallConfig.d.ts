@@ -17,17 +17,17 @@ export interface ICallConfigParams {
     testTimeout?: number;
     /** API base url*/
     baseURL?: string;
-    /** Timeout used for the http call, defaults to 15s */
+    /** Timeout used for the http call */
     timeout?: number;
     /** Call endpoint*/
     endPoint?: string;
     /** Headers array*/
     headers?: any;
-    /** Call HTTP method to use, defaults to POST*/
+    /** Call HTTP method to use*/
     method?: string;
     /** Amount of time to wait before executing the call*/
     waits?: number;
-    /** Status code expected for the response of this call, defaults to 200*/
+    /** Status code expected for the response of this call*/
     status?: number;
     /**
      * Array of functions that will be executed before the config is run
@@ -81,7 +81,7 @@ export interface IObfuscateFunc {
 export interface ISchemaFunc {
     (env: JasmineAsyncEnv, call: CallConfig, data: any, res: IncomingMessage): boolean;
 }
-export declare class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams {
+export declare class CallConfig extends ExtendingObject implements ICallConfigParams {
     testName: string;
     testModifier: string;
     testTimeout: number;

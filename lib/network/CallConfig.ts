@@ -24,7 +24,7 @@ export interface ICallConfigParams {
     /** API base url*/
     baseURL?:string;
 
-    /** Timeout used for the http call, defaults to 15s */
+    /** Timeout used for the http call */
     timeout?:number;
 
     /** Call endpoint*/
@@ -33,13 +33,13 @@ export interface ICallConfigParams {
     /** Headers array*/
     headers?:any;
 
-    /** Call HTTP method to use, defaults to POST*/
+    /** Call HTTP method to use*/
     method?:string;
 
     /** Amount of time to wait before executing the call*/
     waits?:number;
 
-    /** Status code expected for the response of this call, defaults to 200*/
+    /** Status code expected for the response of this call*/
     status?:number;
 
     /**
@@ -104,7 +104,7 @@ export interface ISchemaFunc{
     (env:JasmineAsyncEnv, call:CallConfig, data:any, res:IncomingMessage):boolean;
 }
 
-export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> implements ICallConfigParams{
+export class CallConfig extends ExtendingObject implements ICallConfigParams{
     public testName:string;
     public testModifier:string;
     public testTimeout:number;
@@ -126,8 +126,9 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
     public requestOptions:CoreOptions;
 
     constructor(params?:ICallConfigParams){
+        super();
         // Set defaults if not already done
-        super({method:"POST", status:200, timeout:15000}, params);
+        if (params) _.assignWith(this, params, this.extender);
     }
 
     /**
@@ -145,11 +146,11 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
      * Proxy for executing the dataArr calls
      */
     public getDataImpl(env:JasmineAsyncEnv):any {
-        if (this.dataArr == null){
+        if (this.dataArr == null || this.dataArr.length == 0){
             return null;
         }
         else{
-            var result;
+            var result = {};
             for (var i = 0; i < this.dataArr.length; i++) {
                 var arrItem = this.dataArr[i];
                 var dataResult;
@@ -162,12 +163,7 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
                 else{
                     throw new Error("Unsupported data object type, we only support: null, object or function: " + arrItem + JSON.stringify(this, null, 4));
                 }
-                if (!result){
-                    result = dataResult;
-                }
-                else{
-                    _.extend(result, dataResult);
-                }
+                _.extend(result, dataResult);
             }
             return result;
         }
@@ -226,7 +222,6 @@ export class CallConfig extends ExtendingObject<CallConfig, ICallConfigParams> i
      * By deeply cascaded we mean, properties that are objects are extended, properties that are arrays are joined
      */
     public extend(params:ICallConfigParams):CallConfig {
-        var inst = new CallConfig();
-        return super.extend(inst, params);
+        return <CallConfig> _.assignWith(new CallConfig(), this, params, this.extender);
     }
 }
