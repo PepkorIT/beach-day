@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
 import { generate as generateReport } from "./ReportGenerator"
+import { Matchers } from "../utils/Matchers";
 
 // Non typescript dependencies
 var moment          = require("moment");
@@ -287,6 +288,8 @@ export class BeachDayReporter{
     */
     public jasmineStarted(suiteInfo:ISuiteInfo):void {
         this.wrap(() => {
+            // Register all the matchers that are used in this framework
+            Matchers.registerMatchers();
             this.dataStore = {suiteInfo:suiteInfo, isSpec:false, id:(new Date()).getTime() + "", level:0};
             this.initIViewData(this.dataStore);
         })

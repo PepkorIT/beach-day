@@ -8,46 +8,60 @@ namespace jasmine {
         statusCodeToBe(statusCode:number): boolean;
     }
 }
-beforeEach(function(){
-    function throwError(util, customEqualityTesters){
-        return {
-            compare: function(actual:any, expected:string){
-                return {
-                    pass    : false,
-                    message : expected
-                }
-            }
-        };
-    }
 
-    jasmine.addMatchers({
-        toBePassing: function(util, customEqualityTesters){
-            return {
-                compare: function(actual:JasmineAsyncEnv){
-                    return {
-                        pass    : !actual.failed,
-                        message : "Expected all previous tests to have passed"
-                    }
-                }
-            };
-        },
+var registered = false;
 
-        throwExpectError: throwError,
-        throwImplementationError: throwError,
-
-        statusCodeToBe: function(util, customEqualityTesters){
-            return {
-                compare: function(actual:number, expected:number){
-                    var result = {pass:actual == expected, message:null};
-                    if (!result.pass){
-                        result.message = `Expected status code "${actual}" to be ${expected}`;
-                    }
-                    else{
-                        result.message = `Expected status code "${actual}" NOT to be ${expected}`;
-                    }
-                    return result;
-                }
-            };
+export var Matchers = {
+    registerMatchers: function (){
+        if (registered) {
+            return;
         }
-    });
-});
+        else if (typeof beforeEach == "function"){
+            registered = true;
+
+            beforeEach(function(){
+                function throwError(util, customEqualityTesters){
+                    return {
+                        compare: function(actual:any, expected:string){
+                            return {
+                                pass    : false,
+                                message : expected
+                            }
+                        }
+                    };
+                }
+
+                jasmine.addMatchers({
+                    toBePassing: function(util, customEqualityTesters){
+                        return {
+                            compare: function(actual:JasmineAsyncEnv){
+                                return {
+                                    pass    : !actual.failed,
+                                    message : "Expected all previous tests to have passed"
+                                }
+                            }
+                        };
+                    },
+
+                    throwExpectError: throwError,
+                    throwImplementationError: throwError,
+
+                    statusCodeToBe: function(util, customEqualityTesters){
+                        return {
+                            compare: function(actual:number, expected:number){
+                                var result = {pass:actual == expected, message:null};
+                                if (!result.pass){
+                                    result.message = `Expected status code "${actual}" to be ${expected}`;
+                                }
+                                else{
+                                    result.message = `Expected status code "${actual}" NOT to be ${expected}`;
+                                }
+                                return result;
+                            }
+                        };
+                    }
+                });
+            })
+        }
+    }
+};

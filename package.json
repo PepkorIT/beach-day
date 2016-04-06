@@ -1,6 +1,6 @@
 {
   "name": "beach-day",
-  "version": "0.1.83",
+  "version": "0.1.84",
   "description": "",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -21,9 +21,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.0",
-    "gulp-typescript": "^2.12.2",
     "tsconfig-glob": "^0.4.3",
     "typescript": "^1.8.9",
     "typings": "^0.7.11",
