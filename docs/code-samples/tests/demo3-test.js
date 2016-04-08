@@ -17,7 +17,8 @@ describe("Demo 3", function(){
     it("Ensure the world exists", env.wrap(function(env){
         RequestRunner.run(new CallConfig({
             baseURL     : baseURL,
-            endPoint    : "/posts/1"
+            endPoint    : "/posts/1",
+            method      : "GET"
         }), env);
     }));
 

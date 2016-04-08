@@ -18,7 +18,11 @@ export class RequestRunner {
      * call using a CallConfig and an environment
      */
     public static run(call:CallConfig, env:JasmineAsyncEnv):void {
-        var required = ["endPoint", "baseURL", "method"];
+
+        call = RequestRunner.globalDefaults ? RequestRunner.globalDefaults.extend(call) : call;
+
+        // Check required props
+        var required = ["endPoint", "baseURL"];
         for (var i = 0; i < required.length; i++) {
             if (call[required[i]] == null){
                 TestUtils.throwImplementationError(`${required[i]} is a required property to run your CallConfig: ${JSON.stringify(call, null, 4)}`);
@@ -27,11 +31,10 @@ export class RequestRunner {
             }
         }
 
-        // Fetch the current spec ID from the reporter so we can
-        // ensure the test is still running when we complete the request call
-        var currSpecId = getCurrentSpecId();
+        // Finally add some defaults if they don't exist
+        if (call.status == null) call.status = 200;
+        if (call.method == null) call.method = "GET";
 
-        call = RequestRunner.globalDefaults.extend(call);
 
         // Run the before calls for any last transformations
         call.beforeProxy(env);
@@ -76,6 +79,10 @@ export class RequestRunner {
 
             //console.log("running request() with:");
             //console.log(options);
+
+            // Fetch the current spec ID from the reporter so we can
+            // ensure the test is still running when we complete the request call
+            var currSpecId = getCurrentSpecId();
 
             request(options, (error:any, response:IncomingMessage, body:any) => {
                 // Ensure the same tests is still running
