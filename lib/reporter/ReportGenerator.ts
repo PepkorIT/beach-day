@@ -35,7 +35,8 @@ export function generate(viewModel?:IDataStore, config?:ReporterConfig):void {
     // Now the model
     _.extend(viewModel, {
         styles      : stylesStr,
-        title       : config.reportName
+        title       : config.reportName,
+        env         : process.env
     });
 
     // Render with mustache
