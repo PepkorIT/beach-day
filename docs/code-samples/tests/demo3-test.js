@@ -4,7 +4,7 @@ var CallConfig      = require("beach-day").CallConfig;
 
 var baseURL         = "http://jsonplaceholder.typicode.com";
 
-describe("My first beach-day suite", function(){
+describe("Demo 3", function(){
 
     // Simple test data
     var world = {status:"all well"};

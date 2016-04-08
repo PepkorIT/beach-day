@@ -18,15 +18,13 @@ export class RequestRunner {
      * call using a CallConfig and an environment
      */
     public static run(call:CallConfig, env:JasmineAsyncEnv):void {
-        if (call.endPoint == null) {
-            TestUtils.throwImplementationError("endPoint is a required field for your CallConfig: " + JSON.stringify(call, null, 4));
-            env.done();
-            return;
-        }
-        if (call.baseURL == null) {
-            TestUtils.throwImplementationError("baseURL is a required field for your CallConfig: " + JSON.stringify(call, null, 4));
-            env.done();
-            return;
+        var required = ["endPoint", "baseURL", "method"];
+        for (var i = 0; i < required.length; i++) {
+            if (call[required[i]] == null){
+                TestUtils.throwImplementationError(`${required[i]} is a required property to run your CallConfig: ${JSON.stringify(call, null, 4)}`);
+                env.done();
+                return;
+            }
         }
 
         // Fetch the current spec ID from the reporter so we can

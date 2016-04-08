@@ -1,4 +1,4 @@
-describe("My first beach-day suite", function(){
+describe("Demo 1", function(){
 
     // Simple test data
     var world = {status:"all well"};
