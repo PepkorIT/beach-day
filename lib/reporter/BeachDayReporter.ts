@@ -252,10 +252,10 @@ export class BeachDayReporter{
         this.config             = config == null ? new ReporterConfig() : <ReporterConfig> config;
         lastCreatedInstance     = this;
 
-        reporterConsole.logToConsole = config.logToConsole;
+        reporterConsole.logToConsole = this.config.logToConsole;
 
         // Override with our local proxy
-        if (config.includeAllConsoleLogs){
+        if (this.config.includeAllConsoleLogs){
             global.console.log      = reporterConsole.log;
             global.console.info     = reporterConsole.info;
             global.console.debug    = reporterConsole.debug;
