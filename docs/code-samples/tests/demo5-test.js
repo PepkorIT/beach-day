@@ -14,10 +14,12 @@ describe("Demo 5 - Adding HTTP call assertions", function(){
     it("Ensure all our resulting data is correct", env.wrap(function(env){
         RequestRunner.run(new CallConfig({
             baseURL         : baseURL,
-            endPoint        : "/users/1",
+            endPoint        : "/users",
             method          : "GET",
             status          : 200,
             // Every function in the assertFuncArr is called after a successful (non timeout) HTTP call
+            // In here you can write any custom assertions you want to make about the response
+            // You can also use this place to store any data from the response onto the environment for later use
             assertFuncArr   : [function(env, call, body, res){
                 // Basic assertion in pure jasmine style
                 expect(body).toBeDefined();

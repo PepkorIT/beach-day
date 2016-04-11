@@ -17,7 +17,7 @@ describe("Demo 4 - Adding data to a POST call", function(){
             baseURL         : baseURL,
             endPoint        : "/users",
             method          : "POST",
-            status          : 200,
+            status          : 201,
             // The dataArr can hold objects and / or functions that will return data objects
             // When a call is made the array is iterated and functions are called to retrieve the data
             // Each data object is extended by the next building up the data to be sent
