@@ -48,5 +48,4 @@ As the first test will encounter an expect() failure, the second test will not b
 
 To run your new test use `node boot.js`.
 
-[Previous Step](step1.md)  
-[Next Step](step3.md)
+[< Previous Step](step1.md) | [Next Step >](step3.md)
