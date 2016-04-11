@@ -33,8 +33,13 @@ export default class ObjectUtils {
             // Should have array selector in the part if the source is an array
             else if (currObject instanceof Array && part != "length"){
                 console.log("Error on array selector");
-                parts[i - 1] += "[missing here]";
-                throw new Error("Invalid property selection, no array selector []: " + parts.join("."));
+                if (i == 0){
+                    parts.unshift("[missing here]");
+                }
+                else{
+                    parts[i - 1] = parts[i - 1] + "[missing here]";
+                }
+                throw new Error("Invalid property selection. We encountered an array in the property selection but the next property selector in the string was not []: " + parts.join("."));
             }
             else{
                 currObject = currObject[part];

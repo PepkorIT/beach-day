@@ -85,56 +85,63 @@ export class RequestRunner {
             var currSpecId = getCurrentSpecId();
 
             request(options, (error:any, response:IncomingMessage, body:any) => {
-                // Ensure the same tests is still running
-                if (currSpecId != getCurrentSpecId()){
-                    TestUtils.throwImplementationError("HTTP callback was executed after the test had been completed. Please check your timeouts to make sure the test is not timing out before the HTTP request.");
-                    return;
-                }
-                if (error){
-                    // Log out the request and response
-                    //console.log("request() timeout with:");
-                    //console.log(options);
-                    RequestRunner.logRequestResponse(error, response, body, options);
-                    TestUtils.throwExpectError("Expected HTTP call to be successful");
-                }
-                else{
-                    // Assert the status
-                    expect(response.statusCode).statusCodeToBe(call.status);
+                // We wrap this section as it is executed asynchronously and jasmine cannot catch it.
+                // This should be removed when jasmine supports it: https://github.com/jasmine/jasmine/issues/529
+                try{
+                    // Ensure the same tests is still running
+                    if (currSpecId != getCurrentSpecId()){
+                        TestUtils.throwImplementationError("HTTP callback was executed after the test had been completed. Please check your timeouts to make sure the test is not timing out before the HTTP request.");
+                        return;
+                    }
+                    if (error){
+                        // Log out the request and response
+                        //console.log("request() timeout with:");
+                        //console.log(options);
+                        RequestRunner.logRequestResponse(error, response, body, options);
+                        TestUtils.throwExpectError("Expected HTTP call to be successful");
+                    }
+                    else{
+                        // Assert the status
+                        expect(response.statusCode).statusCodeToBe(call.status);
 
-                    // Try convert the json response
-                    if (body && typeof body == "string"){
-                        try{
-                            body = JSON.parse(body);
+                        // Try convert the json response
+                        if (body && typeof body == "string"){
+                            try{
+                                body = JSON.parse(body);
+                            }
+                            catch (e){
+                                TestUtils.throwExpectError("Expected JSON parsing from the server to pass");
+                                console.log("JSON Parsing Error: ");
+                                console.log(e.message);
+                                console.log("Original data from server:");
+                                console.log(body);
+                            }
                         }
-                        catch (e){
-                            TestUtils.throwExpectError("Expected JSON parsing from the server to pass");
-                            console.log("JSON Parsing Error: ");
-                            console.log(e.message);
-                            console.log("Original data from server:");
-                            console.log(body);
-                        }
+
+                        // Set the body on the environment
+                        env.currentBody = body;
+
+                        // Run obfuscation
+                        call.obfuscateFuncImpl(env, body, response);
+
+                        // Log out the request and response
+                        RequestRunner.logRequestResponse(error, response, body, options);
+
+                        // Check schemas if setup
+                        call.checkSchemaImpl(env, body, false, response);
+
+                        // Run assertions
+                        call.assertFuncImpl(env, body, response);
                     }
 
-                    // Set the body on the environment
-                    env.currentBody = body;
-
-                    // Run obfuscation
-                    call.obfuscateFuncImpl(env, body, response);
-
-                    // Log out the request and response
-                    RequestRunner.logRequestResponse(error, response, body, options);
-
-                    // Check schemas if setup
-                    call.checkSchemaImpl(env, body, false, response);
-
-                    // Run assertions
-                    call.assertFuncImpl(env, body, response);
-
-                    //expect(body).toNotHaveAnyStringNulls();
+                    // Lastly call done()
+                    env.done();
                 }
-
-                // Lastly call done()
-                env.done();
+                // Here we manually log an implementation error with the error stack.
+                catch (e){
+                    TestUtils.throwImplementationError(e.stack);
+                    env.done();
+                }
             });
         }
     }
