@@ -4,7 +4,7 @@ var CallConfig      = require("beach-day").CallConfig;
 
 var baseURL         = "http://jsonplaceholder.typicode.com";
 
-describe("Demo 5 - Adding HTTP call assertions", function(){
+describe("Demo 5 - Adding HTTP call assertions & environment variables", function(){
 
     // Async environment to link all tests
     var env = new JasmineAsyncEnv();
@@ -30,14 +30,39 @@ describe("Demo 5 - Adding HTTP call assertions", function(){
                 // This is a utility method on the environment that allows us to
                 // assert existence of a property on the body response
                 // It takes one string parameter that can use dot syntax and array selectors
-                env.checkProp("address.geo.lat");
+                // This avoids runtime errors in accessing missing properties
+                env.checkProp("[0].address.geo.lat");
 
                 // The checkProp will also return the value you are testing for if it exists
                 // So you can assert it is of a specific value
-                expect(env.checkProp("address.geo.lat")).toBe("-37.3159");
+                expect(env.checkProp("[0].address.geo.lat")).toBe("-37.3159");
 
                 // This should fail and give you an example output of a missing expected parameter
-                env.checkProp("address.geo.latitude");
+                // Uncomment to test
+                //env.checkProp("[0].address.geo.latitude");
+
+                // Finally lets store an id on the environment for use in a later test
+                // Here we use the setProp method which will set a property on the environment if it exists in the data
+                // Again we use a string based accessor to avoid runtime errors
+                env.setProp("userId", "[0].id");
+
+                // Alternative we could have used this, but it may cause a runtime error if there are no users returned
+                //env.id = body[0].id;
+            }]
+        }), env);
+    }));
+
+
+    // In this test we simply fetch a user using an environment variable and ensure a result.
+    it("Fetch a single user", env.wrap(function(env){
+        RequestRunner.run(new CallConfig({
+            baseURL         : baseURL,
+            endPoint        : "/users/" + env["userId"],
+            method          : "GET",
+            status          : 200,
+            assertFuncArr   : [function(env, call, body, res){
+                // Basic assertion in pure jasmine style
+                expect(body).toBeDefined();
             }]
         }), env);
     }));
