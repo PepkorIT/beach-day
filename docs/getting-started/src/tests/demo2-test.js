@@ -1,3 +1,4 @@
+// Here we import the JasmineAsyncEnv class from the beach-day module
 var JasmineAsyncEnv = require("beach-day").JasmineAsyncEnv;
 
 describe("Demo 2 - Adding an environment", function(){
@@ -5,7 +6,7 @@ describe("Demo 2 - Adding an environment", function(){
     // Simple test data
     var world = {status:"all well"};
 
-    // Async environment to link all tests
+    // Async environment used to link all tests in this suite together
     var env = new JasmineAsyncEnv();
 
     // Basic test 1 that wraps the test function with the env.wrap
