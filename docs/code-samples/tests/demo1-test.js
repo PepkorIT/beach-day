@@ -1,4 +1,4 @@
-describe("Demo 1", function(){
+describe("Demo 1 - Using the reporter", function(){
 
     // Simple test data
     var world = {status:"all well"};

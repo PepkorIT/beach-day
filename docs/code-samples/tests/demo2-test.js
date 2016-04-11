@@ -1,6 +1,6 @@
 var JasmineAsyncEnv = require("beach-day").JasmineAsyncEnv;
 
-describe("Demo 2", function(){
+describe("Demo 2 - Adding an environment", function(){
 
     // Simple test data
     var world = {status:"all well"};
