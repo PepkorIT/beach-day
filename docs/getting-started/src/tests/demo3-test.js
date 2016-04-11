@@ -2,6 +2,7 @@ var JasmineAsyncEnv = require("beach-day").JasmineAsyncEnv;
 var RequestRunner   = require("beach-day").RequestRunner;
 var CallConfig      = require("beach-day").CallConfig;
 
+// This is a public API that is very dumb but helps to illustrate our examples
 var baseURL         = "http://jsonplaceholder.typicode.com";
 
 describe("Demo 3 - Running an HTTP call", function(){
