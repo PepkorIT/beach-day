@@ -8,5 +8,5 @@ Essentially the beach-day module can be used solely as a custom jasmine reporter
 In addition to the reporter there is a config and utility system that makes it fast and simple to write functional HTTP tests.
 
 ## Documentation
-[Getting started guide](src/master/docs/getting-started-step1.md)  
+[Getting started guide](docs/getting-started-step1.md)  
 API Documentation
