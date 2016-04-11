@@ -1,14 +1,15 @@
 # Adding a test environment (Step 2)
 Now that we have a basic jasmine test in place and we have seen how to run and generate our beach-day report. Lets dive in a bit deeper to understand some of the utilities of the framework.
 
-As an HTTP testing framework one of the major requirements is to make a sequence of related HTTP calls that build up information and use that information in further HTTP calls. This mimics user interaction in the consuming application. 
+As an HTTP testing framework one of the major requirements is to make a sequence of related HTTP calls that build up information and use that information in further HTTP calls. This mimics user interaction a consumer application. 
 Additionally if there are any test failures in this sequence, we wouldn't want any further calls to be executed after a failure as their data may depend on previous calls.
 
 A jasmine test has the concepts of: passed, failed and skipped. With beach-day we add an additional concept of not run. Basically this means that a test was not executed at all because a previous test had failed.
 
-As jasmine does not support these abilities we introduce the JasmineAsyncEnv class also referred to as the environment.
+As jasmine does not support these abilities natively we introduce the JasmineAsyncEnv class also referred to as the environment to help accomplish them.
 
-We can use an environment to wrap tests so they will only execute if the previous tests have all passed. We can also use an environment to store information from tests to be used in later tests.
+We can use an environment to wrap test functions so they will only execute if all the tests before it have passed. 
+Additionally we can also use the environment to share information from tests to another.
 
 Lets create a new test file example of this at `tests/demo2-test.js`:
 ```javascript
