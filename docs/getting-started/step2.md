@@ -9,7 +9,7 @@ A jasmine test has the concepts of: passed, failed and skipped. With beach-day w
 As jasmine does not support these abilities natively we introduce the JasmineAsyncEnv class also referred to as the environment to help accomplish them.
 
 We can use an environment to wrap test functions so they will only execute if all the tests before it have passed. 
-Additionally we can also use the environment to share information from tests to another.
+Additionally we can use it to share information from tests to another.
 
 Lets create a new test file example of this at `tests/demo2-test.js`:
 ```javascript
@@ -43,7 +43,10 @@ describe("Demo 2 - Adding an environment", function(){
 });
 ```
 
-Run your new test using `node boot.js` and take a look at the report to see how it all works.
+So what has happened here? We have created a new JasmineAsyncEnv which will be shared by all the tests in this suite. We have wrapped all the test functions using env.wrap(). This will execute the passed function [asynchronously](http://jasmine.github.io/edge/introduction.html#section-Asynchronous_Support) and set the done function on the environment to be called when the test is complete.
+As the first test will encounter an expect() failure, the second test will not be executed and have the status of "not run" 
+
+To run your new test use `node boot.js`.
 
 [Previous Step](step1.md)
 [Next Step](step2.md)
