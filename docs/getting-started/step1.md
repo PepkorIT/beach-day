@@ -114,4 +114,4 @@ describe("Demo 1 - Using the reporter", function(){
 Now if you run your tests using `node boot.js` you should see your tests execute in the command line and there should be an output in the folder `reports/beach-day-report.html`. You can open this file using an HTTP server and should see your HTML report.
 If there is no report please ensure you don't have an errors in the command line or reread this step to make sure everything is correct.
 
-[Next Step](step2.md)
+### [Next Step](step2.md)
