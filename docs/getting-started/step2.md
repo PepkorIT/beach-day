@@ -1,4 +1,4 @@
-#Adding a test environment (Step 2)
+# Adding a test environment (Step 2)
 Now that we have a basic jasmine test in place and we have seen how to run and generate our beach-day report. Lets dive in a bit deeper to understand some of the utilities of the framework.
 
 As an HTTP testing framework one of the major requirements is to make a sequence of related HTTP calls that build up information and use that information in further HTTP calls. This mimics user interaction in the consuming application. 

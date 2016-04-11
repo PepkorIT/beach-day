@@ -3,8 +3,8 @@
 > **Before we begin:** 
 > 
 > It is important that you have a grasp of the jasmine framework and core concepts.
-> The beach-day module builds on top of the jasmine test runner and its documentation won't cover jasmine in great detail. 
-> Please review or refer to the [jasmine documentation](http://jasmine.github.io/edge) for this.
+> The beach-day module builds on top of the jasmine test runner and this documentation won't cover jasmine in great detail. 
+> Please refer to the [jasmine documentation](http://jasmine.github.io/edge/introduction.html) for this.
 > 
 > **Source Files:**
 > All of the code samples in this tutorial can be found in the [src](src) folder of this directory. 
@@ -81,7 +81,7 @@ jasmineInst.execute();
 ```
 
 
-Next up we create need a jasmine config file to tell jasmine where our tests are located. Create a new file called jasmine_config.json in the project root with:
+Next up we need to create a jasmine config file to tell jasmine where our tests are located. Create a new file called jasmine_config.json in the project root with:
 
 ``` json
 {
