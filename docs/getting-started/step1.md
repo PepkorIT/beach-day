@@ -86,6 +86,18 @@ Next up we create need a jasmine config file to tell jasmine where our tests are
     "stopSpecOnExpectationFailure": false,
     "random": false
 }
-``` 
+```
+
+Finally lets add a basic test to ensure our environment is all setup and working. Create a new file under `tests/hello-world-test.js` with the content:
+```javascript
+describe("Hello world", function(){
+    it("My first test", function(){
+        expect("hello").toBe("hello");
+    });
+});
+```
+
+Now if you run your tests using `node boot.js` you should see your tests execute in the command line and there should be an output in the folder `reports/beach-day-report.html`. You can open this file using an HTTP server and should see your HTML report.
+If there is no report please ensure you don't have an errors in the command line or reread this step to make sure everything is correct.
 
 [Next Step](step2.md)
