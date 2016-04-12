@@ -45,6 +45,12 @@ export interface ICallConfigParams {
     /** Array of data objects / functions to be sent with the call, either a function that will be evoked to get the result or an object*/
     dataArr?:Array<IDataFunc | any>;
 
+    /** Function that can be used to serialise the data POSTED to the server */
+    dataSerialisationFunc?:ISerialiseFunc;
+
+    /** Function that can be used to deserialise the data returned from the server */
+    dataDeSerialisationFunc?:IDeSerialiseFunc;
+
     /** List of functions to run custom assertions for this call*/
     assertFuncArr?:Array<IAssertFunc>;
 
@@ -88,6 +94,12 @@ export interface IBeforeFunc{
 export interface IAssertFunc{
     (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IncomingMessage):void;
 }
+export interface ISerialiseFunc{
+    (env:JasmineAsyncEnv, call:CallConfig, data:any):string;
+}
+export interface IDeSerialiseFunc{
+    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IncomingMessage):string;
+}
 export interface IDataFunc{
     (env:JasmineAsyncEnv, call:CallConfig):any;
 }
@@ -109,6 +121,8 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     public method:string;
     public beforeFuncArr:Array<IBeforeFunc>;
     public dataArr:Array<IDataFunc | any>;
+    public dataSerialisationFunc:ISerialiseFunc;
+    public dataDeSerialisationFunc:IDeSerialiseFunc;
     public assertFuncArr:Array<IAssertFunc>;
     public obfuscateArr:Array<IObfuscateFunc>;
     public checkRequestSchemaFunc:ISchemaFunc;

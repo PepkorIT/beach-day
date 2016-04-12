@@ -14,7 +14,9 @@ jasmineInst.configureDefaultReporter({print: function(){}});
 
 // Add a basic reporter for the console :)
 jasmineInst.addReporter(new SpecReporter({
-    displayStacktrace: "all"
+    displayStacktrace       : "all",
+    displayPendingSummary   : false,
+    displayPendingSpec      : false
 }));
 
 // Add our custom HTML reporter

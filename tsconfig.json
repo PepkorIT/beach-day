@@ -37,6 +37,6 @@
         "lib/utils/TestUtils.ts",
         "tests/framework/ConfigTest.ts",
         "tests/framework/ReportTest.ts",
-        "test_boot.ts"
+        "tests/framework/RequestRunnerTest.ts"
     ]
 }

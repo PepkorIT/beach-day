@@ -8,8 +8,11 @@ import * as _ from "lodash";
 import * as path from "path";
 import * as request from "request";
 import {getCurrentSpecId} from "../reporter/BeachDayReporter";
+import ObjectUtils from "../utils/ObjectUtils";
 
 export class RequestRunner {
+
+    public static request = request;
 
     public static globalDefaults = new CallConfig();
 
@@ -38,10 +41,14 @@ export class RequestRunner {
         // Run the before calls for any last transformations
         call.beforeProxy(env);
 
-        // Default header to use json
-        var headers = {
-            "Content-Type": "application/json"
-        };
+        // Header generation
+        var headers = {};
+
+        // Default headers to use json
+        if (!RequestRunner.hasHeader(call.headers, "Content-Type")){
+            headers["Content-Type"] = "application/json";
+        }
+
         if (call.headers) {
             for (var propName in call.headers){
                 if (!headers.hasOwnProperty(propName.toLowerCase())){
@@ -57,7 +64,12 @@ export class RequestRunner {
             var data = call.getDataImpl(env);
             if (data) {
                 requestPassed   = call.checkSchemaImpl(env, data, true, null);
-                sendBody        = JSON.stringify(data);
+                if (call.dataSerialisationFunc != null){
+                    sendBody    = call.dataSerialisationFunc(env, call, data);
+                }
+                else{
+                    sendBody    = JSON.stringify(data);
+                }
             }
         }
 
@@ -83,7 +95,7 @@ export class RequestRunner {
             // ensure the test is still running when we complete the request call
             var currSpecId = getCurrentSpecId();
 
-            request(options, (error:any, response:IncomingMessage, body:any) => {
+            RequestRunner.request(options, (error:any, res:IncomingMessage, body:any) => {
                 // We wrap this section as it is executed asynchronously and jasmine cannot catch it.
                 // This should be removed when jasmine supports it: https://github.com/jasmine/jasmine/issues/529
                 try{
@@ -96,18 +108,25 @@ export class RequestRunner {
                         // Log out the request and response
                         //console.log("request() timeout with:");
                         //console.log(options);
-                        RequestRunner.logRequestResponse(error, response, body, options);
+                        RequestRunner.logRequestResponse(error, res, body, options);
                         TestUtils.throwExpectError("Expected HTTP call to be successful");
                     }
                     else{
                         // Try convert the json response
+                        var parsePassed = true;
                         if (body && typeof body == "string"){
                             try{
-                                body = JSON.parse(body);
+                                if (call.dataDeSerialisationFunc != null){
+                                    body = call.dataDeSerialisationFunc(env, call, body, res);
+                                }
+                                else{
+                                    body = JSON.parse(body);
+                                }
                             }
                             catch (e){
+                                parsePassed = false;
                                 TestUtils.throwExpectError("Expected JSON parsing from the server to pass");
-                                console.log("JSON Parsing Error: ");
+                                console.log("Parsing Error: ");
                                 console.log(e.message);
                                 console.log("Original data from server:");
                                 console.log(body);
@@ -118,16 +137,16 @@ export class RequestRunner {
                         env.currentBody = body;
 
                         // Run obfuscation
-                        call.obfuscateFuncImpl(env, body, response);
+                        if (parsePassed) call.obfuscateFuncImpl(env, body, res);
 
                         // Log out the request and response
-                        RequestRunner.logRequestResponse(error, response, body, options);
+                        RequestRunner.logRequestResponse(error, res, body, options);
 
                         // Check schemas if setup
-                        call.checkSchemaImpl(env, body, false, response);
+                        if (parsePassed) call.checkSchemaImpl(env, body, false, res);
 
                         // Run assertions
-                        call.assertFuncImpl(env, body, response);
+                        if (parsePassed) call.assertFuncImpl(env, body, res);
                     }
 
                     // Lastly call done()
@@ -142,6 +161,21 @@ export class RequestRunner {
         }
     }
 
+    public static hasHeader(headers:any, name:string, value?:string):boolean {
+        var hasHeader = false;
+        if (headers != null){
+            for (var propName in headers){
+                if (propName.toLowerCase() == name.toLowerCase()){
+                    if (value == null || (value != null && headers[propName].toLowerCase().indexOf(value) != -1)){
+                        hasHeader = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return hasHeader;
+    }
+
     /**
      * Pretty logging for the reporter of the request and repsonse
      */
@@ -149,10 +183,10 @@ export class RequestRunner {
         if (res) {
             console.log("<strong>REQUEST</strong>");
             console.log("<hr class='short' />");
-            console.log("URL: " + res.request.uri.href);
-            console.log("Method: " + res.request.method);
-            console.log("Request Headers:\n" + JSON.stringify(res.request.headers, null, 4));
-            console.log("Body:\n" + res.request.body);
+            console.log("URL: " + ObjectUtils.getProp(res, "request.uri.href"));
+            console.log("Method: " + ObjectUtils.getProp(res, "res.request.method"));
+            console.log("Request Headers:\n" + JSON.stringify(ObjectUtils.getProp(res, "request.headers"), null, 4));
+            console.log("Body:\n" + ObjectUtils.getProp(res, "request.body"));
             console.log("");
             console.log("<strong>RESPONSE</strong>");
             console.log("<hr class='short' />");
@@ -172,11 +206,8 @@ export class RequestRunner {
             console.log("Request Headers:\n" + JSON.stringify(options.headers, null, 4));
             if (options.body){
                 var body = options.body;
-                for (var propName in options.headers){
-                    if (propName.toLowerCase() == "content-type" && options.headers[propName].toLowerCase().indexOf("application/json") != -1){
-                        body = JSON.stringify(JSON.parse(body), null, 4);
-                        break;
-                    }
+                if (RequestRunner.hasHeader(options.headers, "content-type", "application/json")){
+                    body = JSON.stringify(JSON.parse(body), null, 4);
                 }
                 console.log("Body:\n" + body);
             }
