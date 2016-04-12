@@ -5,7 +5,6 @@ namespace jasmine {
         toBePassing(): boolean;
         throwExpectError(message:string): boolean;
         throwImplementationError(message:string): boolean;
-        statusCodeToBe(statusCode:number): boolean;
     }
 }
 
@@ -44,22 +43,7 @@ export var Matchers = {
                     },
 
                     throwExpectError: throwError,
-                    throwImplementationError: throwError,
-
-                    statusCodeToBe: function(util, customEqualityTesters){
-                        return {
-                            compare: function(actual:number, expected:number){
-                                var result = {pass:actual == expected, message:null};
-                                if (!result.pass){
-                                    result.message = `Expected status code "${actual}" to be ${expected}`;
-                                }
-                                else{
-                                    result.message = `Expected status code "${actual}" NOT to be ${expected}`;
-                                }
-                                return result;
-                            }
-                        };
-                    }
+                    throwImplementationError: throwError
                 });
             })
         }
