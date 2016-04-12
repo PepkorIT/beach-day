@@ -7,12 +7,13 @@ Therefore beach-day utilises a framework under the hood called [request](https:/
 
 Built on top of request, beach-day provides a set of config & utilities to help write tests with very little code and make assertions on the data returned a breeze.
 
-The idea here is you can create a single config object that represents an HTTP call and all the assertions for that call. This makes the code required to generate a basic test rather small.
+The idea here is you can create a single config object that represents an HTTP call and all the assertions for that call. This makes the code required to generate a basic very minimal.
 
 This process manifests in the form of two classes: the `CallConfig` which defines all the config for an HTTP call and the `RequestRunner` which does the execution of the call, taking a config object and an environment.
 
 Lets create a new test file example of this at `tests/demo3-test.js`:
 ```javascript
+// Here we import the three required classes from the beach-day module
 var JasmineAsyncEnv = require("beach-day").JasmineAsyncEnv;
 var RequestRunner   = require("beach-day").RequestRunner;
 var CallConfig      = require("beach-day").CallConfig;

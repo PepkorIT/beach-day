@@ -1,3 +1,4 @@
+// Here we import the three required classes from the beach-day module
 var JasmineAsyncEnv = require("beach-day").JasmineAsyncEnv;
 var RequestRunner   = require("beach-day").RequestRunner;
 var CallConfig      = require("beach-day").CallConfig;
@@ -7,7 +8,7 @@ var baseURL         = "http://jsonplaceholder.typicode.com";
 
 describe("Demo 3 - Running an HTTP call", function(){
 
-    // Async environment to link all tests
+    // Async environment to wrap all tests
     var env = new JasmineAsyncEnv();
 
     // This test will run a basic HTTP call and ensure a status of 200
