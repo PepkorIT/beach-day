@@ -32,7 +32,6 @@ export class RequestRunner {
         }
 
         // Finally add some defaults if they don't exist
-        if (call.status == null) call.status = 200;
         if (call.method == null) call.method = "GET";
 
 
@@ -101,9 +100,6 @@ export class RequestRunner {
                         TestUtils.throwExpectError("Expected HTTP call to be successful");
                     }
                     else{
-                        // Assert the status
-                        expect(response.statusCode).statusCodeToBe(call.status);
-
                         // Try convert the json response
                         if (body && typeof body == "string"){
                             try{

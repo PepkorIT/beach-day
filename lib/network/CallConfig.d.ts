@@ -25,10 +25,6 @@ export interface ICallConfigParams {
     headers?: any;
     /** Call HTTP method to use*/
     method?: string;
-    /** Amount of time to wait before executing the call*/
-    waits?: number;
-    /** Status code expected for the response of this call*/
-    status?: number;
     /**
      * Array of functions that will be executed before the config is run
      * Can be used to transform the config as a last stage
@@ -90,8 +86,6 @@ export declare class CallConfig extends ExtendingObject implements ICallConfigPa
     endPoint: string;
     headers: any;
     method: string;
-    waits: number;
-    status: number;
     beforeFuncArr: Array<IBeforeFunc>;
     dataArr: Array<IDataFunc | any>;
     assertFuncArr: Array<IAssertFunc>;

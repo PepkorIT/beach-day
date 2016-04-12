@@ -55,10 +55,10 @@ describe("Config system used to power the framework calls", function () {
     });
     it("Test that the extension is working", function () {
         var defaultConfig = new index_1.CallConfig({});
-        var callConfig = new index_1.CallConfig({ status: 500 });
+        var callConfig = new index_1.CallConfig({ testName: "something" });
         index_1.console.log("Using call config in test: ", callConfig);
         var useConfig = defaultConfig.extend(callConfig);
-        expect(useConfig.status).toBe(500);
+        expect(useConfig.testName).toBe("something");
     });
     it("Test object extension", function () {
         var configOne = new index_1.CallConfig();
