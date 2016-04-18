@@ -4,7 +4,7 @@ var RequestRunner   = require("beach-day").RequestRunner;
 var CallConfig      = require("beach-day").CallConfig;
 
 // This is a public API that is very dumb but helps to illustrate our examples
-var baseURL         = "http://jsonplaceholder.typicode.com";
+var baseURL         = "http://localhost:3000";
 
 describe("Demo 3 - Running an HTTP call", function(){
 
@@ -18,8 +18,7 @@ describe("Demo 3 - Running an HTTP call", function(){
         RequestRunner.run(new CallConfig({
             baseURL     : baseURL,
             endPoint    : "/posts/1",
-            method      : "GET",
-            status      : 200
+            method      : "GET"
         }), env);
     }));
 });

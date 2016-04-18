@@ -2,21 +2,20 @@ var JasmineAsyncEnv = require("beach-day").JasmineAsyncEnv;
 var RequestRunner   = require("beach-day").RequestRunner;
 var CallConfig      = require("beach-day").CallConfig;
 
-var baseURL         = "http://jsonplaceholder.typicode.com";
+var baseURL         = "http://localhost:3000";
 
 describe("Demo 5 - Adding HTTP call assertions & environment variables", function(){
 
     // Async environment to link all tests
     var env = new JasmineAsyncEnv();
 
-    // This test will run a basic HTTP call and ensure a status of 200
+    // This test will run a basic HTTP call
     // We also provide an assert function so we can run custom assertions
     it("Ensure all our resulting data is correct", env.wrap(function(env){
         RequestRunner.run(new CallConfig({
             baseURL         : baseURL,
             endPoint        : "/users",
             method          : "GET",
-            status          : 200,
             // Every function in the assertFuncArr is called after a successful (non timeout) HTTP call
             // In here you can write any custom assertions you want to make about the response
             // You can also use this place to store any data from the response onto the environment for later use

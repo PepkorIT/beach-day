@@ -4,7 +4,7 @@ var RequestRunner   = require("beach-day").RequestRunner;
 var CallConfig      = require("beach-day").CallConfig;
 
 // This is a public API that is very dumb but helps to illustrate our examples
-var baseURL         = "http://jsonplaceholder.typicode.com";
+var baseURL         = "http://localhost:3000";
 
 describe("Demo 4 - Adding data to a POST call", function(){
 
