@@ -1,40 +1,85 @@
-# Adding data to a POST call (Step 4)
+# Assertions & data sharing (Step 5)
 
-We have seen how to setup basic GET tests lets add a POST call with some data attached.
+Up until now we have only been looking at how to use the framework to setup tests and HTTP calls using config and utilities. 
 
-Data is setup for an HTTP call using the `CallConfig dataArr` property. This array can hold any amount of objects or functions to return objects.
+What we haven't touched on is running assertions on the HTTP call results themselves and storing data for use in other calls.
 
-When an HTTP call is made this array is iterated and objects are extended one over the next to build up a final object to send with the call. By default the framework will use `JSON.stringify()` for serialise the data before making the call, if you want to override this you can set the `CallConfig dataSerialisationFunc` property.
+Like all other facets in the beach-day system the assertions are also typed onto the CallConfig object.
+The `CallConfig assertFuncArr` property is an array of functions that will be executed after a successful HTTP call.
 
-Lets create a new test file example of this at `tests/demo4-test.js`:
-```javascript
-// Here we import the three required classes from the beach-day module
+The take in the environment, call config, response body and the raw response object.
+
+In these methods the developer can write any custom assertions that he so chooses. Additionally the environment object used to link all tests has some utility methods `(checkProp() & setProp())` to help make assertions easier.
+
+Lets create a new test file example of this at `tests/demo5-test.js`:
+```
 var JasmineAsyncEnv = require("beach-day").JasmineAsyncEnv;
 var RequestRunner   = require("beach-day").RequestRunner;
 var CallConfig      = require("beach-day").CallConfig;
 
-// This is a public API that is very dumb but helps to illustrate our examples
 var baseURL         = "http://localhost:3000";
 
-describe("Demo 4 - Adding data to a POST call", function(){
+describe("Demo 5 - Adding HTTP call assertions & environment variables", function(){
 
     // Async environment to link all tests
     var env = new JasmineAsyncEnv();
 
-
     // This test will run a basic HTTP call
     // We also provide an assert function so we can run custom assertions
-    it("Create new user", env.wrap(function(env){
+    it("Ensure all our resulting data is correct", env.wrap(function(env){
         RequestRunner.run(new CallConfig({
             baseURL         : baseURL,
             endPoint        : "/users",
-            method          : "POST",
-            // The dataArr can hold objects and / or functions that will return data objects
-            // When a call is made the array is iterated and functions are called to retrieve the data
-            // Each data object is extended by the next building up the data to be sent
-            // In this case we only have one
-            dataArr         : [function(env, call){
-                return {userId:1, title:"New Post", body:"Ipsum here"};
+            method          : "GET",
+            // Every function in the assertFuncArr is called after a successful (non timeout) HTTP call
+            // In here you can write any custom assertions you want to make about the response
+            // You can also use this place to store any data from the response onto the environment for later use
+            assertFuncArr   : [function(env, call, body, res){
+                // Basic assertion in pure jasmine style
+                expect(body).toBeDefined();
+
+                // Make sure the response status code is correct
+                expect(res.statusCode).toBe(200);
+
+                // Same assertion as before, the runner adds the body on the environment object
+                expect(env.currentBody).toBeDefined();
+
+                // This is a utility method on the environment that allows us to
+                // assert existence of a property on the body response
+                // It takes one string parameter that can use dot syntax and array selectors
+                // This avoids runtime errors in accessing missing properties
+                env.checkProp("[0].address.geo.lat");
+
+                // The checkProp will also return the value you are testing for if it exists
+                // So you can assert it is of a specific value
+                expect(env.checkProp("[0].address.geo.lat")).toBe("-37.3159");
+
+                // This should fail and give you an example output of a missing expected parameter
+                // Uncomment to test
+                //env.checkProp("[0].address.geo.latitude");
+
+                // Finally lets store an id on the environment for use in a later test
+                // Here we use the setProp method which will set a property on the environment if it exists in the data
+                // Again we use a string based accessor to avoid runtime errors
+                env.setProp("userId", "[0].id");
+
+                // Alternative we could have used this, but it may cause a runtime error if there are no users returned
+                //env.id = body[0].id;
+            }]
+        }), env);
+    }));
+
+
+    // In this test we simply fetch a user using an environment variable and ensure a result.
+    it("Fetch a single user", env.wrap(function(env){
+        RequestRunner.run(new CallConfig({
+            baseURL         : baseURL,
+            endPoint        : "/users/" + env["userId"],
+            method          : "GET",
+            status          : 200,
+            assertFuncArr   : [function(env, call, body, res){
+                // Basic assertion in pure jasmine style
+                expect(body).toBeDefined();
             }]
         }), env);
     }));
@@ -43,12 +88,11 @@ describe("Demo 4 - Adding data to a POST call", function(){
 
 
 So lets examine what has happened in the above test. 
-
- - We have made a new HTTP call using the call config, this time using the "POST" method type.
- - We have added a function to return data using the dataArr
- - This call will be run sending the object return in the dataArr function as a JSON string to the server
-
-
+ - We have two HTTP calls / tests defined in our suite, both run custom assertions on the response
+ - In the first method we use the checkProp() method on the environment to run a number of assertions on the response and the data returned.
+ - Additionally we add some of the response data onto the environment for use in the next call.
+ - Lastly we make a second call utilising the data on the environment to generate part of the config
 
 
-### [Previous Step](step3.md) | [Next Step](step5.md)
+
+### [Previous Step](step4.md) | [Next Step](step6.md)

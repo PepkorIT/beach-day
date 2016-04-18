@@ -23,7 +23,7 @@ describe("Demo 5 - Adding HTTP call assertions & environment variables", functio
                 // Basic assertion in pure jasmine style
                 expect(body).toBeDefined();
 
-                // Make sure the response code is correct
+                // Make sure the response status code is correct
                 expect(res.statusCode).toBe(200);
 
                 // Same assertion as before, the runner adds the body on the environment object
