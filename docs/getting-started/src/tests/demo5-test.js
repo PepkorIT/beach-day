@@ -23,23 +23,23 @@ describe("Demo 5 - Adding HTTP call assertions & environment variables", functio
                 // Basic assertion in pure jasmine style
                 expect(body).toBeDefined();
 
-                // Make sure the response status code is correct
-                expect(res.statusCode).toBe(200);
-
                 // Same assertion as before, the runner adds the body on the environment object
                 expect(env.currentBody).toBeDefined();
 
+                // Make sure the response status code is correct
+                expect(res.statusCode).toBe(200);
+
                 // This is a utility method on the environment that allows us to
-                // assert existence of a property on the body response
+                // assert existence of a property on the response body
                 // It takes one string parameter that can use dot syntax and array selectors
-                // This avoids runtime errors in accessing missing properties
+                // This avoids runtime errors when trying to access properties that don't exist
                 env.checkProp("[0].address.geo.lat");
 
-                // The checkProp will also return the value you are testing for if it exists
+                // The checkProp will also return the value you are testing, if it exists
                 // So you can assert it is of a specific value
                 expect(env.checkProp("[0].address.geo.lat")).toBe("-37.3159");
 
-                // This should fail and give you an example output of a missing expected parameter
+                // This will fail and give you an example output of a missing expected parameter
                 // Uncomment to test
                 //env.checkProp("[0].address.geo.latitude");
 
