@@ -23,11 +23,10 @@ var baseURL         = "http://jsonplaceholder.typicode.com";
 
 describe("Demo 3 - Running an HTTP call", function(){
 
-    // Async environment to link all tests
+    // Async environment to wrap all tests
     var env = new JasmineAsyncEnv();
 
-    // This test will run a basic HTTP call and ensure a status of 200
-    // If the status is anything other than 200 it will fail.
+    // This test will run a basic HTTP call
     // We pass the environment to the runner so it can
     // auto complete the test for us when done running.
     it("Ensure we get a simple result", env.wrap(function(env){
@@ -51,6 +50,7 @@ So lets examine what has happened in the above test.
 
 When the runner executes the call, the one assertion it will make for us automatically is the status of the HTTP call.
 
+> **Convention:**
 > As a convention it is recommended to keep it to 1 HTTP per jasmine test but there may be exceptions to this for instance if you wanted to run a poll till a certain value has changed.
 > It is up to the developer to make this decision but recommended to use 1 test per call
 

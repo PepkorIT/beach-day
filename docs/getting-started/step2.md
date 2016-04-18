@@ -43,8 +43,11 @@ describe("Demo 2 - Adding an environment", function(){
 });
 ```
 
-So what has happened here? We have created a new JasmineAsyncEnv which will be shared by all the tests in this suite. We have wrapped all the test functions using env.wrap(). This will execute the passed function [asynchronously](http://jasmine.github.io/edge/introduction.html#section-Asynchronous_Support) and set the done function on the environment to be called when the test is complete.
-As the first test will encounter an expect() failure, the second test will not be executed and have the status of "not run" 
+So lets examine what has happened in the above test.
+
+ - We have created a new JasmineAsyncEnv which will be shared by all the tests in this suite.
+ - We have wrapped all the test functions using env.wrap(). This will execute the passed function [asynchronously](http://jasmine.github.io/edge/introduction.html#section-Asynchronous_Support) and set the done function on the environment to be called when the test is complete.
+ - As the first test will encounter an expect() failure, the second test will not be executed and have the status of "not run" 
 
 To run your new test use `node boot.js`.
 

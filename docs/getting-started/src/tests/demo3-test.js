@@ -11,8 +11,7 @@ describe("Demo 3 - Running an HTTP call", function(){
     // Async environment to wrap all tests
     var env = new JasmineAsyncEnv();
 
-    // This test will run a basic HTTP call and ensure a status of 200
-    // If the status is anything other than 200 it will fail.
+    // This test will run a basic HTTP call
     // We pass the environment to the runner so it can
     // auto complete the test for us when done running.
     it("Ensure we get a simple result", env.wrap(function(env){
