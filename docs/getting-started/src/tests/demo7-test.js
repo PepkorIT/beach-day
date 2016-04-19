@@ -42,7 +42,7 @@ describe("Demo 6 - Config defaults and extension", function(){
         // You can change this to something else to see this test fail in the report
         statusCode  : 200
     });
-    
+
     var env = new JasmineAsyncEnv();
 
     // Now that we are utilising the config extension the test body verbosity drops substantially

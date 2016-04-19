@@ -1,3 +1,17 @@
+# Schema validation (Step 6)
+
+One of the common tasks required when testing an HTTP service is to ensure that the responses have a specific format. Often times format requirements for an API can be missed by the naked eye so its good to do a code based check on the format.
+
+Luckily for us there is already a system designed for this when it comes to JSON. Its called JSON schema validation. beach-day has some utilities to help writing schema validators and executing them. 
+
+Under the hood beach-day uses the [tiny validator](https://github.com/geraintluff/tv4) library to run all schema validations.
+
+We recommended that you use tiny validator and a swagger schema to validate your JSON responses and requests but you are not tied to those choices, you can implement which ever schema validation mechanism you like.
+
+The beach-day CallConfig object provides properties to run response **and** request schema checks. It is just as important to make sure the data you are sending to the server is correct.
+
+Lets create a new test file example of this at `tests/demo6-test.js`:
+```javascript
 var JasmineAsyncEnv = require("beach-day").JasmineAsyncEnv;
 var RequestRunner   = require("beach-day").RequestRunner;
 var CallConfig      = require("beach-day").CallConfig;
@@ -56,3 +70,8 @@ describe("Demo 6 - Schema validation", function(){
         }), env);
     }));
 });
+```
+
+So lets examine what has happened in the above test.
+
+### [Previous Step](step5.md) | [Next Step](step7.md)

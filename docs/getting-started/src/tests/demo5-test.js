@@ -61,7 +61,6 @@ describe("Demo 5 - Adding HTTP call assertions & environment variables", functio
             baseURL         : baseURL,
             endPoint        : "/users/" + env["userId"],
             method          : "GET",
-            status          : 200,
             assertFuncArr   : [function(env, call, body, res){
                 // Basic assertion in pure jasmine style
                 expect(body).toBeDefined();
