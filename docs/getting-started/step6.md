@@ -74,4 +74,10 @@ describe("Demo 6 - Schema validation", function(){
 
 So lets examine what has happened in the above test.
 
+ - We ran a simple HTTP GET
+ - We populated the checkResponseSchemaFunc and set the checkResponseSchema to true
+ - When the call was completed the checkResponseSchemaFunc() was fired and we validated the schema
+ - The schema was written inline for simplicity
+ - We utilised the TestUtils.validateSchema to get some pretty printing in the report for errors
+
 ### [Previous Step](step5.md) | [Next Step](step7.md)
