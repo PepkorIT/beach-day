@@ -1,10 +1,10 @@
 # Config extension & defaults (Step 7)
 
-Something you may have noticed in all of the tests we have written in this tutorial is some of the config may get quite verbose in a real world scenario of testing an entire API and all of its use cases.
+Something you may have noticed in all of the tests we have written in this tutorial is that some of your config may get quite verbose when written in a real world scenario.
 
-This was one of the primary considerations for the beach-day framework as there is no need to implementing projects to be rewriting unnecessary config. As [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) as possible right :)
+This was one of the primary considerations for the beach-day framework as there is no need for an implementing project to be rewriting unnecessary config. As [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) as possible right :)
 
-There is a built in method for the CallConfig called `extend()'. This extend method will take the current config, generate a new one based on it and extend that using all the properties for an objects passed in. 
+There is a built in method for the `CallConfig` called `extend()`. This extend method will take the current config, generate a new one based on it and extend that using all the properties for the object passed in. 
 It goes further than simply overwriting properties, if an object is encountered it will extend the original object with the new one. If an array is encountered it will add all the new entries to the original.
 
 This gives us the power to build up config objects in a hierarchy that we so choose. Just to clarify the functionality of the config object here is an abstract code sample to help explain.
@@ -74,7 +74,7 @@ RequestRunner.globalDefaults = new CallConfig({
 
 
 
-describe("Demo 6 - Config defaults and extension", function(){
+describe("Demo 7 - Config defaults and extension", function(){
 
     // Here we create a default config we can base our tests off
     // This config will need to be manually extended to be used

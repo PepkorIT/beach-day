@@ -28,7 +28,7 @@ RequestRunner.globalDefaults = new CallConfig({
 
 
 
-describe("Demo 6 - Config defaults and extension", function(){
+describe("Demo 7 - Config defaults and extension", function(){
 
     // Here we create a default config we can base our tests off
     // This config will need to be manually extended to be used
