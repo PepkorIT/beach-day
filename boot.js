@@ -10,12 +10,15 @@ console.log("----------------------------------------------------");
 jasmineInst.configureDefaultReporter({ print: function () { } });
 // Add a basic reporter for the console :)
 jasmineInst.addReporter(new SpecReporter({
-    displayStacktrace: "all"
+    displayStacktrace: "all",
+    displayPendingSummary: false,
+    displayPendingSpec: false
 }));
 // Add our custom HTML reporter
 jasmineInst.addReporter(new BeachDayReporter_1.BeachDayReporter({
     logToConsole: true,
     includeAllConsoleLogs: false,
+    maxTestTime: 2000
 }));
 jasmineInst.loadConfigFile("jasmine_config.json");
 jasmineInst.execute();

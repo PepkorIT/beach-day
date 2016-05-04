@@ -1,10 +1,9 @@
-import { JasmineAsyncEnv, console } from "../../lib/index";
+import { JasmineAsyncEnv, console, ReporterAPI, TestUtils} from "../../lib/index";
 import * as request from "request";
-import {TestUtils} from "../../lib/utils/TestUtils";
 
 // Report is excluded by default as this suite is designed to check the output of the reporter
 // Enable it to test the reporter output
-xdescribe("Report testing wrapper", function(){
+describe("Report testing wrapper", function(){
 
     describe("Category 1", function(){
 
@@ -157,4 +156,15 @@ xdescribe("Report testing wrapper", function(){
         });
 
     });
-})
+
+    describe("Report check", function(){
+        var env = new JasmineAsyncEnv();
+
+        it("Test longer test time (expect pass)", env.wrap(function(env){
+            ReporterAPI.overrideSpecMaxTestTime(3000);
+
+            setTimeout(env.done, 3010);
+
+        }), 6000);
+    })
+});

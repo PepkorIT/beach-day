@@ -1,9 +1,8 @@
 "use strict";
 var index_1 = require("../../lib/index");
-var TestUtils_1 = require("../../lib/utils/TestUtils");
 // Report is excluded by default as this suite is designed to check the output of the reporter
 // Enable it to test the reporter output
-xdescribe("Report testing wrapper", function () {
+describe("Report testing wrapper", function () {
     describe("Category 1", function () {
         var env = new index_1.JasmineAsyncEnv();
         it("Run async test (expect pass)", env.wrap(function (env) {
@@ -84,10 +83,10 @@ xdescribe("Report testing wrapper", function () {
             }
         };
         it("Expect missing schema (expect impl error)", function () {
-            TestUtils_1.TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get", false);
+            index_1.TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get", false);
         });
         it("Expect missing schema for response (expect impl error)", function () {
-            TestUtils_1.TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get", true, 200);
+            index_1.TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get", true, 200);
         });
         it("Expect an invalid schema (expect fail)", function () {
             var swagger = {
@@ -103,7 +102,7 @@ xdescribe("Report testing wrapper", function () {
                     }
                 }
             };
-            TestUtils_1.TestUtils.validateSwaggerSchema({ name: 100, age: "jon" }, swagger, "/fetch/user", "Get", true, 200);
+            index_1.TestUtils.validateSwaggerSchema({ name: 100, age: "jon" }, swagger, "/fetch/user", "Get", true, 200);
         });
         it("Expect an invalid request schema (expect impl error)", function () {
             var swagger = {
@@ -120,10 +119,17 @@ xdescribe("Report testing wrapper", function () {
                     }
                 }
             };
-            TestUtils_1.TestUtils.validateSwaggerSchema({ name: 100, age: "jon" }, swagger, "/fetch/user", "Get", true);
+            index_1.TestUtils.validateSwaggerSchema({ name: 100, age: "jon" }, swagger, "/fetch/user", "Get", true);
         });
         it("Expect invalid status code (expect fail)", function () {
             expect("200").statusCodeToBe(500);
         });
+    });
+    describe("Report check", function () {
+        var env = new index_1.JasmineAsyncEnv();
+        it("Test longer test time (expect pass)", env.wrap(function (env) {
+            index_1.ReporterAPI.overrideSpecMaxTestTime(3000);
+            setTimeout(env.done, 3010);
+        }), 6000);
     });
 });

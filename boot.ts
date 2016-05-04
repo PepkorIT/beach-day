@@ -23,7 +23,7 @@ jasmineInst.addReporter(new SpecReporter({
 jasmineInst.addReporter(new BeachDayReporter({
     logToConsole            : true,
     includeAllConsoleLogs   : false,
-    //maxTestTime             : 800
+    maxTestTime             : 2000
 }));
 
 jasmineInst.loadConfigFile("jasmine_config.json");

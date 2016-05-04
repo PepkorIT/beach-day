@@ -17,7 +17,7 @@
         "tests/**/*.ts",
         "!tests/**/*.d.ts",
         "typings/main.d.ts",
-        "test_boot.ts"
+        "boot.ts"
     ],
     "files": [
         "lib/custom_typings/utils/MatcherHelper.d.ts",
@@ -37,6 +37,7 @@
         "lib/utils/TestUtils.ts",
         "tests/framework/ConfigTest.ts",
         "tests/framework/ReportTest.ts",
-        "tests/framework/RequestRunnerTest.ts"
+        "tests/framework/RequestRunnerTest.ts",
+        "boot.ts"
     ]
 }

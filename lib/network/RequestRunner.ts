@@ -7,7 +7,7 @@ import {CallConfig} from "./CallConfig";
 import * as _ from "lodash";
 import * as path from "path";
 import * as request from "request";
-import {getCurrentSpecId} from "../reporter/BeachDayReporter";
+import {ReporterAPI} from "../reporter/BeachDayReporter";
 import ObjectUtils from "../utils/ObjectUtils";
 
 export class RequestRunner {
@@ -93,14 +93,14 @@ export class RequestRunner {
 
             // Fetch the current spec ID from the reporter so we can
             // ensure the test is still running when we complete the request call
-            var currSpecId = getCurrentSpecId();
+            var currSpecId = ReporterAPI.getCurrentSpecId();
 
             RequestRunner.request(options, (error:any, res:IncomingMessage, body:any) => {
                 // We wrap this section as it is executed asynchronously and jasmine cannot catch it.
                 // This should be removed when jasmine supports it: https://github.com/jasmine/jasmine/issues/529
                 try{
                     // Ensure the same tests is still running
-                    if (currSpecId != getCurrentSpecId()){
+                    if (currSpecId != ReporterAPI.getCurrentSpecId()){
                         TestUtils.throwImplementationError("HTTP callback was executed after the test had been completed. Please check your timeouts to make sure the test is not timing out before the HTTP request.");
                         return;
                     }

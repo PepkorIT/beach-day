@@ -1,4 +1,4 @@
-import {setCurrentEnvironment, clearCurrentEnvironment} from "../reporter/BeachDayReporter";
+import {ReporterAPI} from "../reporter/BeachDayReporter";
 import ObjectUtils from "./ObjectUtils";
 
 var counter = 0;
@@ -43,7 +43,7 @@ export class JasmineAsyncEnv implements IJasmineAsyncEnv {
                 _self.linkedEnv = null;
             }
 
-            setCurrentEnvironment(_self);
+            ReporterAPI.setCurrentEnvironment(_self);
             _self.done = function(){
                 // hook to do stuff when complete
                 done();

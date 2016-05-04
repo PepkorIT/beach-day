@@ -11,6 +11,7 @@ export interface ICustomSuite extends jasmine.Suite, IViewData {
 }
 export interface ICustomSpec extends jasmine.Spec, IViewData {
     beachStatus: string;
+    overrideMaxTestTime: number;
 }
 export interface IViewData {
     isSpec: boolean;
@@ -70,9 +71,6 @@ export declare class ReporterConfig implements IReporterConfig {
     latestReportName: string;
     reportStaticPath: string;
 }
-export declare function setCurrentEnvironment(env: JasmineAsyncEnv): void;
-export declare function clearCurrentEnvironment(): void;
-export declare function getCurrentSpecId(): string;
 export declare var consoleOrig: Console;
 export declare class ReporterConsole {
     logToConsole: boolean;
@@ -87,6 +85,11 @@ export declare class ReporterConsole {
     private store(args, logger);
 }
 export declare var console: ReporterConsole;
+export declare var ReporterAPI: {
+    overrideSpecMaxTestTime: (value: number) => void;
+    getCurrentSpecId: () => string;
+    setCurrentEnvironment: (env: JasmineAsyncEnv) => void;
+};
 export declare class BeachDayReporter {
     private dataStore;
     private currentSuite;
@@ -101,6 +104,7 @@ export declare class BeachDayReporter {
     constructor(config?: IReporterConfig);
     currentEnvironment: JasmineAsyncEnv;
     currentSpecId: string;
+    overrideSpecMaxTestTime(value: number): void;
     private wrap(cb);
     jasmineStarted(suiteInfo: ISuiteInfo): void;
     suiteStarted(result: ICustomSuite): void;

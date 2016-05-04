@@ -27,6 +27,7 @@ export interface ICustomSuite extends jasmine.Suite, IViewData {
 }
 export interface ICustomSpec extends jasmine.Spec, IViewData {
     beachStatus:string;
+    overrideMaxTestTime:number;
 }
 
 export interface IViewData{
@@ -141,18 +142,6 @@ API
 --------------------------------------------
 */
 
-// Hook to allow the env to register itself with the reporter
-var lastCreatedInstance:BeachDayReporter;
-export function setCurrentEnvironment(env:JasmineAsyncEnv):void {
-    lastCreatedInstance.currentEnvironment = env;
-}
-export function clearCurrentEnvironment():void {
-    lastCreatedInstance.currentEnvironment = null;
-}
-export function getCurrentSpecId():string {
-    return lastCreatedInstance.currentSpecId
-}
-
 // Store refs before they are overridden
 export var consoleOrig = global.console;
 var logOrig     = global.console.log;
@@ -230,6 +219,39 @@ function stringLogArguments(args:Array<any>):string {
 
 
 
+// Hook to allow the env to register itself with the reporter
+var lastCreatedInstance:BeachDayReporter;
+
+export var ReporterAPI = {
+    /**
+     * Overrides the default max test time for the reporter for a specific test
+     * Note: this can only be called inside the execution block of a test
+     *
+     * @param value {number} The max test time to used, milliseconds
+     */
+    overrideSpecMaxTestTime: function(value:number):void {
+        lastCreatedInstance.overrideSpecMaxTestTime(value);
+    },
+
+    /**
+     * Can be used used to ensure async tasks don't run after a test timeout or failure
+     * @returns {string} The current spec's id
+     */
+    getCurrentSpecId: function():string {
+        return lastCreatedInstance.currentSpecId
+    },
+
+    /**
+     * Used by the JasmineAsyncEnv to set a reference to itself on the reporter
+     * @param env {JasmineAsyncEnv}
+     */
+    setCurrentEnvironment: function(env:JasmineAsyncEnv):void {
+        lastCreatedInstance.currentEnvironment = env;
+    }
+};
+
+
+
 export class BeachDayReporter{
     private dataStore:IDataStore;
     private currentSuite:ICustomSuite;
@@ -271,6 +293,15 @@ export class BeachDayReporter{
 
     public get currentSpecId():string {
         return this.currentSpec ? this.currentSpec.id + "" : null;
+    }
+
+    public overrideSpecMaxTestTime(value:number):void {
+        if (this.currentSpec){
+            this.currentSpec.overrideMaxTestTime = value;
+        }
+        else{
+            throw new Error("You cannot call overrideSpecMaxTestTime() outside of a spec execution.");
+        }
     }
 
     private wrap(cb:Function):void {
@@ -373,7 +404,7 @@ export class BeachDayReporter{
             this.recurseSuitesPopulateViewData(this.dataStore);
 
             if (this.config.maxTestTime){
-                this.dataStore.maxTestTime = this.formatDuration(this.config.maxTestTime)
+                this.dataStore.maxTestTime = this.formatDuration(this.config.maxTestTime);
             }
 
             // Generate HTML report
@@ -413,7 +444,14 @@ export class BeachDayReporter{
                 spec.passedCount        = spec.beachStatus == BeachDayReporter.STATUS_PASSED ? 1 : 0;
                 spec.allPassed          = spec.passedCount == 1;
 
-                if (this.config.maxTestTime != null && spec.durationMilli > this.config.maxTestTime){
+                var maxTestTime         = null;
+                if (spec.overrideMaxTestTime != null){
+                    maxTestTime         = spec.overrideMaxTestTime;
+                }
+                else if (this.config.maxTestTime != null){
+                    maxTestTime         = this.config.maxTestTime;
+                }
+                if (spec.durationMilli > maxTestTime){
                     spec.durationWarning = true;
                 }
                 this.prettyProps(specOrSuite);
@@ -481,14 +519,20 @@ export class BeachDayReporter{
 
     private prettyProps(data:IViewData):void {
         data.durationFormatted  = this.formatDuration(data.durationMilli);
+        if (data.isSpec){
+            var spec:ICustomSpec = <ICustomSpec> data;
+            if (spec.overrideMaxTestTime != null){
+                data.durationFormatted += ` (Test max: ${this.formatDuration(spec.overrideMaxTestTime)})`;
+            }
+        }
         data.startTimeFormatted = moment(data.startTime).format("Do MMMM YYYY, HH:mm:ss");
         data.endTimeFormatted   = moment(data.endTime).format("Do MMMM YYYY, HH:mm:ss");
     }
 
     private formatDuration(durationMilli:number):string {
-        var seconds = Math.floor(durationMilli / (1000));
-        var mili    = durationMilli - seconds * 1000;
-        var miliStr = _.padStart(mili + "", 3, "0");
+        var seconds     = Math.floor(durationMilli / (1000));
+        var mili        = durationMilli - seconds * 1000;
+        var miliStr     = _.padStart(mili + "", 3, "0");
 
         var secondsStr  = seconds + "";
         if (seconds > 60){
