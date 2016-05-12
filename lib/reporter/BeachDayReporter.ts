@@ -73,6 +73,7 @@ export interface IReporterConfig {
     includeAllConsoleLogs?:boolean;
     maxTestTime?:number;
 }
+
 export class ReporterConfig implements IReporterConfig{
     public reportName:string;
     public reportDir:string;

@@ -21,6 +21,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-jsdoc3": "^0.2.1",
+    "jsdoc": "^3.4.0",
+    "minami": "^1.1.1",
     "tsconfig-glob": "^0.4.3",
     "typescript": "^1.8.9",
     "typings": "^0.7.11"
