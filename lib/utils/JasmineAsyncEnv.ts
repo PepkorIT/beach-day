@@ -1,20 +1,10 @@
 import {ReporterAPI} from "../reporter/BeachDayReporter";
 import ObjectUtils from "./ObjectUtils";
+import {TestUtils} from "./TestUtils";
 
 var counter = 0;
 
-export interface IJasmineAsyncEnv {
-    id:number;
-    currentBody:any;
-    failed:boolean;
-    done:() => void;
-    wrap(cb:(env:JasmineAsyncEnv) => void):(done) => void;
-    setProp(destinationName:string, sourceName:string):any;
-    checkProps(...propertyNames:Array<string>):void;
-    checkProp(sourceName:string):any;
-}
-
-export class JasmineAsyncEnv implements IJasmineAsyncEnv {
+export class JasmineAsyncEnv {
     public id:number;
     public currentBody:any;
 
@@ -83,5 +73,21 @@ export class JasmineAsyncEnv implements IJasmineAsyncEnv {
             }
             return currObject;
         }
+    }
+
+    /**
+     * Makes sure the supplied property doesn't exist on the currentBody
+     * @param propertyName
+     * @returns Returns the value found on currentBody using the property name
+     */
+    public checkPropDoesntExist(propertyName:string):any
+    {
+        if (propertyName == null) throw new Error("propertyName cannot be null");
+
+        var currObject  = ObjectUtils.getProp(this.currentBody, propertyName);
+        if (currObject != null){
+            TestUtils.throwExpectError("Expected property '" + propertyName + "' NOT to be present on response");
+        }
+        return currObject;
     }
 }

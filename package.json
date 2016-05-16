@@ -11,7 +11,7 @@
     "custom_typings/**/*.d.ts"
   ],
   "scripts": {
-    "test": "tsc && node ./test_boot.js",
+    "test": "tsc && node ./boot.js",
     "report": "tsc && node ./lib/reporter/TestReport.js"
   },
   "repository": {

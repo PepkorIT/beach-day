@@ -1,14 +1,4 @@
-export interface IJasmineAsyncEnv {
-    id: number;
-    currentBody: any;
-    failed: boolean;
-    done: () => void;
-    wrap(cb: (env: JasmineAsyncEnv) => void): (done) => void;
-    setProp(destinationName: string, sourceName: string): any;
-    checkProps(...propertyNames: Array<string>): void;
-    checkProp(sourceName: string): any;
-}
-export declare class JasmineAsyncEnv implements IJasmineAsyncEnv {
+export declare class JasmineAsyncEnv {
     linkedEnv: JasmineAsyncEnv;
     id: number;
     currentBody: any;
@@ -19,4 +9,10 @@ export declare class JasmineAsyncEnv implements IJasmineAsyncEnv {
     setProp(destinationName: string, sourceName: string): any;
     checkProps(...propertyNames: Array<string>): void;
     checkProp(sourceName: string): any;
+    /**
+     * Makes sure the supplied property doesn't exist on the currentBody
+     * @param propertyName
+     * @returns Returns the value found on currentBody using the property name
+     */
+    checkPropDoesntExist(propertyName: string): any;
 }
