@@ -7,7 +7,7 @@ Beach day is at its core, a custom [jasmine reporter](http://jasmine.github.io/2
 In addition to the reporter there is a config and utility system that makes it fast and simple to write functional HTTP tests.
 
 ## Documentation
-####[Getting started guide](docs/getting-started/step1.md)  
+#### [Getting started guide](docs/getting-started/step1.md)  
 
 #### [FAQ](docs/faq/index.md) 
 
