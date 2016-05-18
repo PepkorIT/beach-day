@@ -23,7 +23,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="JasmineAsyncEnv.html">JasmineAsyncEnv</a><ul class='methods'><li data-type='method'><a href="JasmineAsyncEnv.html#checkProp">checkProp</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#checkProps">checkProps</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#setProp">setProp</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#wrap">wrap</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#get">get</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="JasmineAsyncEnv.html">JasmineAsyncEnv</a><ul class='methods'><li data-type='method'><a href="JasmineAsyncEnv.html#checkProp">checkProp</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#checkPropDoesntExist">checkPropDoesntExist</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#checkProps">checkProps</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#setProp">setProp</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#wrap">wrap</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#get">get</a></li></ul>
 </nav>
 
 <div id="main">
@@ -41,6 +41,7 @@
             <pre class="prettyprint source linenums"><code>"use strict";
 var BeachDayReporter_1 = require("../reporter/BeachDayReporter");
 var ObjectUtils_1 = require("./ObjectUtils");
+var TestUtils_1 = require("./TestUtils");
 var counter = 0;
 var JasmineAsyncEnv = (function () {
     /**
@@ -53,7 +54,26 @@ var JasmineAsyncEnv = (function () {
      */
     function JasmineAsyncEnv(linkedEnv) {
         this.linkedEnv = linkedEnv;
+        /**
+         * Property to hold the current data response from the server.
+         * Utility methods on this class act upon this object.
+         * @memberof! JasmineAsyncEnv#
+         */
+        this.currentBody = undefined;
+        /**
+         * Indicates if any of the tests using this envionment have failed.
+         * The wrap() method will not execute its callback on any further tests if this is true
+         * @memberof! JasmineAsyncEnv#
+         * @type {boolean}
+         */
         this.failed = false;
+        /**
+         * Should be called by the callback to wrap() to complete a test case.
+         * By default all tests that use wrap() are setup async so need to call this method
+         * @memberof! JasmineAsyncEnv#
+         * @type {function}
+         */
+        this.done = undefined;
         this.id = counter;
         counter++;
     }
@@ -129,28 +149,44 @@ var JasmineAsyncEnv = (function () {
         }
     };
     /**
-     * Utility method, used to check if a propery exists on this.currentBody
-     * Property identifier sourceName is passed using string values that can contain dots and array accessors.
+     * Utility method, used to check if a propery exists on this.currentBody.
+     * Property identifier propertyName is passed using string values that can contain dots and array accessors.
      * This means we can "try" access properties that would otherwise cause runtime errors without a lot of if statements.
      *
      * @memberof JasmineAsyncEnv
      *
-     * @param sourceName {String} The identifier for the source property on this.currentBody
-     * @returns {any} The value from this.currentBody[sourceName] if found
+     * @param propertyName {String} The identifier for the source property on this.currentBody
+     * @returns {any} The value from this.currentBody[propertyName] if found
      */
-    JasmineAsyncEnv.prototype.checkProp = function (sourceName) {
-        if (sourceName == null)
-            throw new Error("sourceName cannot be null");
+    JasmineAsyncEnv.prototype.checkProp = function (propertyName) {
+        if (propertyName == null)
+            throw new Error("propertyName cannot be null");
         if (this.currentBody == null) {
-            expect(this.currentBody).throwExpectError("Expected property '" + sourceName + "' to be present on response but response was " + this.currentBody);
+            expect(this.currentBody).throwExpectError("Expected property '" + propertyName + "' to be present on response but response was " + this.currentBody);
         }
         else {
-            var currObject = ObjectUtils_1.default.getProp(this.currentBody, sourceName);
+            var currObject = ObjectUtils_1.default.getProp(this.currentBody, propertyName);
             if (currObject == null) {
-                expect(this.currentBody).throwExpectError("Expected property '" + sourceName + "' to be present on response but failed to locate it");
+                expect(this.currentBody).throwExpectError("Expected property '" + propertyName + "' to be present on response but failed to locate it");
             }
             return currObject;
         }
+    };
+    /**
+     * Makes sure the supplied property doesn't exist on the currentBody
+     * @memberof JasmineAsyncEnv
+     *
+     * @param propertyName
+     * @returns Returns the value found on currentBody using the property name
+     */
+    JasmineAsyncEnv.prototype.checkPropDoesntExist = function (propertyName) {
+        if (propertyName == null)
+            throw new Error("propertyName cannot be null");
+        var currObject = ObjectUtils_1.default.getProp(this.currentBody, propertyName);
+        if (currObject != null) {
+            TestUtils_1.TestUtils.throwExpectError("Expected property '" + propertyName + "' NOT to be present on response");
+        }
+        return currObject;
     };
     return JasmineAsyncEnv;
 }());
@@ -167,7 +203,7 @@ exports.JasmineAsyncEnv = JasmineAsyncEnv;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu May 12 2016 21:48:16 GMT+0200 (SAST) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed May 18 2016 20:50:51 GMT+0200 (SAST) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

@@ -23,7 +23,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="JasmineAsyncEnv.html">JasmineAsyncEnv</a><ul class='methods'><li data-type='method'><a href="JasmineAsyncEnv.html#checkProp">checkProp</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#checkProps">checkProps</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#setProp">setProp</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#wrap">wrap</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#get">get</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="JasmineAsyncEnv.html">JasmineAsyncEnv</a><ul class='methods'><li data-type='method'><a href="JasmineAsyncEnv.html#checkProp">checkProp</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#checkPropDoesntExist">checkPropDoesntExist</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#checkProps">checkProps</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#setProp">setProp</a></li><li data-type='method'><a href="JasmineAsyncEnv.html#wrap">wrap</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#get">get</a></li></ul>
 </nav>
 
 <div id="main">
@@ -154,7 +154,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line6">line 6</a>
+        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line7">line 7</a>
     </li></ul></dd>
     
 
@@ -194,6 +194,219 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="this.currentBody"><span class="type-signature"></span>this.currentBody<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Property to hold the current data response from the server.
+Utility methods on this class act upon this object.</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="this.done"><span class="type-signature"></span>this.done<span class="type-signature"> :function</span></h4>
+
+
+
+
+<div class="description">
+    <p>Should be called by the callback to wrap() to complete a test case.
+By default all tests that use wrap() are setup async so need to call this method</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">function</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line36">line 36</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="this.failed"><span class="type-signature"></span>this.failed<span class="type-signature"> :boolean</span></h4>
+
+
+
+
+<div class="description">
+    <p>Indicates if any of the tests using this envionment have failed.
+The wrap() method will not execute its callback on any further tests if this is true</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -203,15 +416,15 @@
 
     
 
-    <h4 class="name" id="checkProp"><span class="type-signature"></span>checkProp<span class="signature">(sourceName)</span><span class="type-signature"> &rarr; {any}</span></h4>
+    <h4 class="name" id="checkProp"><span class="type-signature"></span>checkProp<span class="signature">(propertyName)</span><span class="type-signature"> &rarr; {any}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Utility method, used to check if a propery exists on this.currentBody
-Property identifier sourceName is passed using string values that can contain dots and array accessors.
+    <p>Utility method, used to check if a propery exists on this.currentBody.
+Property identifier propertyName is passed using string values that can contain dots and array accessors.
 This means we can &quot;try&quot; access properties that would otherwise cause runtime errors without a lot of if statements.</p>
 </div>
 
@@ -248,7 +461,7 @@ This means we can &quot;try&quot; access properties that would otherwise cause r
 
         <tr>
             
-                <td class="name"><code>sourceName</code></td>
+                <td class="name"><code>propertyName</code></td>
             
 
             <td class="type">
@@ -305,7 +518,7 @@ This means we can &quot;try&quot; access properties that would otherwise cause r
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line101">line 101</a>
+        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -332,7 +545,7 @@ This means we can &quot;try&quot; access properties that would otherwise cause r
 
         
 <div class="param-desc">
-    <p>The value from this.currentBody[sourceName] if found</p>
+    <p>The value from this.currentBody[propertyName] if found</p>
 </div>
 
 
@@ -348,6 +561,142 @@ This means we can &quot;try&quot; access properties that would otherwise cause r
 
     </dd>
 </dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="checkPropDoesntExist"><span class="type-signature"></span>checkPropDoesntExist<span class="signature">(propertyName)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Makes sure the supplied property doesn't exist on the currentBody</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>propertyName</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line142">line 142</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns the value found on currentBody using the property name</p>
+</div>
+
+
 
     
 
@@ -458,7 +807,7 @@ This means we can &quot;try&quot; access properties that would otherwise cause r
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line82">line 82</a>
+        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line102">line 102</a>
     </li></ul></dd>
     
 
@@ -622,7 +971,7 @@ If the sourceName is not found on this.currentBody no property is set</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line68">line 68</a>
+        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line88">line 88</a>
     </li></ul></dd>
     
 
@@ -775,7 +1124,7 @@ If the sourceName is not found on this.currentBody no property is set</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line27">line 27</a>
+        <a href="utils_JasmineAsyncEnv.js.html">utils/JasmineAsyncEnv.js</a>, <a href="utils_JasmineAsyncEnv.js.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -841,7 +1190,7 @@ If the sourceName is not found on this.currentBody no property is set</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu May 12 2016 21:48:16 GMT+0200 (SAST) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed May 18 2016 20:50:51 GMT+0200 (SAST) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

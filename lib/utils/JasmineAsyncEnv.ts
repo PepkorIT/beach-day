@@ -7,10 +7,29 @@ var counter = 0;
 export class JasmineAsyncEnv {
 
     public id:number;
-    public currentBody:any;
 
+    /**
+     * Property to hold the current data response from the server.
+     * Utility methods on this class act upon this object.
+     * @memberof! JasmineAsyncEnv#
+     */
+    public currentBody:any = undefined;
+
+    /**
+     * Indicates if any of the tests using this envionment have failed.
+     * The wrap() method will not execute its callback on any further tests if this is true
+     * @memberof! JasmineAsyncEnv#
+     * @type {boolean}
+     */
     public failed:boolean = false;
-    public done:() => void;
+
+    /**
+     * Should be called by the callback passed to wrap() to complete a test case.
+     * By default all tests that use wrap() are setup async so need to call this method
+     * @memberof! JasmineAsyncEnv#
+     * @type {function}
+     */
+    public done:() => void = undefined;
 
     /**
      * @class
@@ -98,25 +117,25 @@ export class JasmineAsyncEnv {
 
 
     /**
-     * Utility method, used to check if a propery exists on this.currentBody
-     * Property identifier sourceName is passed using string values that can contain dots and array accessors.
+     * Utility method, used to check if a propery exists on this.currentBody.
+     * Property identifier propertyName is passed using string values that can contain dots and array accessors.
      * This means we can "try" access properties that would otherwise cause runtime errors without a lot of if statements.
      *
      * @memberof JasmineAsyncEnv
      *
-     * @param sourceName {String} The identifier for the source property on this.currentBody
-     * @returns {any} The value from this.currentBody[sourceName] if found
+     * @param propertyName {String} The identifier for the source property on this.currentBody
+     * @returns {any} The value from this.currentBody[propertyName] if found
      */
-    public checkProp(sourceName:string):any {
-        if (sourceName == null) throw new Error("sourceName cannot be null");
+    public checkProp(propertyName:string):any {
+        if (propertyName == null) throw new Error("propertyName cannot be null");
 
         if (this.currentBody == null){
-            expect(this.currentBody).throwExpectError("Expected property '" + sourceName + "' to be present on response but response was " + this.currentBody);
+            expect(this.currentBody).throwExpectError("Expected property '" + propertyName + "' to be present on response but response was " + this.currentBody);
         }
         else{
-            var currObject  = ObjectUtils.getProp(this.currentBody, sourceName);
+            var currObject  = ObjectUtils.getProp(this.currentBody, propertyName);
             if (currObject == null){
-                expect(this.currentBody).throwExpectError("Expected property '" + sourceName + "' to be present on response but failed to locate it");
+                expect(this.currentBody).throwExpectError("Expected property '" + propertyName + "' to be present on response but failed to locate it");
             }
             return currObject;
         }
@@ -124,6 +143,8 @@ export class JasmineAsyncEnv {
 
     /**
      * Makes sure the supplied property doesn't exist on the currentBody
+     * @memberof JasmineAsyncEnv
+     *
      * @param propertyName
      * @returns Returns the value found on currentBody using the property name
      */
