@@ -1,6 +1,6 @@
 {
   "name": "beach-day",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -11,7 +11,7 @@
     "custom_typings/**/*.d.ts"
   ],
   "scripts": {
-    "test": "tsc && node ./test_boot.js",
+    "test": "tsc && node ./boot.js",
     "report": "tsc && node ./lib/reporter/TestReport.js"
   },
   "repository": {

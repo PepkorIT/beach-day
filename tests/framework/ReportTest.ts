@@ -3,7 +3,7 @@ import * as request from "request";
 
 // Report is excluded by default as this suite is designed to check the output of the reporter
 // Enable it to test the reporter output
-describe("Report testing wrapper", function(){
+xdescribe("Report testing wrapper", function(){
 
     describe("Category 1", function(){
 
