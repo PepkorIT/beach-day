@@ -1,6 +1,6 @@
 {
     "source": {
-        "include": ["lib", "package.json", "readme.md"],
+        "include": ["lib", "package.json", "docs/api-reference/index.md"],
         "includePattern": ".js$",
         "excludePattern": "(node_modules/|docs)"
     },
@@ -9,7 +9,10 @@
     ],
     "templates": {
         "cleverLinks": false,
-        "monospaceLinks": true
+        "monospaceLinks": true,
+        "default": {
+            "includeDate": false
+        }
     },
     "opts": {
         "destination": "./docs/api-reference/",
