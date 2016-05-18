@@ -7,5 +7,9 @@ Beach day is at its core, a custom [jasmine reporter](http://jasmine.github.io/2
 In addition to the reporter there is a config and utility system that makes it fast and simple to write functional HTTP tests.
 
 ## Documentation
-[Getting started guide](docs/getting-started/step1.md)  
-API Documentation
+####[Getting started guide](docs/getting-started/step1.md)  
+
+####[FAQ](docs/faq/index.md) 
+
+####API Documentation
+Full API documentation can be found in all the source files in the form of jsdoc and is built to the docs/api-reference folder. It will need to be served by a web server to view.
