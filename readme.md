@@ -9,7 +9,7 @@ In addition to the reporter there is a config and utility system that makes it f
 ## Documentation
 ####[Getting started guide](docs/getting-started/step1.md)  
 
-####[FAQ](docs/faq/index.md) 
+#### [FAQ](docs/faq/index.md) 
 
-####API Documentation
+#### API Documentation
 Full API documentation can be found in all the source files in the form of jsdoc and is built to the docs/api-reference folder. It will need to be served by a web server to view.
