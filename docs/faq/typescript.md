@@ -8,7 +8,13 @@ If you are not already using it I suggest you take a look at [tsconfig-glob](htt
 beach-day includes some other typings dependencies that will need to be installed and linked in your tsconfig.json for your project to compile.  
 I suggest you use the current industry standard for managing external [typings](https://github.com/typings/typings) as it will make your life a lot easier.  
 The dependencies are:  
-lodash, form-data, jasmine, node, request, request.
+lodash, form-data, jasmine, node, request, request
+
+
+Once you have your definition files all setup you can simply import all classes directly from the beach-day module like this:
+```TypeScript
+import {JasmineAsyncEnv, TestUtils} from "beach-day";
+```
 
 **Note:**
 If your compiler is still moaning about missing dependencies please check the typings.json file, in the root of this repository, to make sure you have of all the dependencies, this documentation could possibly be out of date.
