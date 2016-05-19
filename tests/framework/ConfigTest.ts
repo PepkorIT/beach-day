@@ -29,7 +29,7 @@ describe("Config system used to power the framework calls", function(){
             checkResponseSchema     : true
         });
 
-        console.log("----------------------> Extend")
+        console.log("----------------------> Extend");
         var config = defaultConfig.extend({
             endPoint        : "/fetch/user",
             assertFuncArr   : [assertSpy2],
@@ -41,7 +41,7 @@ describe("Config system used to power the framework calls", function(){
 
         expect(config.baseURL).toBe(defaultConfig.baseURL);
         expect(config.endPoint).toBe("/fetch/user");
-        expect(config.fullURL).toBe("http://www.something.com/fetch/user");
+        expect(config.getFullURL(env)).toBe("http://www.something.com/fetch/user");
 
         // Check data expansion
         var data = config.getDataImpl(env);
@@ -112,4 +112,23 @@ describe("Config system used to power the framework calls", function(){
         expect(useConfig.checkResponseSchema).toEqual(false);
     });
 
+    it("Ensure baseURL combinations work", function(){
+        var config = new CallConfig({
+            baseURL     : "www.tester.com",
+            endPoint    : "/something"
+        });
+        expect(config.getFullURL(env)).toBe("www.tester.com/something");
+
+        // Change baseURL to a function
+        config.baseURL = function(env:JasmineAsyncEnv) {
+            return "www.potato.co.za/";
+        };
+        expect(config.getFullURL(env)).toBe("www.potato.co.za/something");
+
+        // Change endPoint to a function
+        config.endPoint = function(env:JasmineAsyncEnv) {
+            return "//carpet";
+        };
+        expect(config.getFullURL(env)).toBe("www.potato.co.za/carpet");
+    });
 });

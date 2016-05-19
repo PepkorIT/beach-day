@@ -22,13 +22,13 @@ export interface ICallConfigParams {
     testTimeout?:number;
 
     /** API base url*/
-    baseURL?:string;
+    baseURL?:IDataFunc | string;
 
     /** Timeout used for the http call */
     timeout?:number;
 
     /** Call endpoint*/
-    endPoint?:string;
+    endPoint?:IDataFunc | string;
 
     /** Headers array*/
     headers?:any;
@@ -114,9 +114,9 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     public testName:string;
     public testModifier:string;
     public testTimeout:number;
-    public baseURL:string;
+    public baseURL:IDataFunc | string;
     public timeout:number;
-    public endPoint:string;
+    public endPoint:IDataFunc | string;
     public headers:any;
     public method:string;
     public beforeFuncArr:Array<IBeforeFunc>;
@@ -217,8 +217,12 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     /**
      * Returns the full api url for running the call
      */
-    public get fullURL():string {
-        return this.baseURL != null && this.endPoint != null ? urlJoin(this.baseURL, this.endPoint) : null;
+    public getFullURL(env:JasmineAsyncEnv):string {
+        if (this.baseURL != null && this.endPoint != null){
+            var valueFromMulti = (source:any):string => { return typeof source == "function" ? source(env, this) : source; };
+            return urlJoin(valueFromMulti(this.baseURL), valueFromMulti(this.endPoint));
+        }
+        return null;
     }
 
     /**

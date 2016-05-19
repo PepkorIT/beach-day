@@ -16,11 +16,11 @@ export interface ICallConfigParams {
      */
     testTimeout?: number;
     /** API base url*/
-    baseURL?: string;
+    baseURL?: IDataFunc | string;
     /** Timeout used for the http call */
     timeout?: number;
     /** Call endpoint*/
-    endPoint?: string;
+    endPoint?: IDataFunc | string;
     /** Headers array*/
     headers?: any;
     /** Call HTTP method to use*/
@@ -91,9 +91,9 @@ export declare class CallConfig extends ExtendingObject implements ICallConfigPa
     testName: string;
     testModifier: string;
     testTimeout: number;
-    baseURL: string;
+    baseURL: IDataFunc | string;
     timeout: number;
-    endPoint: string;
+    endPoint: IDataFunc | string;
     headers: any;
     method: string;
     beforeFuncArr: Array<IBeforeFunc>;
@@ -131,7 +131,7 @@ export declare class CallConfig extends ExtendingObject implements ICallConfigPa
     /**
      * Returns the full api url for running the call
      */
-    fullURL: string;
+    getFullURL(env: JasmineAsyncEnv): string;
     /**
      * Used to generated a new CallConfig instance
      * Properties are deeply cascaded onto the new instance using

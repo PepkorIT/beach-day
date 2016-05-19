@@ -34,7 +34,7 @@ describe("Config system used to power the framework calls", function () {
         });
         expect(config.baseURL).toBe(defaultConfig.baseURL);
         expect(config.endPoint).toBe("/fetch/user");
-        expect(config.fullURL).toBe("http://www.something.com/fetch/user");
+        expect(config.getFullURL(env)).toBe("http://www.something.com/fetch/user");
         // Check data expansion
         var data = config.getDataImpl(env);
         expect(data["id"]).toBe(1);
@@ -90,5 +90,22 @@ describe("Config system used to power the framework calls", function () {
         var useConfig = defaultConfig.extend(configOne);
         useConfig = globalDefault.extend(useConfig);
         expect(useConfig.checkResponseSchema).toEqual(false);
+    });
+    it("Ensure baseURL combinations work", function () {
+        var config = new index_1.CallConfig({
+            baseURL: "www.tester.com",
+            endPoint: "/something"
+        });
+        expect(config.getFullURL(env)).toBe("www.tester.com/something");
+        // Change baseURL to a function
+        config.baseURL = function (env) {
+            return "www.potato.co.za/";
+        };
+        expect(config.getFullURL(env)).toBe("www.potato.co.za/something");
+        // Change endPoint to a function
+        config.endPoint = function (env) {
+            return "//carpet";
+        };
+        expect(config.getFullURL(env)).toBe("www.potato.co.za/carpet");
     });
 });

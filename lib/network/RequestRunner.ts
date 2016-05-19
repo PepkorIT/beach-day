@@ -80,7 +80,7 @@ export class RequestRunner {
         else{
             // Create the options from the options in the config then the derived data
             var options = <request.UriOptions> _.extend({}, call.requestOptions, <request.CoreOptions> {
-                uri     : call.fullURL,
+                uri     : call.getFullURL(env),
                 method  : call.method.toUpperCase(),
                 headers : headers,
                 json    : false, // This is done manually so we can catch errors
