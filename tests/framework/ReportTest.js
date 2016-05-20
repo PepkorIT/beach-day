@@ -1,5 +1,7 @@
 "use strict";
 var index_1 = require("../../lib/index");
+var RequestRunner_1 = require("../../lib/network/RequestRunner");
+var CallConfig_1 = require("../../lib/network/CallConfig");
 // Report is excluded by default as this suite is designed to check the output of the reporter
 // Enable it to test the reporter output
 xdescribe("Report testing wrapper", function () {
@@ -125,11 +127,33 @@ xdescribe("Report testing wrapper", function () {
             expect("200").statusCodeToBe(500);
         });
     });
-    describe("Report check", function () {
+    describe("Reporter check", function () {
         var env = new index_1.JasmineAsyncEnv();
         it("Test longer test time (expect pass)", env.wrap(function (env) {
             index_1.ReporterAPI.overrideSpecMaxTestTime(3000);
             setTimeout(env.done, 3010);
         }), 6000);
+    });
+    describe("HTTP printing tester", function () {
+        var env = new index_1.JasmineAsyncEnv();
+        it("Test basic HTTP call", env.wrap(function (env) {
+            RequestRunner_1.RequestRunner.run(new CallConfig_1.CallConfig({
+                timeout: 15000,
+                baseURL: "http://jsonplaceholder.typicode.com",
+                endPoint: "/posts",
+                method: "POST",
+                dataArr: [{ name: "Jon", message: "Hellow World" }],
+                headers: {}
+            }), env);
+        }));
+        it("Test timout prints correctly (expect fail)", env.wrap(function (env) {
+            RequestRunner_1.RequestRunner.run(new CallConfig_1.CallConfig({
+                timeout: 100,
+                baseURL: "http://jsonplaceholder.typicode.com",
+                endPoint: "/posts",
+                method: "POST",
+                dataArr: [{ name: "Jon", message: "Hellow World" }]
+            }), env);
+        }));
     });
 });

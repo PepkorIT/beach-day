@@ -7,6 +7,7 @@ import {CallConfig} from "./CallConfig";
 import * as _ from "lodash";
 import * as path from "path";
 import * as request from "request";
+import * as URL from "url";
 import {ReporterAPI} from "../reporter/BeachDayReporter";
 import ObjectUtils from "../utils/ObjectUtils";
 
@@ -45,8 +46,8 @@ export class RequestRunner {
         var headers = {};
 
         // Default headers to use json
-        if (!RequestRunner.hasHeader(call.headers, "Content-Type")){
-            headers["Content-Type"] = "application/json";
+        if (!RequestRunner.hasHeader(call.headers, "content-type")){
+            headers["content-type"] = "application/json";
         }
 
         if (call.headers) {
@@ -109,16 +110,23 @@ export class RequestRunner {
                         // Generate a response object that is partially populated with only the request information
                         // We do this so the data for the request resides in the same place, always
                         var fakeResponse = {
-                            request : {
-                                // To be populated
+                            statusCode  : 0,
+                            body        : null,
+                            headers     : null,
+                            request     : {
+                                uri     : URL.parse(options.uri),
+                                method  : options["method"],
+                                headers : options["headers"],
+                                body    : options["body"]
                             }
                         };
+                        call.obfuscateFuncImpl(env, body, res);
 
-                        RequestRunner.logRequestResponse(error, res, body, options);
+                        RequestRunner.logRequestResponse(error, fakeResponse, body, options, true);
                         TestUtils.throwExpectError("Expected HTTP call to be successful");
                     }
                     else{
-                        // Try convert the json response
+                        // Try convert the response using the dataDeSerialisationFunc or JSON.parse()
                         var parsePassed = true;
                         if (body && typeof body == "string"){
                             try{
@@ -146,7 +154,7 @@ export class RequestRunner {
                         if (parsePassed) call.obfuscateFuncImpl(env, body, res);
 
                         // Log out the request and response
-                        RequestRunner.logRequestResponse(error, res, body, options);
+                        RequestRunner.logRequestResponse(error, res, body, options, false);
 
                         // Check schemas if setup
                         if (parsePassed) call.checkSchemaImpl(env, body, false, res);
@@ -185,20 +193,48 @@ export class RequestRunner {
     /**
      * Pretty logging for the reporter of the request and repsonse
      */
-    public static logRequestResponse(error:any, res:any, body:any, options:any){
-        if (res) {
+    public static logRequestResponse(error:any, res:any, parsedResponseBody:any, options:any, isError:boolean){
+        /*
+        {
+            "statusCode": 200,
+            "body": "",
+            "headers": {},
+            "request": {
+                "uri": "URL.parse object",
+                "method": "POST",
+                "headers": {},
+                "body": null
+            }
+        }
+        */
+        var requestBody     = ObjectUtils.getProp(res, "request.body");
+        var requestHeaders  = ObjectUtils.getProp(res, "request.headers");
+
+        // Pretty print the request response if we deem it to be of type JSON
+        if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, "content-type", "application/json")){
+            requestBody     = JSON.stringify(JSON.parse(requestBody), null, 4);
+        }
+
+        // Pretty print the response body only if it is already an object
+        if (parsedResponseBody && typeof parsedResponseBody == "object"){
+            parsedResponseBody = JSON.stringify(parsedResponseBody, null, 4);
+        }
+
+        if (!isError) {
             console.log("<strong>REQUEST</strong>");
             console.log("<hr class='short' />");
             console.log("URL: " + ObjectUtils.getProp(res, "request.uri.href"));
             console.log("Method: " + ObjectUtils.getProp(res, "request.method"));
-            console.log("Request Headers:\n" + JSON.stringify(ObjectUtils.getProp(res, "request.headers"), null, 4));
-            console.log("Body:\n" + ObjectUtils.getProp(res, "request.body"));
+            console.log("Request Headers:\n" + JSON.stringify(requestHeaders, null, 4));
+            console.log("Body:\n" + requestBody);
+
             console.log("");
+
             console.log("<strong>RESPONSE</strong>");
             console.log("<hr class='short' />");
             console.log("Status Code: " + res.statusCode);
             console.log("Response Headers:\n" + JSON.stringify(res.headers, null, 4));
-            console.log("Body:\n" + JSON.stringify(body, null, 4));
+            console.log("Body:\n" + parsedResponseBody);
             console.log("");
         }
         else{
@@ -207,17 +243,12 @@ export class RequestRunner {
 
             console.log("<strong>REQUEST</strong>");
             console.log("<hr class='short' />");
-            console.log("URL: " + options.uri);
-            console.log("Method: " + options.method);
-            console.log("Request Headers:\n" + JSON.stringify(options.headers, null, 4));
-            if (options.body){
-                var body = options.body;
-                if (RequestRunner.hasHeader(options.headers, "content-type", "application/json")){
-                    body = JSON.stringify(JSON.parse(body), null, 4);
-                }
-                console.log("Body:\n" + body);
-            }
-            console.log("Timeout: " + options.timeout);
+            console.log("URL: " + ObjectUtils.getProp(res, "request.uri.href"));
+            console.log("Method: " + ObjectUtils.getProp(res, "request.method"));
+            console.log("Request Headers:\n" + JSON.stringify(requestHeaders, null, 4));
+            console.log("Body:\n" + requestBody);
+
+            console.log("HTTP Timeout Used: " + (options.timeout / 1000) + "s");
             console.log("");
         }
     }

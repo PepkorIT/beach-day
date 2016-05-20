@@ -59,13 +59,12 @@ describe("RequestRunner tester", function(){
 
     it("Ensure default header is set", function(){
         RequestRunner.run(defaultConfig.extend({}), dummyEnv);
-        expect(requestOptions.headers["Content-Type"]).toBe("application/json");
+        expect(requestOptions.headers["content-type"]).toBe("application/json");
 
         RequestRunner.run(defaultConfig.extend({headers:{
-            "Content-type": "text/html"
+            "content-type": "text/html"
         }}), dummyEnv);
-        expect(requestOptions.headers["Content-Type"]).toBeUndefined();
-        expect(requestOptions.headers["Content-type"]).toBe("text/html");
+        expect(requestOptions.headers["content-type"]).toBe("text/html");
     });
 
     it("Ensure data is sent as default JSON", function(){
@@ -96,7 +95,7 @@ describe("RequestRunner tester", function(){
 
         expect(request).toHaveBeenCalledWith(jasmine.objectContaining({
             uri     : 'www.google.com/users',
-            headers : {'Content-Type': 'application/json'},
+            headers : {'content-type': 'application/json'},
             method  : "POST",
             json    : false,
             body    : '{"id":1}',

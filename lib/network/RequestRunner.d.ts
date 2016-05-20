@@ -13,5 +13,5 @@ export declare class RequestRunner {
     /**
      * Pretty logging for the reporter of the request and repsonse
      */
-    static logRequestResponse(error: any, res: any, body: any, options: any): void;
+    static logRequestResponse(error: any, res: any, parsedResponseBody: any, options: any, isError: boolean): void;
 }

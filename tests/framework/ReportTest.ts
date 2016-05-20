@@ -1,5 +1,7 @@
 import { JasmineAsyncEnv, console, ReporterAPI, TestUtils} from "../../lib/index";
 import * as request from "request";
+import {RequestRunner} from "../../lib/network/RequestRunner";
+import {CallConfig} from "../../lib/network/CallConfig";
 
 // Report is excluded by default as this suite is designed to check the output of the reporter
 // Enable it to test the reporter output
@@ -157,7 +159,7 @@ xdescribe("Report testing wrapper", function(){
 
     });
 
-    describe("Report check", function(){
+    describe("Reporter check", function(){
         var env = new JasmineAsyncEnv();
 
         it("Test longer test time (expect pass)", env.wrap(function(env){
@@ -166,5 +168,35 @@ xdescribe("Report testing wrapper", function(){
             setTimeout(env.done, 3010);
 
         }), 6000);
-    })
+    });
+
+    describe("HTTP printing tester", function(){
+        var env = new JasmineAsyncEnv();
+
+
+
+        it("Test basic HTTP call", env.wrap(function(env){
+            RequestRunner.run(new CallConfig({
+                timeout     : 15000,
+                baseURL     : "http://jsonplaceholder.typicode.com",
+                endPoint    : "/posts",
+                method      : "POST",
+                dataArr     : [{name:"Jon", message:"Hellow World"}],
+                headers     : {
+                    //"Content-Type": "application/text",
+                }
+            }), env);
+        }));
+
+        it("Test timout prints correctly (expect fail)", env.wrap(function(env){
+            RequestRunner.run(new CallConfig({
+                timeout     : 100,
+                baseURL     : "http://jsonplaceholder.typicode.com",
+                endPoint    : "/posts",
+                method      : "POST",
+                dataArr     : [{name:"Jon", message:"Hellow World"}]
+            }), env);
+        }));
+
+    });
 });
