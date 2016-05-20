@@ -1,5 +1,4 @@
 import {RequestRunner, CallConfig, JasmineAsyncEnv, console} from "../../lib/index";
-import {IncomingMessage} from "http";
 
 
 describe("Config system used to power the framework calls", function(){
