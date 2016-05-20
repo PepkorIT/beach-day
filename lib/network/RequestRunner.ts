@@ -204,6 +204,7 @@ export class RequestRunner {
         if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, "content-type", "application/json")){
             requestBody     = JSON.stringify(JSON.parse(requestBody), null, 4);
         }
+        if (requestBody == null) requestBody = "";
 
         // Pretty print the response body only if it is already an object
         if (parsedResponseBody && typeof parsedResponseBody == "object"){
@@ -238,6 +239,7 @@ export class RequestRunner {
             console.log("Request Headers:\n" + JSON.stringify(requestHeaders, null, 4));
             console.log("Body:\n" + requestBody);
 
+            console.log("");
             console.log("HTTP Timeout Used: " + (options.timeout / 1000) + "s");
             console.log("");
         }
