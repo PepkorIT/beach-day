@@ -1,7 +1,7 @@
 export default class ObjectUtils {
 
 
-    public static getProp(source:Object|Array<any>, propertyAccessor:string):any {
+    public static getProp(source:Object|Array<any>, propertyAccessor:string, convertUndefinedToNull:boolean = true):any {
         if (source == null) return null;
 
         var currObject  = source;
@@ -49,7 +49,10 @@ export default class ObjectUtils {
 
             if (currObject === null || currObject === undefined) break;
         }
-
+        // Do default conversion for ease of use
+        if (currObject === undefined && convertUndefinedToNull){
+            currObject = null;
+        }
         return currObject;
     }
 

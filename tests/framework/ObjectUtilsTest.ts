@@ -1,6 +1,6 @@
 import ObjectUtils from "../../lib/utils/ObjectUtils";
 
-fdescribe("ObjectUtils test suite", function(){
+describe("ObjectUtils test suite", function(){
     var source = {
         name: "Jon",
         address : {
@@ -18,9 +18,10 @@ fdescribe("ObjectUtils test suite", function(){
         expect(ObjectUtils.getProp(source, "address.number")).toBe(14);
         expect(ObjectUtils.getProp(source, "address.suburb.name")).toBe("mowbray");
         expect(ObjectUtils.getProp(source, "address.links[1]")).toBe("http://www.test2.com");
-        expect(ObjectUtils.getProp(source, "address.links[2]")).toBe(undefined);
-        expect(ObjectUtils.getProp(source, "notThere")).toBe(undefined);
-        expect(ObjectUtils.getProp(source, "address.notThere")).toBe(undefined);
+        expect(ObjectUtils.getProp(source, "address.links[2]")).toBe(null);
+        expect(ObjectUtils.getProp(source, "notThere")).toBe(null);
+        expect(ObjectUtils.getProp(source, "address.notThere")).toBe(null);
+        expect(ObjectUtils.getProp(source, "address.notThere", false)).toBe(undefined);
     });
 
     it("Test getProp() error condition", function(){

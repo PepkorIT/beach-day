@@ -9,6 +9,11 @@ describe("JasmineAsyncEnv Tests", function () {
         throwExpectError = jasmine.createSpy("throwExpectError");
         TestUtils_1.TestUtils.throwExpectError = throwExpectError;
     });
+    it("Test setProp() can handle dot syntax on destination and source", function () {
+        dummyEnv.currentBody = { address: { street: "clifton" } };
+        dummyEnv.setProp("address.street", "address.street");
+        expect(dummyEnv["address"]["street"]).toBe("clifton");
+    });
     it("Test JasmineAsyncEnv.checkPropDoesntExist failing", function () {
         spyOn(ObjectUtils_1.default, "getProp").and.callThrough();
         dummyEnv.currentBody = { prop1: "something" };

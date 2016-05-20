@@ -97,8 +97,11 @@ export class JasmineAsyncEnv {
      */
     public setProp(destinationName:string, sourceName:string):any {
         if (destinationName == null) throw new Error("destinationName cannot be null");
-        this[destinationName] = this.checkProp(sourceName);
-        return this[destinationName];
+        var value = this.checkProp(sourceName);
+        if (value != null){
+            ObjectUtils.setProp(this, destinationName, value);
+        }
+        return value;
     }
 
     /**

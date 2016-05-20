@@ -1,6 +1,6 @@
 "use strict";
 var ObjectUtils_1 = require("../../lib/utils/ObjectUtils");
-fdescribe("ObjectUtils test suite", function () {
+describe("ObjectUtils test suite", function () {
     var source = {
         name: "Jon",
         address: {
@@ -17,9 +17,10 @@ fdescribe("ObjectUtils test suite", function () {
         expect(ObjectUtils_1.default.getProp(source, "address.number")).toBe(14);
         expect(ObjectUtils_1.default.getProp(source, "address.suburb.name")).toBe("mowbray");
         expect(ObjectUtils_1.default.getProp(source, "address.links[1]")).toBe("http://www.test2.com");
-        expect(ObjectUtils_1.default.getProp(source, "address.links[2]")).toBe(undefined);
-        expect(ObjectUtils_1.default.getProp(source, "notThere")).toBe(undefined);
-        expect(ObjectUtils_1.default.getProp(source, "address.notThere")).toBe(undefined);
+        expect(ObjectUtils_1.default.getProp(source, "address.links[2]")).toBe(null);
+        expect(ObjectUtils_1.default.getProp(source, "notThere")).toBe(null);
+        expect(ObjectUtils_1.default.getProp(source, "address.notThere")).toBe(null);
+        expect(ObjectUtils_1.default.getProp(source, "address.notThere", false)).toBe(undefined);
     });
     it("Test getProp() error condition", function () {
         expect(function () {
