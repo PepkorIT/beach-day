@@ -1,5 +1,4 @@
 import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
-import {IncomingMessage} from "http";
 import {console} from "../reporter/BeachDayReporter";
 import {TestUtils} from "../utils/TestUtils";
 import {CallConfig} from "./CallConfig";
@@ -10,6 +9,9 @@ import * as request from "request";
 import * as URL from "url";
 import {ReporterAPI} from "../reporter/BeachDayReporter";
 import ObjectUtils from "../utils/ObjectUtils";
+import {Url} from "url";
+import {IRequestResponse} from "./IRequestResponse";
+
 
 export class RequestRunner {
 
@@ -96,7 +98,8 @@ export class RequestRunner {
             // ensure the test is still running when we complete the request call
             var currSpecId = ReporterAPI.getCurrentSpecId();
 
-            RequestRunner.request(options, (error:any, res:IncomingMessage, body:any) => {
+            RequestRunner.request(options, (error:any, sourceRes:any, body:any) => {
+                var res:IRequestResponse = sourceRes;
                 // We wrap this section as it is executed asynchronously and jasmine cannot catch it.
                 // This should be removed when jasmine supports it: https://github.com/jasmine/jasmine/issues/529
                 try{
@@ -109,10 +112,10 @@ export class RequestRunner {
                         // Log out the request and response
                         // Generate a response object that is partially populated with only the request information
                         // We do this so the data for the request resides in the same place, always
-                        var fakeResponse = {
+                        var fakeResponse:IRequestResponse = {
+                            headers     : null,
                             statusCode  : 0,
                             body        : null,
-                            headers     : null,
                             request     : {
                                 uri     : URL.parse(options.uri),
                                 method  : options["method"],
@@ -120,7 +123,7 @@ export class RequestRunner {
                                 body    : options["body"]
                             }
                         };
-                        call.obfuscateFuncImpl(env, body, res);
+                        call.obfuscateFuncImpl(env, null, fakeResponse);
 
                         RequestRunner.logRequestResponse(error, fakeResponse, body, options, true);
                         TestUtils.throwExpectError("Expected HTTP call to be successful");
@@ -193,20 +196,7 @@ export class RequestRunner {
     /**
      * Pretty logging for the reporter of the request and repsonse
      */
-    public static logRequestResponse(error:any, res:any, parsedResponseBody:any, options:any, isError:boolean){
-        /*
-        {
-            "statusCode": 200,
-            "body": "",
-            "headers": {},
-            "request": {
-                "uri": "URL.parse object",
-                "method": "POST",
-                "headers": {},
-                "body": null
-            }
-        }
-        */
+    public static logRequestResponse(error:any, res:IRequestResponse, parsedResponseBody:any, options:any, isError:boolean){
         var requestBody     = ObjectUtils.getProp(res, "request.body");
         var requestHeaders  = ObjectUtils.getProp(res, "request.headers");
 

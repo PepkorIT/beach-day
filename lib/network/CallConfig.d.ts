@@ -1,7 +1,7 @@
 import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
-import { IncomingMessage } from "http";
 import { ExtendingObject } from "./ExtendingObject";
 import { CoreOptions } from "request";
+import { IRequestResponse } from "./IRequestResponse";
 export interface ICallConfigParams {
     /** Only used when auto generating tests using a utility*/
     testName?: string;
@@ -70,22 +70,22 @@ export interface IBeforeFunc {
     (env: JasmineAsyncEnv, call: CallConfig): void;
 }
 export interface IAssertFunc {
-    (env: JasmineAsyncEnv, call: CallConfig, body: any, res: IncomingMessage): void;
+    (env: JasmineAsyncEnv, call: CallConfig, body: any, res: IRequestResponse): void;
 }
 export interface ISerialiseFunc {
     (env: JasmineAsyncEnv, call: CallConfig, data: any): string;
 }
 export interface IDeSerialiseFunc {
-    (env: JasmineAsyncEnv, call: CallConfig, body: any, res: IncomingMessage): string;
+    (env: JasmineAsyncEnv, call: CallConfig, body: any, res: IRequestResponse): string;
 }
 export interface IDataFunc {
     (env: JasmineAsyncEnv, call: CallConfig): any;
 }
 export interface IObfuscateFunc {
-    (env: JasmineAsyncEnv, call: CallConfig, body: any, res: IncomingMessage): void;
+    (env: JasmineAsyncEnv, call: CallConfig, body: any, res: IRequestResponse): void;
 }
 export interface ISchemaFunc {
-    (env: JasmineAsyncEnv, call: CallConfig, data: any, res: IncomingMessage): boolean;
+    (env: JasmineAsyncEnv, call: CallConfig, data: any, res: IRequestResponse): boolean;
 }
 export declare class CallConfig extends ExtendingObject implements ICallConfigParams {
     testName: string;
@@ -119,15 +119,15 @@ export declare class CallConfig extends ExtendingObject implements ICallConfigPa
     /**
      * Proxy for running all assertions
      */
-    assertFuncImpl(env: JasmineAsyncEnv, body: any, res: IncomingMessage): void;
+    assertFuncImpl(env: JasmineAsyncEnv, body: any, res: IRequestResponse): void;
     /**
      * Proxy for all obfuscations
      */
-    obfuscateFuncImpl(env: JasmineAsyncEnv, body: any, res: IncomingMessage): void;
+    obfuscateFuncImpl(env: JasmineAsyncEnv, body: any, res: IRequestResponse): void;
     /**
      * Proxy for running schema checks
      */
-    checkSchemaImpl(env: JasmineAsyncEnv, data: any, isRequest: boolean, res: IncomingMessage): boolean;
+    checkSchemaImpl(env: JasmineAsyncEnv, data: any, isRequest: boolean, res: IRequestResponse): boolean;
     /**
      * Returns the full api url for running the call
      */

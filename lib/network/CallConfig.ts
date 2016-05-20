@@ -1,8 +1,8 @@
 import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
-import {IncomingMessage} from "http";
 import * as _ from "lodash";
 import {ExtendingObject} from "./ExtendingObject";
 import {CoreOptions} from "request";
+import {IRequestResponse} from "./IRequestResponse";
 var urlJoin = require("url-join");
 
 export interface ICallConfigParams {
@@ -92,22 +92,22 @@ export interface IBeforeFunc{
     (env:JasmineAsyncEnv, call:CallConfig):void;
 }
 export interface IAssertFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IncomingMessage):void;
+    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):void;
 }
 export interface ISerialiseFunc{
     (env:JasmineAsyncEnv, call:CallConfig, data:any):string;
 }
 export interface IDeSerialiseFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IncomingMessage):string;
+    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):string;
 }
 export interface IDataFunc{
     (env:JasmineAsyncEnv, call:CallConfig):any;
 }
 export interface IObfuscateFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IncomingMessage):void;
+    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):void;
 }
 export interface ISchemaFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, data:any, res:IncomingMessage):boolean;
+    (env:JasmineAsyncEnv, call:CallConfig, data:any, res:IRequestResponse):boolean;
 }
 
 export class CallConfig extends ExtendingObject implements ICallConfigParams{
@@ -178,7 +178,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     /**
      * Proxy for running all assertions
      */
-    public assertFuncImpl(env:JasmineAsyncEnv, body:any, res:IncomingMessage):void {
+    public assertFuncImpl(env:JasmineAsyncEnv, body:any, res:IRequestResponse):void {
         if (this.assertFuncArr){
             for (var i = 0; i < this.assertFuncArr.length; i++) {
                 var func = this.assertFuncArr[i];
@@ -190,7 +190,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     /**
      * Proxy for all obfuscations
      */
-    public obfuscateFuncImpl(env:JasmineAsyncEnv, body:any, res:IncomingMessage){
+    public obfuscateFuncImpl(env:JasmineAsyncEnv, body:any, res:IRequestResponse){
         if (this.obfuscateArr){
             for (var i = 0; i < this.obfuscateArr.length; i++) {
                 var func = this.obfuscateArr[i];
@@ -202,7 +202,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     /**
      * Proxy for running schema checks
      */
-    public checkSchemaImpl(env:JasmineAsyncEnv, data:any, isRequest:boolean, res:IncomingMessage):boolean {
+    public checkSchemaImpl(env:JasmineAsyncEnv, data:any, isRequest:boolean, res:IRequestResponse):boolean {
         if (isRequest && this.checkRequestSchema && this.checkRequestSchemaFunc != null){
             return this.checkRequestSchemaFunc(env, this, data, null);
         }

@@ -1,6 +1,7 @@
 import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
 import { CallConfig } from "./CallConfig";
 import * as request from "request";
+import { IRequestResponse } from "./IRequestResponse";
 export declare class RequestRunner {
     static request: request.RequestAPI<request.Request, request.CoreOptions, request.UriOptions | request.UrlOptions>;
     static globalDefaults: CallConfig;
@@ -13,5 +14,5 @@ export declare class RequestRunner {
     /**
      * Pretty logging for the reporter of the request and repsonse
      */
-    static logRequestResponse(error: any, res: any, parsedResponseBody: any, options: any, isError: boolean): void;
+    static logRequestResponse(error: any, res: IRequestResponse, parsedResponseBody: any, options: any, isError: boolean): void;
 }

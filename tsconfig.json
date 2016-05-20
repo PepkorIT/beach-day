@@ -25,6 +25,7 @@
         "lib/index.ts",
         "lib/network/CallConfig.ts",
         "lib/network/ExtendingObject.ts",
+        "lib/network/IRequestResponse.ts",
         "lib/network/RequestRunner.ts",
         "lib/reporter/BeachDayReporter.ts",
         "lib/reporter/ReportGenerator.ts",
