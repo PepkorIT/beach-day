@@ -37,6 +37,7 @@
         "lib/utils/TestUtils.ts",
         "tests/framework/ConfigTest.ts",
         "tests/framework/JasmineAsyncEvnTest.ts",
+        "tests/framework/ObjectUtilsTest.ts",
         "tests/framework/ReportTest.ts",
         "tests/framework/RequestRunnerTest.ts",
         "boot.ts"

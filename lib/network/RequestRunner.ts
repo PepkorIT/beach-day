@@ -106,8 +106,14 @@ export class RequestRunner {
                     }
                     if (error){
                         // Log out the request and response
-                        //console.log("request() timeout with:");
-                        //console.log(options);
+                        // Generate a response object that is partially populated with only the request information
+                        // We do this so the data for the request resides in the same place, always
+                        var fakeResponse = {
+                            request : {
+                                // To be populated
+                            }
+                        };
+
                         RequestRunner.logRequestResponse(error, res, body, options);
                         TestUtils.throwExpectError("Expected HTTP call to be successful");
                     }
@@ -184,7 +190,7 @@ export class RequestRunner {
             console.log("<strong>REQUEST</strong>");
             console.log("<hr class='short' />");
             console.log("URL: " + ObjectUtils.getProp(res, "request.uri.href"));
-            console.log("Method: " + ObjectUtils.getProp(res, "res.request.method"));
+            console.log("Method: " + ObjectUtils.getProp(res, "request.method"));
             console.log("Request Headers:\n" + JSON.stringify(ObjectUtils.getProp(res, "request.headers"), null, 4));
             console.log("Body:\n" + ObjectUtils.getProp(res, "request.body"));
             console.log("");
