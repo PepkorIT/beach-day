@@ -219,8 +219,13 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
      */
     public getFullURL(env:JasmineAsyncEnv):string {
         if (this.baseURL != null && this.endPoint != null){
-            var valueFromMulti = (source:any):string => { return typeof source == "function" ? source(env, this) : source; };
-            return urlJoin(valueFromMulti(this.baseURL), valueFromMulti(this.endPoint));
+            var valueFromMulti  = (source:any):string => { return typeof source == "function" ? source(env, this) : source; };
+            var result:string   = urlJoin(valueFromMulti(this.baseURL), valueFromMulti(this.endPoint));
+            // Strip trailing slash on any url
+            if (result.charAt(result.length - 1) == "/"){
+                result          = result.substr(0, result.length - 1);
+            }
+            return result;
         }
         return null;
     }
