@@ -1,17 +1,13 @@
 import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
-import {console} from "../reporter/BeachDayReporter";
+import {console, ReporterAPI} from "../reporter/BeachDayReporter";
 import {TestUtils} from "../utils/TestUtils";
 import {CallConfig} from "./CallConfig";
-
 import * as _ from "lodash";
-import * as path from "path";
 import * as request from "request";
 import * as URL from "url";
-import {ReporterAPI} from "../reporter/BeachDayReporter";
 import ObjectUtils from "../utils/ObjectUtils";
-import {Url} from "url";
 import {IRequestResponse} from "./IRequestResponse";
-
+var escapeHtml = require("escape-html");
 
 export class RequestRunner {
 
@@ -125,7 +121,7 @@ export class RequestRunner {
                         };
                         call.obfuscateFuncImpl(env, null, fakeResponse);
 
-                        RequestRunner.logRequestResponse(error, fakeResponse, body, options, true);
+                        RequestRunner.logRequestResponse(error, fakeResponse, body, options, true, true);
                         TestUtils.throwExpectError("Expected HTTP call to be successful");
                     }
                     else{
@@ -146,7 +142,8 @@ export class RequestRunner {
                                 console.log("Parsing Error: ");
                                 console.log(e.message);
                                 console.log("Original data from server:");
-                                console.log(body);
+                                // Escape before logging it as this will form part of the report
+                                console.log(escapeHtml(body));
                             }
                         }
 
@@ -157,7 +154,7 @@ export class RequestRunner {
                         if (parsePassed) call.obfuscateFuncImpl(env, body, res);
 
                         // Log out the request and response
-                        RequestRunner.logRequestResponse(error, res, body, options, false);
+                        RequestRunner.logRequestResponse(error, res, body, options, false, parsePassed);
 
                         // Check schemas if setup
                         if (parsePassed) call.checkSchemaImpl(env, body, false, res);
@@ -196,7 +193,7 @@ export class RequestRunner {
     /**
      * Pretty logging for the reporter of the request and repsonse
      */
-    public static logRequestResponse(error:any, res:IRequestResponse, parsedResponseBody:any, options:any, isError:boolean){
+    public static logRequestResponse(error:any, res:IRequestResponse, parsedResponseBody:any, options:any, isError:boolean, parsePassed:boolean){
         var requestBody     = ObjectUtils.getProp(res, "request.body");
         var requestHeaders  = ObjectUtils.getProp(res, "request.headers");
 
@@ -209,6 +206,12 @@ export class RequestRunner {
         // Pretty print the response body only if it is already an object
         if (parsedResponseBody && typeof parsedResponseBody == "object"){
             parsedResponseBody = JSON.stringify(parsedResponseBody, null, 4);
+        }
+        // body is in fact not parsed and must be escaped in case
+        console.log("About to parse: ", parsePassed);
+        if (parsePassed == false){
+            console.log("Parsing!");
+            parsedResponseBody = escapeHtml(parsedResponseBody);
         }
 
         if (!isError) {

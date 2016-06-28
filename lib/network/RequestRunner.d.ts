@@ -14,5 +14,5 @@ export declare class RequestRunner {
     /**
      * Pretty logging for the reporter of the request and repsonse
      */
-    static logRequestResponse(error: any, res: IRequestResponse, parsedResponseBody: any, options: any, isError: boolean): void;
+    static logRequestResponse(error: any, res: IRequestResponse, parsedResponseBody: any, options: any, isError: boolean, parsePassed: boolean): void;
 }
