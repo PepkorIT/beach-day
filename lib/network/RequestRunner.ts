@@ -208,9 +208,7 @@ export class RequestRunner {
             parsedResponseBody = JSON.stringify(parsedResponseBody, null, 4);
         }
         // body is in fact not parsed and must be escaped in case
-        console.log("About to parse: ", parsePassed);
         if (parsePassed == false){
-            console.log("Parsing!");
             parsedResponseBody = escapeHtml(parsedResponseBody);
         }
 
