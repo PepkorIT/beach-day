@@ -29,6 +29,7 @@
     "typings": "^0.7.11"
   },
   "dependencies": {
+    "escape-html": "^1.0.3",
     "moment": "^2.12.0",
     "mustache": "^2.2.1",
     "node-sass": "^3.4.2",
