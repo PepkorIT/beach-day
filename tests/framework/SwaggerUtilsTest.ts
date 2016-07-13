@@ -2,7 +2,7 @@ import {SwaggerUtils} from "../../lib/utils/SwaggerUtils";
 import fs   = require("fs");
 import path = require("path");
 
-fdescribe("SwaggerUtilsTest Tests", function(){
+describe("SwaggerUtilsTest Tests", function(){
     var converted,
         rootPath;
 

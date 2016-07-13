@@ -1,7 +1,7 @@
 "use strict";
 var SwaggerUtils_1 = require("../../lib/utils/SwaggerUtils");
 var path = require("path");
-fdescribe("SwaggerUtilsTest Tests", function () {
+describe("SwaggerUtilsTest Tests", function () {
     var converted, rootPath;
     beforeEach(function () {
         var filePath = path.join(__dirname, "assets/swagger-test.json");
