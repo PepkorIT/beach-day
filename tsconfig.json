@@ -41,6 +41,7 @@
         "tests/framework/ObjectUtilsTest.ts",
         "tests/framework/ReportTest.ts",
         "tests/framework/RequestRunnerTest.ts",
+        "tests/framework/SwaggerUtilsTest.ts",
         "boot.ts"
     ]
 }

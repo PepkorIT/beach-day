@@ -1,0 +1,188 @@
+{
+    "paths": {
+        "/customerCollection/validateCustomerReferenceNumber": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "application/json",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "nodeId",
+                                "userId",
+                                "customerReferenceNumber"
+                            ],
+                            "properties": {
+                                "nodeId": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                },
+                                "userId": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                },
+                                "customerReferenceNumber": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "x-isnullable": true,
+                            "type": "object",
+                            "properties": {
+                                "parcels": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": [
+                                            "parcel"
+                                        ],
+                                        "properties": {
+                                            "parcel": {
+                                                "type": "object",
+                                                "required": [
+                                                    "parcelId",
+                                                    "customerReferenceNumber",
+                                                    "courier",
+                                                    "productType",
+                                                    "supplier",
+                                                    "identificationRequired",
+                                                    "pinRequired",
+                                                    "signatureRequirement"
+                                                ],
+                                                "properties": {
+                                                    "parcelId": {
+                                                        "type": "number"
+                                                    },
+                                                    "dropLabelBarcode": {
+                                                        "type": "string"
+                                                    },
+                                                    "waybillNumber": {
+                                                        "type": "string"
+                                                    },
+                                                    "courierNumber": {
+                                                        "type": "string"
+                                                    },
+                                                    "supplierNumber": {
+                                                        "type": "string"
+                                                    },
+                                                    "customerReferenceNumber": {
+                                                        "type": "string"
+                                                    },
+                                                    "courier": {
+                                                        "type": "string"
+                                                    },
+                                                    "productType": {
+                                                        "type": "string"
+                                                    },
+                                                    "supplier": {
+                                                        "type": "string"
+                                                    },
+                                                    "identificationRequired": {
+                                                        "description": "Does this supplier and productType require the customer to have an itentification supplied to collect. If this is true collectorDetails will need to be populated if available.\n",
+                                                        "type": "boolean"
+                                                    },
+                                                    "pinRequired": {
+                                                        "description": "Does this supplier and productType require the customer to have a valid PIN?",
+                                                        "type": "boolean"
+                                                    },
+                                                    "signatureRequirement": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "NONE",
+                                                            "PICTURE"
+                                                        ]
+                                                    },
+                                                    "collectorDetails": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "firstName": {
+                                                                "type": "string"
+                                                            },
+                                                            "lastName": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "reason": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "WRONG_NODE",
+                                                    "NOT_YET_DELIVERED",
+                                                    "NOT_YET_DELIVERED_WRONG_NODE"
+                                                ]
+                                            },
+                                            "nodeName": {
+                                                "type": "string",
+                                                "description": "The text based human readible name for the node. Will only need to be returned for WRONG_NODE & NOT_YET_DELIVERED_WRONG_NODE"
+                                            },
+                                            "nodeCode": {
+                                                "type": "string",
+                                                "description": "Will only need to be returned for WRONG_NODE & NOT_YET_DELIVERED_WRONG_NODE"
+                                            },
+                                            "deliveryEta": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "description": "Format: Full ISO-8601 - Complete date plus hours, minutes, seconds and a decimal fraction of a second - YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00) - please see: https://www.w3.org/TR/NOTE-datetime"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "required": [
+                                "responseCode",
+                                "responseMessage"
+                            ],
+                            "properties": {
+                                "responseCode": {
+                                    "type": "string",
+                                    "enum": [
+                                        "1006"
+                                    ]
+                                },
+                                "responseMessage": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "schema": {
+                            "required": [
+                                "responseCode",
+                                "responseMessage"
+                            ],
+                            "properties": {
+                                "responseCode": {
+                                    "type": "string",
+                                    "enum": [
+                                        "0001",
+                                        "1000"
+                                    ]
+                                },
+                                "responseMessage": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

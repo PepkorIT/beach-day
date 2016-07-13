@@ -23,14 +23,18 @@ function convertXIsNullable(propName, currObject, value){
 
 function convertNullableBasedOnRequired(sourcePropName, currObject, value){
     // Update the non required properties to be nullable
-    if (sourcePropName == "required" && value instanceof Array){
-        // first create a hash of required props
-        var requiredHash = {};
-        for (var i = 0; i < value.length; i++) requiredHash[value[i]] = true;
+    if (sourcePropName == "properties"){
+        // First create a hash of required props
+        var requiredHash    = {};
+        // Get the required props or an empty array if not populated to generate the hash
+        var required        = currObject["required"] || [];
+        for (var i = 0; i < required.length; i++) {
+            requiredHash[required[i]] = true;
+        }
 
         // Now run through all the properties of the
         // current object and make non required nullable
-        var properties = currObject["properties"];
+        var properties  = value;
 
         for (var propName in properties){
             var type    = properties[propName].type;
