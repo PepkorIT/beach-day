@@ -11,4 +11,5 @@ export declare class SwaggerUtils {
      * @returns {*}
      */
     static parseSwaggerJSON(swaggerJSONPath: string, doNullableConversions?: boolean): any;
+    static recurseSwagger(swaggerObj: any): any;
 }

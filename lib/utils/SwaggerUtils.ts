@@ -60,6 +60,14 @@ function convertNullableBasedOnRequired(sourcePropName, currObject, value){
                 else{
                     properties[propName].type = [properties[propName].type, "null"];
                 }
+
+                // for the enum we also have to add an option of null to the list
+                if (properties[propName].hasOwnProperty("enum")){
+                    var enumList:Array<any> = properties[propName]["enum"];
+                    if (enumList.length > 0 && enumList[enumList.length - 1] != null){
+                        properties[propName]["enum"].push(null);
+                    }
+                }
             }
             // If not required then make sure there is no null in the type definition
             else if (type instanceof Array && hasNull){
@@ -98,9 +106,16 @@ export class SwaggerUtils {
 
         // Process and return
         if (doNullableConversions === true){
-            swaggerObj = loopObject(swaggerObj, convertXIsNullable);
-            swaggerObj = loopObject(swaggerObj, convertNullableBasedOnRequired);
+            swaggerObj = SwaggerUtils.recurseSwagger(swaggerObj);
         }
+
+        return swaggerObj
+    }
+
+    public static recurseSwagger(swaggerObj:any):any {
+        // Process and return
+        swaggerObj = loopObject(swaggerObj, convertXIsNullable);
+        swaggerObj = loopObject(swaggerObj, convertNullableBasedOnRequired);
 
         return swaggerObj
     }

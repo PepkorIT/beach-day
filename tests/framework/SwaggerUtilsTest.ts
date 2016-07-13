@@ -1,6 +1,7 @@
 import {SwaggerUtils} from "../../lib/utils/SwaggerUtils";
 import fs   = require("fs");
 import path = require("path");
+import tv4  = require("tv4");
 
 describe("SwaggerUtilsTest Tests", function(){
     var converted,
@@ -31,6 +32,31 @@ describe("SwaggerUtilsTest Tests", function(){
         expect(rootPath["responses"]["200"]["schema"]["properties"]["parcels"]["type"] instanceof Array).toBe(true);
         expect(rootPath["responses"]["200"]["schema"]["properties"]["parcels"]["type"][0]).toBe("array");
         expect(rootPath["responses"]["200"]["schema"]["properties"]["parcels"]["type"][1]).toBe("null");
+    });
+
+    it("Test not required enum should be valid", function(){
+        var data = {
+            reason: null
+        };
+        var schema  = SwaggerUtils.recurseSwagger({
+            "type": "object",
+            "properties": {
+                "reason": {
+                    "type": "string",
+                    "enum": [
+                        "WRONG_NODE",
+                        "NOT_YET_DELIVERED",
+                        "NOT_YET_DELIVERED_WRONG_NODE"
+                    ]
+                }
+            }
+        });
+        //console.log("schema: ", JSON.stringify(schema, null, 4));
+        expect(schema.properties.reason.type[0]).toBe("string");
+        expect(schema.properties.reason.type[1]).toBe("null");
+        expect(schema.properties.reason.enum[3]).toBe(null);
+        var result  = tv4.validateMultiple(data, schema, null, true);
+        expect(result.valid).toBe(true);
     });
 
 });
