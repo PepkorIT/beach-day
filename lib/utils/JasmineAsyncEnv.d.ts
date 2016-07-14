@@ -61,7 +61,7 @@ export declare class JasmineAsyncEnv {
      */
     checkProps(...properties: Array<string>): void;
     /**
-     * Utility method, used to check if a propery exists on this.currentBody.
+     * Utility method, used to check if a property exists on this.currentBody.
      * Property identifier propertyName is passed using string values that can contain dots and array accessors.
      * This means we can "try" access properties that would otherwise cause runtime errors without a lot of if statements.
      *
@@ -79,4 +79,14 @@ export declare class JasmineAsyncEnv {
      * @returns Returns the value found on currentBody using the property name
      */
     checkPropDoesntExist(propertyName: string): any;
+    /**
+     * Utility method to check for a string based property on this.currentBody.
+     * Will throw a descriptive expect().toBe() error if not found or not equal
+     *
+     * @param propertyName {String} The identifier for the property to match against on this.currentBody
+     * @param expected {any} The expected value to check against
+     * @param useExplicitEquality Weather to check using a != vs !==
+     * @returns {any}
+     */
+    expectProp(propertyName: string, expected: any, useExplicitEquality?: boolean): any;
 }

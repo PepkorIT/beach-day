@@ -1,6 +1,6 @@
 import {ReporterAPI} from "../reporter/BeachDayReporter";
 import ObjectUtils from "./ObjectUtils";
-import {TestUtils} from "./TestUtils";
+import {MatcherUtils} from "./MatcherUtils";
 
 var counter = 0;
 
@@ -120,7 +120,7 @@ export class JasmineAsyncEnv {
 
 
     /**
-     * Utility method, used to check if a propery exists on this.currentBody.
+     * Utility method, used to check if a property exists on this.currentBody.
      * Property identifier propertyName is passed using string values that can contain dots and array accessors.
      * This means we can "try" access properties that would otherwise cause runtime errors without a lot of if statements.
      *
@@ -130,18 +130,7 @@ export class JasmineAsyncEnv {
      * @returns {any} The value from this.currentBody[propertyName] if found
      */
     public checkProp(propertyName:string):any {
-        if (propertyName == null) throw new Error("propertyName cannot be null");
-
-        if (this.currentBody == null){
-            expect(this.currentBody).throwExpectError("Expected property '" + propertyName + "' to be present on response but response was " + this.currentBody);
-        }
-        else{
-            var currObject  = ObjectUtils.getProp(this.currentBody, propertyName);
-            if (currObject == null){
-                expect(this.currentBody).throwExpectError("Expected property '" + propertyName + "' to be present on response but failed to locate it");
-            }
-            return currObject;
-        }
+        return MatcherUtils.checkProp(this.currentBody, propertyName);
     }
 
     /**
@@ -151,14 +140,20 @@ export class JasmineAsyncEnv {
      * @param propertyName
      * @returns Returns the value found on currentBody using the property name
      */
-    public checkPropDoesntExist(propertyName:string):any
-    {
-        if (propertyName == null) throw new Error("propertyName cannot be null");
+    public checkPropDoesntExist(propertyName:string):any {
+        return MatcherUtils.checkPropDoesntExist(this.currentBody, propertyName);
+    }
 
-        var currObject  = ObjectUtils.getProp(this.currentBody, propertyName);
-        if (currObject != null){
-            TestUtils.throwExpectError("Expected property '" + propertyName + "' NOT to be present on response");
-        }
-        return currObject;
+    /**
+     * Utility method to check for a string based property on this.currentBody.
+     * Will throw a descriptive expect().toBe() error if not found or not equal
+     *
+     * @param propertyName {String} The identifier for the property to match against on this.currentBody
+     * @param expected {any} The expected value to check against
+     * @param useExplicitEquality Weather to check using a != vs !==
+     * @returns {any}
+     */
+    public expectProp(propertyName:string, expected:any, useExplicitEquality:boolean = false):any {
+        return MatcherUtils.expectProp(this.currentBody, propertyName, expected, useExplicitEquality);
     }
 }
