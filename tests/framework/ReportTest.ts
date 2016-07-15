@@ -2,6 +2,7 @@ import { JasmineAsyncEnv, console, ReporterAPI, TestUtils} from "../../lib/index
 import * as request from "request";
 import {RequestRunner} from "../../lib/network/RequestRunner";
 import {CallConfig} from "../../lib/network/CallConfig";
+import {MatcherUtils} from "../../lib/utils/MatcherUtils";
 
 // Report is excluded by default as this suite is designed to check the output of the reporter
 // Enable it to test the reporter output
@@ -199,4 +200,23 @@ xdescribe("Report testing wrapper", function(){
         }));
 
     });
+
+    describe("expectProp() Tester", function(){
+
+        it("Run property checks", function(){
+            var data = {
+                customer: {
+                    name: "James",
+                    address: {
+                        road: "Clifton"
+                    }
+                }
+            };
+            data.customer.address["customer"] = data.customer;
+            
+            MatcherUtils.expectProp(data, "customer", null);
+            MatcherUtils.expectProp(data, "customer.address", "James");
+            MatcherUtils.expectProp(data, "customer.address", "James");
+        })
+    })
 });

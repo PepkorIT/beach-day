@@ -2,6 +2,7 @@
 var index_1 = require("../../lib/index");
 var RequestRunner_1 = require("../../lib/network/RequestRunner");
 var CallConfig_1 = require("../../lib/network/CallConfig");
+var MatcherUtils_1 = require("../../lib/utils/MatcherUtils");
 // Report is excluded by default as this suite is designed to check the output of the reporter
 // Enable it to test the reporter output
 xdescribe("Report testing wrapper", function () {
@@ -155,5 +156,21 @@ xdescribe("Report testing wrapper", function () {
                 dataArr: [{ name: "Jon", message: "Hellow World" }]
             }), env);
         }));
+    });
+    describe("expectProp() Tester", function () {
+        it("Run property checks", function () {
+            var data = {
+                customer: {
+                    name: "James",
+                    address: {
+                        road: "Clifton"
+                    }
+                }
+            };
+            data.customer.address["customer"] = data.customer;
+            MatcherUtils_1.MatcherUtils.expectProp(data, "customer", null);
+            MatcherUtils_1.MatcherUtils.expectProp(data, "customer.address", "James");
+            MatcherUtils_1.MatcherUtils.expectProp(data, "customer.address", "James");
+        });
     });
 });

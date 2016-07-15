@@ -1,5 +1,6 @@
 import ObjectUtils from "./ObjectUtils";
 import {TestUtils} from "./TestUtils";
+var stringifyObject = require("stringify-object");
 
 
 export class MatcherUtils {
@@ -36,12 +37,15 @@ export class MatcherUtils {
             TestUtils.throwExpectError(`Expected property '${propertyName}' to be present on response but response was ${currentBody}`);
         }
         else{
-            var value = ObjectUtils.getProp(currentBody, propertyName, false);
+            var value       = ObjectUtils.getProp(currentBody, propertyName, false);
+            var stringify   = (value) => {
+                return stringifyObject(value, {singleQuotes:false}).replace(/(\r\n|\n|\r|\t)/gm,"");
+            };
             if (!useExplicitEquality && value != expected){
-                TestUtils.throwExpectError(`Expected property '${propertyName}' with value: ${value} to be: ${expected}`);
+                TestUtils.throwExpectError(`Expected property '${propertyName}' with value: ${stringify(value)} to be: ${stringify(expected)}`);
             }
             else if (useExplicitEquality && value !== expected){
-                TestUtils.throwExpectError(`Expected property '${propertyName}' with value: ${value} to be: ${expected}`);
+                TestUtils.throwExpectError(`Expected property '${propertyName}' with value: ${stringify(value)} to be: ${stringify(expected)}`);
             }
             return value;
         }
