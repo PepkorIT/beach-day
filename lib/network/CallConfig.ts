@@ -86,6 +86,12 @@ export interface ICallConfigParams {
      * from this cnfig object like data, method, etc
      */
     requestOptions?:CoreOptions;
+
+    /**
+     * If set to true, errors returned from the request framework will not mark a test as failed.
+     * These include things like timeouts, SSL errors, etc.
+     */
+    allowHTTPErrors?:boolean|IAllowErrorFunc;
 }
 
 export interface IBeforeFunc{
@@ -109,6 +115,9 @@ export interface IObfuscateFunc{
 export interface ISchemaFunc{
     (env:JasmineAsyncEnv, call:CallConfig, data:any, res:IRequestResponse):boolean;
 }
+export interface IAllowErrorFunc{
+    (env:JasmineAsyncEnv, call:CallConfig, data:any, res:IRequestResponse):boolean;
+}
 
 export class CallConfig extends ExtendingObject implements ICallConfigParams{
     public testName:string;
@@ -130,6 +139,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     public checkRequestSchema:boolean;
     public checkResponseSchema:boolean;
     public requestOptions:CoreOptions;
+    public allowHTTPErrors:boolean|IAllowErrorFunc;
 
     constructor(params?:ICallConfigParams){
         super();

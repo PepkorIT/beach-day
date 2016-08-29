@@ -1,7 +1,7 @@
 import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
 import {console, ReporterAPI} from "../reporter/BeachDayReporter";
 import {TestUtils} from "../utils/TestUtils";
-import {CallConfig} from "./CallConfig";
+import {CallConfig, IAllowErrorFunc} from "./CallConfig";
 import * as _ from "lodash";
 import * as request from "request";
 import * as URL from "url";
@@ -122,7 +122,17 @@ export class RequestRunner {
                         call.obfuscateFuncImpl(env, null, fakeResponse);
 
                         RequestRunner.logRequestResponse(error, fakeResponse, body, options, true, true);
-                        TestUtils.throwExpectError("Expected HTTP call to be successful");
+                        if (call.allowHTTPErrors != null){
+                            if (call.allowHTTPErrors === true){
+                                // Do nothing
+                            }
+                            else if (typeof call.allowHTTPErrors == "function" && !(<IAllowErrorFunc> call.allowHTTPErrors)(env, call, data, res)){
+                                TestUtils.throwExpectError("Expected HTTP call to be successful");
+                            }
+                        }
+                        else{
+                            TestUtils.throwExpectError("Expected HTTP call to be successful");
+                        }
                     }
                     else{
                         // Try convert the response using the dataDeSerialisationFunc or JSON.parse()

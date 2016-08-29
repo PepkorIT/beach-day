@@ -119,6 +119,22 @@ describe("RequestRunner tester", function(){
         expect(done).toHaveBeenCalled();
     });
 
+    it("Ensure errors are allowed for boolean", function(){
+        RequestRunner.run(defaultConf.extend({allowHTTPErrors:true}), dummyEnv);
+        requestCB({message:"error here"});
+        expect(throwExpectError).not.toHaveBeenCalled();
+        expect(done).toHaveBeenCalled();
+    });
+
+    it("Ensure errors are allowed for function", function(){
+        RequestRunner.run(defaultConf.extend({allowHTTPErrors:function(){
+            return true;
+        }}), dummyEnv);
+        requestCB({message:"error here"});
+        expect(throwExpectError).not.toHaveBeenCalled();
+        expect(done).toHaveBeenCalled();
+    });
+
     it("Ensure invalid JSON is caught", function(){
         RequestRunner.run(defaultConf, dummyEnv);
         requestCB(null, {}, "{something: sdds");
