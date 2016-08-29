@@ -127,12 +127,15 @@ describe("RequestRunner tester", function(){
     });
 
     it("Ensure errors are allowed for function", function(){
-        RequestRunner.run(defaultConf.extend({allowHTTPErrors:function(){
+        var errorPassed;
+        RequestRunner.run(defaultConf.extend({allowHTTPErrors:function(error){
+            errorPassed = error;
             return true;
         }}), dummyEnv);
         requestCB({message:"error here"});
         expect(throwExpectError).not.toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
+        expect(errorPassed.message).toBe("error here");
     });
 
     it("Ensure invalid JSON is caught", function(){

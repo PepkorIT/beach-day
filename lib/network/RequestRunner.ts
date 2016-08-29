@@ -126,7 +126,7 @@ export class RequestRunner {
                             if (call.allowHTTPErrors === true){
                                 // Do nothing
                             }
-                            else if (typeof call.allowHTTPErrors == "function" && !(<IAllowErrorFunc> call.allowHTTPErrors)(env, call, data, res)){
+                            else if (typeof call.allowHTTPErrors == "function" && !(<IAllowErrorFunc> call.allowHTTPErrors)(error, env, call, fakeResponse)){
                                 TestUtils.throwExpectError("Expected HTTP call to be successful");
                             }
                         }

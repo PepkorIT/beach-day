@@ -116,7 +116,7 @@ export interface ISchemaFunc{
     (env:JasmineAsyncEnv, call:CallConfig, data:any, res:IRequestResponse):boolean;
 }
 export interface IAllowErrorFunc{
-    (env:JasmineAsyncEnv, call:CallConfig, data:any, res:IRequestResponse):boolean;
+    (error:any, env:JasmineAsyncEnv, call:CallConfig, res:IRequestResponse):boolean;
 }
 
 export class CallConfig extends ExtendingObject implements ICallConfigParams{
