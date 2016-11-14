@@ -52,6 +52,6 @@ describe("Demo 6 - Schema validation", function(){
 ```
 
 
-### [>> Next: Keeping test code DRY](step5.md)
+### [>> Next: Keeping test code DRY](step7.md)
 
-[<< Previous: Assertions & sharing data between calls](step7.md)
+[<< Previous: Assertions & sharing data between calls](step5.md)
