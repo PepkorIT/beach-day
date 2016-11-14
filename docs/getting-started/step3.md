@@ -1,56 +1,57 @@
-# Running an HTTP call (Step 3)
+# HTTP Calls - Running a GET
 
-Now that we have covered adding an environment to our tests, lets look at running an actual HTTP call.
+Finally we run a real API call! This is where beach-day really shines as it manages, records and reports on all HTTP/HTTPS traffic.  
 
-As a HTTP functional testing framework beach-day obviously has the requirement of being able to make HTTP calls to a server. node can do this natively with its APIs but would require a lot of boilerplate code for every test.
-Therefore beach-day utilises a framework under the hood called [request](https://github.com/request/request) to simplify this process.
+> Under the hood, beach-day uses the [request](https://github.com/request/request) framework
 
-Built on top of request, beach-day provides a set of config & utilities to help write tests with very little code and make assertions on the data returned a breeze.
+Beach-day provides a set of config & utilities to help write tests with very little code and make assertions on the data returned a breeze. You do this using two of the beach-day clases:
+- `CallConfig`
+- `RequestRunner`
 
-The idea here is you can create a single config object that represents an HTTP call and all the assertions for that call. This makes the code required to generate a basic very minimal.
+`CallConfig` is an object that defines your HTTP call as well as your assertions for the response
 
-This process manifests in the form of two classes: the `CallConfig` which defines all the config for an HTTP call and the `RequestRunner` which does the execution of the call, taking a config object and an environment.
+`RequestRunner` runs your defined `CallConfig`
 
-Lets create a new test file example of this at `tests/demo3-test.js`:
+Create a new file `tests/demo3-test.js` and paste the following:
+
 ```javascript
-// Here we import the three required classes from the beach-day module
-var JasmineAsyncEnv = require("beach-day").JasmineAsyncEnv;
-var RequestRunner   = require("beach-day").RequestRunner;
-var CallConfig      = require("beach-day").CallConfig;
-
-// This is a public API that is very dumb but helps to illustrate our examples
-var baseURL         = "http://localhost:3000";
+var BeachDay        = require("beach-day");
+var JasmineAsyncEnv = BeachDay.JasmineAsyncEnv;
+var RequestRunner   = BeachDay.RequestRunner;
+var CallConfig      = BeachDay.CallConfig;
 
 describe("Demo 3 - Running an HTTP call", function(){
 
-    // Async environment to wrap all tests
     var env = new JasmineAsyncEnv();
-
-    // This test will run a basic HTTP call
-    // We pass the environment to the runner so it can
-    // auto complete the test for us when done running.
+    
     it("Ensure we get a simple result", env.wrap(function(env){
         RequestRunner.run(new CallConfig({
-            baseURL     : baseURL,
+            baseURL     : "http://jsonplaceholder.typicode.com",
             endPoint    : "/posts/1",
             method      : "GET"
-        }), env);
+        }), env); // The RequestRunner will run env.done() for us automatically
     }));
 });
 ```
 
+Let's examine what happened in the code above:
 
-So lets examine what has happened in the above test. 
+ - We defined a new `CallConfig` to make a `http://jsonplaceholder.typicode.com/posts/1` call
+ - We executed the call using the `RequestRunner.run()`
+ - By passing our `JasmineAsyncEnv` instance to the `RequestRunner`, it will run `env.done()` for us when it's complete
 
- - We imported all CallConfig and RequestRunner classes so they could be used in the test. 
- - We used a public testing API so that our test actually makes an HTTP call. 
- - We defined a new config object with the properties to make a GET /posts/1 call
- - We executed the config using the runner passing it the config and the environment. 
 
-When the runner executes the call, the one assertion it will make for us automatically is the status of the HTTP call.
+To run this and inspect the report (`reports/beach-day-report.html`):
+
+```
+node boot.js
+```
+
 
 > **Convention:**
-> As a convention it is recommended to keep it to 1 HTTP per jasmine test but there may be exceptions to this for instance if you wanted to run a poll till a certain value has changed.
-> It is up to the developer to make this decision but recommended to use 1 test per call
+> As a convention it is recommended to stick to 1 HTTP call per Jasmine test but there may be exceptions to this. For instance if you wanted to a poll till a certain value has changed.
+> It is up to you to make this call but as a rule of thumb, 1 HTTP call per test. 
 
-### [Previous Step](step2.md) | [Next Step](step4.md)
+### [>> Next: HTTP Calls - Running a POST](step4.md)
+
+[<< Previous: Beach-day Fundamentals](step2.md)

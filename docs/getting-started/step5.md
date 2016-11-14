@@ -1,34 +1,30 @@
-# Assertions & data sharing (Step 5)
+# Assertions & sharing data between calls
 
-Up until now we have only been looking at how to use the framework to setup tests and HTTP calls using config and utilities. 
+We've seen how to setup and write basic GET and POST calls, now lets bring in assertions to really test our API.
 
-What we haven't touched on is running assertions on the HTTP call results themselves and storing data for use in other calls.
+Like everything else in beach-day the assertions are also typed onto the CallConfig object.
+The `CallConfig.assertFuncArr` property takes an array of functions that will be executed after a successful HTTP call.
 
-Like all other facets in the beach-day system the assertions are also typed onto the CallConfig object.
-The `CallConfig assertFuncArr` property is an array of functions that will be executed after a successful HTTP call.
+The `JasmineAsyncEnv` object is passed to each function allowing you to share data between tests. Additionally the `JasmineAsyncEnv` comes with some utility methods `(checkProp() & setProp())` to help make assertions easier.
 
-In these methods the developer can write any custom assertions that he so chooses. Additionally the environment object used to link all tests has some utility methods `(checkProp() & setProp())` to help make assertions easier.
+Create a new file `tests/demo5-test.js` and paste the following:
+```javascript
+var BeachDay        = require("beach-day");
+var JasmineAsyncEnv = BeachDay.JasmineAsyncEnv;
+var RequestRunner   = BeachDay.RequestRunner;
+var CallConfig      = BeachDay.CallConfig;
 
-Lets create a new test file example of this at `tests/demo5-test.js`:
-```
-var JasmineAsyncEnv = require("beach-day").JasmineAsyncEnv;
-var RequestRunner   = require("beach-day").RequestRunner;
-var CallConfig      = require("beach-day").CallConfig;
-
-var baseURL         = "http://localhost:3000";
+var baseURL         = "http://jsonplaceholder.typicode.com";
 
 describe("Demo 5 - Adding HTTP call assertions & environment variables", function(){
 
-    // Async environment to link all tests
     var env = new JasmineAsyncEnv();
 
-    // This test will run a basic HTTP call
-    // We also provide an assert function so we can run custom assertions
-    it("Ensure all our resulting data is correct", env.wrap(function(env){
+    it("Ensure returned data is correct", env.wrap(function(env){
         RequestRunner.run(new CallConfig({
-            baseURL         : baseURL,
-            endPoint        : "/users",
-            method          : "GET",
+            baseURL  : baseURL,
+            endPoint : "/users",
+            method   : "GET",
             // Every function in the assertFuncArr is called after a successful (non timeout) HTTP call
             // In here you can write any custom assertions you want to make about the response
             // You can also use this place to store any data from the response onto the environment for later use
@@ -68,7 +64,7 @@ describe("Demo 5 - Adding HTTP call assertions & environment variables", functio
     }));
 
 
-    // In this test we simply fetch a user using an environment variable and ensure a result.
+    // In this test we simply fetch a user using an environment variable and ensure a result
     it("Fetch a single user", env.wrap(function(env){
         RequestRunner.run(new CallConfig({
             baseURL         : baseURL,
@@ -83,13 +79,12 @@ describe("Demo 5 - Adding HTTP call assertions & environment variables", functio
 });
 ```
 
-
-So lets examine what has happened in the above test. 
- - We have two HTTP calls / tests defined in our suite, both run custom assertions on the response
- - In the first method we use the checkProp() method on the environment to run a number of assertions on the response and the data returned.
- - Additionally we add some of the response data onto the environment for use in the next call.
- - Lastly we make a second call utilising the data on the environment to generate part of the config
+Let's examine what happened in the code above:
+ - In the first test we used the checkProp() method to run a number of assertions on the data returned
+ - We added some of the response data onto the environment for use in the next call
+ - Lastly, we made a second call utilising the data on the environment to generate part of the config
 
 
+### [>> Next: JSON Schema validation (Swagger or equivalent)](step6.md)
 
-### [Previous Step](step4.md) | [Next Step](step6.md)
+[<< Previous: HTTP Calls - Running a GET](step4.md)
