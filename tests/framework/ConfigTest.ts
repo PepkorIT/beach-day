@@ -131,20 +131,16 @@ describe("Config system used to power the framework calls", function(){
         expect(config.getFullURL(env)).toBe("www.potato.co.za/carpet");
     });
 
-    it("Ensure call is passed to all IDataFunc methods", function() {
-        let passedInCallObject;
-        let testConfig = new CallConfig({
-            baseURL         : "http://jsonplaceholder.typicode.com",
-            endPoint        : "/posts",
-            method          : "POST",
-            dataArr         : [
-                (env, call) => {
-                    passedInCallObject = call;
-                    return {};
-                }
-            ]
+    it("Ensure no leakage in headers", function(){
+        let config1 = new CallConfig({
+            headers: {option1:"123"}
         });
-        testConfig.getDataImpl(env);
-        expect(passedInCallObject).toBe(testConfig);
+        console.log("-------------->");
+        let config2 = new CallConfig().extend(config1);
+
+        // now update config2
+        config2.headers.option1 = "456";
+
+        expect(config1.headers.option1).toBe("123");
     });
 });
