@@ -2,6 +2,8 @@
 
 ## 1. Project Setup
 
+The source files for this tutorial are all available under `/docs/getting-started/src` [go there](src/)
+
 **1.1\. Install Node and GIT**
 
 First, install:
@@ -22,7 +24,7 @@ npm init
 **1.3\. Install beach-day module**
 
 ```
-npm install beach-day --save
+npm install git+ssh://gogs@git.pdws.co.za:922/PepkorIT/beach-day.git#master --save
 ```
 This will download beach-day and save it as a project dependency in your `package.json` file.
 
@@ -46,7 +48,7 @@ var SpecReporter        = require("jasmine-spec-reporter");
 var jasmineInst         = new Jasmine();
 
 // Setup sensible timeout amount for the jasmine tests
-// We don't jasmine tests to timeout before an http call has been completed
+// We don't want our jasmine tests to timeout before an http call has been completed
 global["jasmine"].DEFAULT_TIMEOUT_INTERVAL = 10000; // milliseconds
 
 // Disable default jasmine reporter
@@ -69,7 +71,7 @@ jasmineInst.loadConfigFile("jasmine_config.json");
 jasmineInst.execute();
 ```
 
-> When installing beach-day npm will have installed Jasmine and everything else you need as peer dependencies.
+> When installing beach-day, npm will have installed Jasmine and everything else you need as peer dependencies.
 
 **2.2\. Configure Jasmine**
 
@@ -77,14 +79,14 @@ Next we need to tell Jasmine where our tests are located. We do this with a `jas
 
 ```json
 {
-    "spec_dir": "tests",
-    "spec_files": [
+    "spec_dir": "tests",    // Where to load our tests from
+    "spec_files": [         // Only load files with the suffix: test.js or Test.js
         "**/*[tT]est.js"
     ],
-    "helpers": [
+    "helpers": [            // Where to load our helpers from
         "helpers/**/*.js"
     ],
-    "stopSpecOnExpectationFailure": false,
+    "stopSpecOnExpectationFailure": false,  // We want our test suite to continue running even if a test fails
     "random": false
 }
 ```
