@@ -13,7 +13,7 @@
   "scripts": {
     "test": "tsc && node ./boot.js",
     "report": "tsc && node ./lib/reporter/TestReport.js",
-    "docs": "tsc && jsdoc -c ./jsdoc.json"
+    "docs": "tsc && typedoc --excludeExternals --excludePrivate --options typedoc.json lib/"
   },
   "repository": {
     "type": "git",
@@ -22,9 +22,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "jsdoc": "^3.4.0",
     "minami": "^1.1.1",
     "tsconfig-glob": "^0.4.3",
+    "typedoc": "^0.5.3",
     "typescript": "^1.8.9",
     "typings": "^0.7.11"
   },

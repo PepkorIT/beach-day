@@ -1,0 +1,7 @@
+{
+    "name": "beach-day documentation",
+    "readme": "none",
+    "out": "docs/api-reference/typedoc",
+    "mode": "file",
+    "theme": "default"
+}
