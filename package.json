@@ -1,12 +1,12 @@
 {
   "name": "beach-day",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
     "lib/**/*.js",
-    "lib/**/*.ts",
+    "lib/**/*.d.ts",
     "lib/templates/*",
     "custom_typings/**/*.d.ts"
   ],
