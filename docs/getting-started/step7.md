@@ -83,7 +83,7 @@ Let's examine what happened in the code above:
 
 ## Where to now?
 First up, thanks for getting this far in our tutorial! We hope you enjoy this framework and get some good use out of it.
-Please checkout the FAQ section, we'll keep adding as to it as we go.
+Please checkout the FAQ section, we'll keep adding to it as we go.
 
 
 [<< Previous: JSON Schema validation (Swagger or equivalent)](step7.md)
