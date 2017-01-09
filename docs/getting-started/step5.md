@@ -80,9 +80,9 @@ describe("Demo 5 - Adding HTTP call assertions & environment variables", functio
 ```
 
 Let's examine what happened in the code above:
- - In the first test we used the checkProp() method to run a number of assertions on the data returned
+ - We used the checkProp() method to run a number of assertions on the data returned
  - We added some of the response data onto the environment for use in the next call
- - Lastly, we made a second call utilising the data on the environment to generate part of the config
+ - We made a second call utilising the data on the environment to generate part of the config
 
 
 ### [>> Next: JSON Schema validation (Swagger or equivalent)](step6.md)

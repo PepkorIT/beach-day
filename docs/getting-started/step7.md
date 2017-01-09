@@ -54,6 +54,8 @@ var JasmineAsyncEnv = BeachDay.JasmineAsyncEnv;
 var RequestRunner   = BeachDay.RequestRunner;
 var CallConfig      = BeachDay.CallConfig;
 
+var env = new JasmineAsyncEnv();
+
 RequestRunner.globalDefaults = new CallConfig({
     baseURL       : "http://jsonplaceholder.typicode.com",
     assertFuncArr : [function(env, call, body, res){
