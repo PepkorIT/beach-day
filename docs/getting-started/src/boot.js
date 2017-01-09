@@ -7,7 +7,7 @@ var SpecReporter        = require("jasmine-spec-reporter");
 var jasmineInst         = new Jasmine();
 
 // Setup sensible timeout amount for the jasmine tests
-// We don't jasmine tests to timeout before an http call has been completed
+// We don't want our jasmine tests to timeout before an http call has been completed
 global["jasmine"].DEFAULT_TIMEOUT_INTERVAL = 10000; // milliseconds
 
 // Disable default jasmine reporter

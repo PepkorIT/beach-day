@@ -1,21 +1,17 @@
 {
-  "name": "code-samples",
-  "version": "1.0.1",
+  "name": "beach-day-test",
+  "version": "1.0.0",
   "description": "",
-  "main": "boot.js",
-  "directories": {
-    "test": "tests"
-  },
+  "main": "index.js",
   "scripts": {
-    "server": "jsonplaceholder"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "beach-day": "git+ssh://gogs@git.pdws.co.za:922/PepkorIT/beach-day.git",
-    "jsonplaceholder": "^0.3.1",
-    "lodash": "^4.8.2",
-    "request": "^2.70.0",
+    "beach-day": "git+ssh://gogs@git.pdws.co.za:922/PepkorIT/beach-day.git#master",
+    "jasmine": "^2.4.1",
+    "jasmine-spec-reporter": "^2.4.0",
     "tv4": "^1.2.7"
   }
 }
