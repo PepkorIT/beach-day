@@ -171,7 +171,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
                 var arrItem = this.dataArr[i];
                 var dataResult;
                 if (typeof arrItem == "function"){
-                    dataResult = arrItem(env);
+                    dataResult = (<IDataFunc> arrItem)(env, this);
                 }
                 else if (typeof arrItem == "object" || arrItem == null){
                     dataResult = arrItem;

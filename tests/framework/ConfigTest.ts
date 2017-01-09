@@ -130,4 +130,21 @@ describe("Config system used to power the framework calls", function(){
         };
         expect(config.getFullURL(env)).toBe("www.potato.co.za/carpet");
     });
+
+    it("Ensure call is passed to all IDataFunc methods", function() {
+        let passedInCallObject;
+        let testConfig = new CallConfig({
+            baseURL         : "http://jsonplaceholder.typicode.com",
+            endPoint        : "/posts",
+            method          : "POST",
+            dataArr         : [
+                (env, call) => {
+                    passedInCallObject = call;
+                    return {};
+                }
+            ]
+        });
+        testConfig.getDataImpl(env);
+        expect(passedInCallObject).toBe(testConfig);
+    });
 });
