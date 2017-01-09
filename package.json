@@ -6,7 +6,7 @@
   "typings": "lib/index.d.ts",
   "files": [
     "lib/**/*.js",
-    "lib/**/*.ts",
+    "lib/**/*.d.ts",
     "lib/templates/*",
     "custom_typings/**/*.d.ts"
   ],
