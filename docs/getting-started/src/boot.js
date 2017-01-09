@@ -8,7 +8,7 @@ var jasmineInst         = new Jasmine();
 
 // Setup sensible timeout amount for the jasmine tests
 // We don't jasmine tests to timeout before an http call has been completed
-global["jasmine"].DEFAULT_TIMEOUT_INTERVAL = 10000;
+global["jasmine"].DEFAULT_TIMEOUT_INTERVAL = 10000; // milliseconds
 
 // Disable default jasmine reporter
 jasmineInst.configureDefaultReporter({ print: function () { } });
