@@ -4,7 +4,7 @@ Finally we run a real API call! This is where beach-day really shines as it mana
 
 > Under the hood, beach-day uses the [request](https://github.com/request/request) framework
 
-Beach-day provides a set of config & utilities to help write tests with very little code and make assertions on the data returned a breeze. You do this using two of the beach-day clases:
+Beach-day provides a set of config & utilities to help write tests with very little code and make assertions on the data returned a breeze. You do this using two of the beach-day classes:
 - `CallConfig`
 - `RequestRunner`
 
