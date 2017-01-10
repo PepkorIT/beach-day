@@ -1,4 +1,4 @@
-import {RequestRunner, CallConfig, JasmineAsyncEnv, console} from "../../lib/index";
+import {RequestRunner, CallConfig, JasmineAsyncEnv, console} from "../../index";
 
 
 describe("Config system used to power the framework calls", function(){

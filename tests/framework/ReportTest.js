@@ -1,5 +1,5 @@
 "use strict";
-var index_1 = require("../../lib/index");
+var index_1 = require("../../index");
 var RequestRunner_1 = require("../../lib/network/RequestRunner");
 var CallConfig_1 = require("../../lib/network/CallConfig");
 var MatcherUtils_1 = require("../../lib/utils/MatcherUtils");

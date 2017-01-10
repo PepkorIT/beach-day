@@ -1,4 +1,4 @@
-import { JasmineAsyncEnv, console, ReporterAPI, TestUtils} from "../../lib/index";
+import { JasmineAsyncEnv, console, ReporterAPI, TestUtils} from "../../index";
 import * as request from "request";
 import {RequestRunner} from "../../lib/network/RequestRunner";
 import {CallConfig} from "../../lib/network/CallConfig";

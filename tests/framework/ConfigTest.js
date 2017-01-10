@@ -1,5 +1,5 @@
 "use strict";
-var index_1 = require("../../lib/index");
+var index_1 = require("../../index");
 describe("Config system used to power the framework calls", function () {
     var factory;
     var env = new index_1.JasmineAsyncEnv();
