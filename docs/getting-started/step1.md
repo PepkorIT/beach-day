@@ -36,7 +36,7 @@ This will download beach-day and save it as a project dependency in your `packag
 `-- UNMET PEER DEPENDENCY tv4@^1.2.7
 ```
 
-NPM will moan about unmet peer dependencies. These are modules beach-day depends on and will need to be installed.
+NPM will inform you about unmet peer dependencies. These are modules that beach-day works along side with and will need to be installed. You can read more about peer dependencies [here](https://nodejs.org/en/blog/npm/peer-dependencies/).
 
 It's very possible that the module versions required will have changed from the above. Use the module versions your console gives you and install **each** required module, for example:
 
@@ -50,7 +50,7 @@ npm install jasmine@^2.4.1 jasmine-spec-reporter@^2.4.0 tv4@^1.2.7 --save
 
 **2.1\. Create Jasmine Boot File**
 
-We need to setup Jasmine and configure it to use beach-day. We do this by means of a node boot file.
+We need to setup Jasmine and configure it to use beach-day. We do this by means of a jasmine node [boot file](https://jasmine.github.io/2.4/boot.html).
 
 Create a file called `boot.js` and place it in your project root. Then paste the following into the file:
 
@@ -133,6 +133,7 @@ node boot.js
 
 The beach-day report output one of the framework's most valuable features. Be sure to check out the report generated after every test run.
 You can view the report by opening `reports/beach-day-report.html` in your browser.
+In step 3 we add API calls that can then be viewed in detail in the report.
 
 > If there is no report please ensure you don't have an errors in the command line or reread this step to make sure everything is correct.
 

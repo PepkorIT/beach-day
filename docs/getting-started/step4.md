@@ -2,7 +2,7 @@
 
 Data for an HTTP POST is setup using the `CallConfig dataArr` property. This array can hold any amount of objects or functions to return objects.
 
-When a HTTP call is made this array is iterated and objects are extended one over the next to build up a final object to send with the call. By default the framework will use `JSON.stringify()` for serialise the data before making the call, if you want to override this you can set the `CallConfig dataSerialisationFunc` property.
+When an HTTP call is made this array is iterated and objects are extended one over the next to build up a final object to send with the call. By default the framework will use `JSON.stringify()` to serialise the data before making the call, if you want to override this you can set the `CallConfig dataSerialisationFunc` property.
 
 Create a new file `tests/demo4-test.js` and paste the following:
 ```javascript
