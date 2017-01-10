@@ -7,10 +7,10 @@ describe("Demo 2 - Adding an environment", function(){
     var env = new JasmineAsyncEnv();
 
     // Basic test that wraps the test function with the env.wrap
-    // This test will fail if you uncomment the TODO below, causing all subsequent tests to fail too
+    // This test will fail if you uncomment the TODO: below, causing all subsequent tests to fail too
     it("Ensure the world exists", env.wrap(function(env){
         expect(world).toBeDefined();
-        // TODO To see the result from a failed test uncomment this code
+        // TODO: To see the result from a failed test uncomment this code
         //expect(world.status).toBe("exists");
 
         // All tests that use env.wrap() are automatically async

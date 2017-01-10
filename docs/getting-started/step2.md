@@ -31,10 +31,10 @@ describe("Demo 2 - Adding an environment", function(){
     var env = new JasmineAsyncEnv();
 
     // Basic test that wraps the test function with the env.wrap
-    // this should now fail, causing all subsequent tests to fail too
+    // This test will fail if you uncomment the TODO: below, causing all subsequent tests to fail too
     it("Ensure the world exists", env.wrap(function(env){
         expect(world).toBeDefined();
-        // TODO To see the result from a failed test uncomment this code
+        // TODO: To see the result from a failed test uncomment this code
         // expect(world.status).toBe("exists");
 
         // All tests that use env.wrap() are automatically async
@@ -42,7 +42,7 @@ describe("Demo 2 - Adding an environment", function(){
         env.done();
     }));
 
-    // Basic test 2 will not run because the previous test will will fail
+    // Basic test 2 will not run because the previous test will fail
     it("Ensure all is well in the world", env.wrap(function(env){
         expect(world.status).toBe("all well");
         env.done();
@@ -54,7 +54,7 @@ Let's examine what happened in the code above:
 
  - We created a new `JasmineAsyncEnv` instance which is shared by all the tests in this suite.
  - We wrapped all test functions using env.wrap(). This will execute the passed function [asynchronously](http://jasmine.github.io/edge/introduction.html#section-Asynchronous_Support) and set the done function on the environment to be called when the test is complete.
- - As the first test will encounter an expect() failure, the second test will not be executed and have the status of "not run" 
+ - Uncomment the TODO line in your first test to see it encounter an expect() failure, the second test will not be executed and have the status of "not run" in the report.
 
 To run this and inspect the report (`reports/beach-day-report.html`):
 
