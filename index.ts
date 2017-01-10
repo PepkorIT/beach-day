@@ -12,12 +12,3 @@ export * from "./lib/network/RequestRunner";
 // Register initially, this will help register matchers
 // if the implementer decides to use this framework without the reporter
 Matchers.registerMatchers();
-
-declare namespace jasmine {
-    export interface Matchers {
-        toBePassing(): boolean;
-        throwExpectError(message:string): boolean;
-        throwImplementationError(message:string): boolean;
-        statusCodeToBe(statusCode:number): boolean;
-    }
-}
