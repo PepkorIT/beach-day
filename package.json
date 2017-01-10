@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "files": [
-    "lib/*",
+    "lib/**/*.d.ts",
+    "lib/**/*.js",
+    "lib/templates/*",
     "index.d.ts",
-    "index.ts",
     "index.js"
   ],
   "scripts": {
