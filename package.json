@@ -6,7 +6,8 @@
   "files": [
     "lib/*",
     "index.ts",
-    "index.js"
+    "index.js",
+    "tsconfig.json"
   ],
   "scripts": {
     "test": "tsc && node ./boot.js",
