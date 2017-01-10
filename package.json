@@ -3,7 +3,6 @@
   "version": "0.2.4",
   "description": "",
   "main": "index.js",
-  "types": "./lib/utils/MatchersDefinitions.d.ts",
   "files": [
     "lib/*",
     "index.ts",
