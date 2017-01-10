@@ -1,3 +1,4 @@
+///<reference path="./lib/utils/MatchersDefinitions.d.ts" />
 import {Matchers} from "./lib/utils/Matchers";
 
 export * from "./lib/reporter/BeachDayReporter";
