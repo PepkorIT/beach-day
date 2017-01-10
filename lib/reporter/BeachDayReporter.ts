@@ -147,7 +147,7 @@ API
 export var consoleOrig = global.console;
 var logOrig     = global.console.log;
 var infoOrig    = global.console.info;
-var debugOrig   = global.console.debug;
+var debugOrig   = global.console.trace;
 var warnOrig    = global.console.warn;
 var errorOrig   = global.console.error;
 
@@ -281,7 +281,7 @@ export class BeachDayReporter{
         if (this.config.includeAllConsoleLogs){
             global.console.log      = reporterConsole.log;
             global.console.info     = reporterConsole.info;
-            global.console.debug    = reporterConsole.debug;
+            global.console.trace    = reporterConsole.debug;
             global.console.warn     = reporterConsole.warn;
             global.console.error    = reporterConsole.error;
         }

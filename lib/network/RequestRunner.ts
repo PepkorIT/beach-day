@@ -113,7 +113,7 @@ export class RequestRunner {
                             statusCode  : 0,
                             body        : null,
                             request     : {
-                                uri     : URL.parse(options.uri),
+                                uri     : URL.parse(<string> options.uri),
                                 method  : options["method"],
                                 headers : options["headers"],
                                 body    : options["body"]

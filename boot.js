@@ -1,7 +1,7 @@
 "use strict";
 var BeachDayReporter_1 = require("./lib/reporter/BeachDayReporter");
 var Jasmine = require("jasmine");
-var SpecReporter = require("jasmine-spec-reporter");
+var SpecReporter = require("jasmine-spec-reporter").SpecReporter;
 var jasmineInst = new Jasmine();
 global["jasmine"].DEFAULT_TIMEOUT_INTERVAL = 5000;
 console.log("Setting up new default JASMINE Suite :)");

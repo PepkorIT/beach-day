@@ -3,10 +3,8 @@
   "version": "0.2.4",
   "description": "",
   "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
   "files": [
     "lib/**/*.js",
-    "lib/**/*.d.ts",
     "lib/templates/*",
     "custom_typings/**/*.d.ts"
   ],
@@ -23,12 +21,18 @@
   "license": "ISC",
   "devDependencies": {
     "minami": "^1.1.1",
-    "tsconfig-glob": "^0.4.3",
     "typedoc": "^0.5.3",
-    "typescript": "^1.8.9",
-    "typings": "^0.7.11"
+    "typescript": "^2.1.0"
   },
   "dependencies": {
+    "@types/form-data": "0.0.33",
+    "@types/jasmine": "^2.5.40",
+    "@types/lodash": "^4.14.48",
+    "@types/mustache": "^0.8.29",
+    "@types/node": "^6.0.59",
+    "@types/node-sass": "^3.10.32",
+    "@types/request": "0.0.39",
+    "@types/tv4": "^1.2.28",
     "escape-html": "^1.0.3",
     "moment": "^2.12.0",
     "mustache": "^2.2.1",
@@ -40,7 +44,7 @@
     "request": "^2.69.0",
     "tv4": "^1.2.7",
     "lodash": "^4.8.2",
-    "jasmine": "^2.4.1",
-    "jasmine-spec-reporter": "^2.4.0"
+    "jasmine": "^2.5.2",
+    "jasmine-spec-reporter": "^3.1.0"
   }
 }

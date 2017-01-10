@@ -2,47 +2,19 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es5",
-        "declaration": true,
+        "declaration": false,
         "sourceMap": false,
         "removeComments": false,
-        "preserveConstEnums": true
+        "preserveConstEnums": true,
+        "lib": ["es6", "dom"],
+        "typeRoots": [
+            "node_modules/@types"
+        ]
     },
-    "filesGlob": [
-        "lib/**/*.ts",
-        "!lib/*.d.ts",
-        "!lib/network/**/*.d.ts",
-        "!lib/reporter/**/*.d.ts",
-        "!lib/template/**/*.d.ts",
-        "!lib/utils/**/*.d.ts",
-        "tests/**/*.ts",
-        "!tests/**/*.d.ts",
-        "typings/main.d.ts",
-        "boot.ts"
+    "exclude": [
+        "node_modules"
     ],
-    "files": [
-        "lib/custom_typings/utils/MatcherHelper.d.ts",
-        "typings/main.d.ts",
-        "lib/index.ts",
-        "lib/network/CallConfig.ts",
-        "lib/network/ExtendingObject.ts",
-        "lib/network/IRequestResponse.ts",
-        "lib/network/RequestRunner.ts",
-        "lib/reporter/BeachDayReporter.ts",
-        "lib/reporter/ReportGenerator.ts",
-        "lib/reporter/TestReport.ts",
-        "lib/utils/JasmineAsyncEnv.ts",
-        "lib/utils/Matchers.ts",
-        "lib/utils/MatcherUtils.ts",
-        "lib/utils/ObjectUtils.ts",
-        "lib/utils/RandomUtils.ts",
-        "lib/utils/SwaggerUtils.ts",
-        "lib/utils/TestUtils.ts",
-        "tests/framework/ConfigTest.ts",
-        "tests/framework/JasmineAsyncEvnTest.ts",
-        "tests/framework/ObjectUtilsTest.ts",
-        "tests/framework/ReportTest.ts",
-        "tests/framework/RequestRunnerTest.ts",
-        "tests/framework/SwaggerUtilsTest.ts",
-        "boot.ts"
+    "include": [
+        "**/*.ts"
     ]
 }

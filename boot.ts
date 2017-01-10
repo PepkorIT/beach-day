@@ -1,6 +1,6 @@
 import {BeachDayReporter} from "./lib/reporter/BeachDayReporter";
 var Jasmine             = require("jasmine");
-var SpecReporter        = require("jasmine-spec-reporter");
+var SpecReporter        = require("jasmine-spec-reporter").SpecReporter;
 
 var jasmineInst = new Jasmine();
 global["jasmine"].DEFAULT_TIMEOUT_INTERVAL = 5000;
