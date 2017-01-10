@@ -12,3 +12,10 @@ In addition to the reporter there is a config and utility system that makes it f
 This is pending github pages to be able to host. Otherwise is available [here](docs/api-reference/typedoc/)
 
 #### [FAQ](docs/faq/index.md)
+
+# Tasks to take beach-day public
+- Justin to review
+- Push to github
+- Add to NPM
+- Update install path to NPM global
+- Host API docs and update this page's link
