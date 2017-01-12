@@ -3,5 +3,6 @@
     "readme": "none",
     "out": "docs/api-reference/typedoc",
     "mode": "file",
-    "theme": "default"
+    "theme": "default",
+    "includes": "**/node_modules/@types/**"
 }

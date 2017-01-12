@@ -13,7 +13,7 @@
   "scripts": {
     "test": "tsc && node ./boot.js",
     "report": "tsc && node ./lib/reporter/TestReport.js",
-    "docs": "tsc && typedoc --excludeExternals --excludePrivate --options typedoc.json lib/"
+    "docs": "tsc && typedoc --ignoreCompilerErrors --excludeExternals --excludePrivate --options typedoc.json node_modules/@types"
   },
   "repository": {
     "type": "git",

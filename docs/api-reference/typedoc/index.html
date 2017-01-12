@@ -65,12 +65,6 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Modules</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-module tsd-is-not-exported"><a href="modules/jasmine.html" class="tsd-kind-icon">jasmine</a></li>
-							</ul>
-						</section>
 						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
@@ -168,7 +162,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-is-not-exported">
 					<a name="specreporter" class="tsd-anchor"></a>
 					<h3>Spec<wbr>Reporter</h3>
-					<div class="tsd-signature tsd-kind-icon">Spec<wbr>Reporter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;require(&quot;jasmine-spec-reporter&quot;)</span></div>
+					<div class="tsd-signature tsd-kind-icon">Spec<wbr>Reporter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;require(&quot;jasmine-spec-reporter&quot;).SpecReporter</span></div>
 					<aside class="tsd-sources">
 						<ul>
 							<li>Defined in boot.ts:3</li>
@@ -208,7 +202,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-is-not-exported">
 					<a name="debugorig" class="tsd-anchor"></a>
 					<h3>debug<wbr>Orig</h3>
-					<div class="tsd-signature tsd-kind-icon">debug<wbr>Orig<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">debug</span><span class="tsd-signature-symbol"> =&nbsp;global.console.debug</span></div>
+					<div class="tsd-signature tsd-kind-icon">debug<wbr>Orig<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">trace</span><span class="tsd-signature-symbol"> =&nbsp;global.console.trace</span></div>
 					<aside class="tsd-sources">
 						<ul>
 							<li>Defined in lib/reporter/BeachDayReporter.ts:150</li>
@@ -291,7 +285,7 @@
 					<div class="tsd-signature tsd-kind-icon">registered<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in lib/utils/Matchers.ts:11</li>
+							<li>Defined in lib/utils/Matchers.ts:3</li>
 						</ul>
 					</aside>
 				</section>
@@ -311,8 +305,8 @@
 					<div class="tsd-signature tsd-kind-icon">stringify<wbr>Object<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;require(&quot;stringify-object&quot;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in lib/reporter/BeachDayReporter.ts:10</li>
 							<li>Defined in lib/utils/MatcherUtils.ts:3</li>
+							<li>Defined in lib/reporter/BeachDayReporter.ts:10</li>
 						</ul>
 					</aside>
 				</section>
@@ -481,7 +475,7 @@
 					<div class="tsd-signature tsd-kind-icon">Matchers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in lib/utils/Matchers.ts:13</li>
+							<li>Defined in lib/utils/Matchers.ts:5</li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-object-literal">
@@ -494,7 +488,7 @@
 							<li class="tsd-description">
 								<aside class="tsd-sources">
 									<ul>
-										<li>Defined in lib/utils/Matchers.ts:14</li>
+										<li>Defined in lib/utils/Matchers.ts:6</li>
 									</ul>
 								</aside>
 								<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1175,9 +1169,6 @@
 				<ul>
 					<li class="globals current ">
 						<a href="index.html"><em>Globals</em></a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-not-exported">
-						<a href="modules/jasmine.html">jasmine</a>
 					</li>
 				</ul>
 			</nav>
