@@ -6,7 +6,7 @@ At it's core, beach-day is a custom [jasmine reporter](http://jasmine.github.io/
 In addition to the reporter there is a config and utility system that makes it fast and simple to write functional HTTP tests.
 
 ## Documentation
-#### [Getting started guide](docs/getting-started/step1.md)
+#### [Getting started guide](docs/getting-started/toc.md)
 
 #### Full API Documentation
 This is pending github pages to be able to host. Otherwise is available [here](docs/api-reference/typedoc/)
