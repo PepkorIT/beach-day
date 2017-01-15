@@ -99,6 +99,10 @@ export class RequestRunner {
                 // We wrap this section as it is executed asynchronously and jasmine cannot catch it.
                 // This should be removed when jasmine supports it: https://github.com/jasmine/jasmine/issues/529
                 try{
+                    if (call.requestCallback){
+                        call.requestCallback(error, sourceRes, body);
+                    }
+
                     // Ensure the same tests is still running
                     if (currSpecId != ReporterAPI.getCurrentSpecId()){
                         TestUtils.throwImplementationError("HTTP callback was executed after the test had been completed. Please check your timeouts to make sure the test is not timing out before the HTTP request.");

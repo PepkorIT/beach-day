@@ -1,7 +1,7 @@
 import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
 import * as _ from "lodash";
 import {ExtendingObject} from "./ExtendingObject";
-import {CoreOptions} from "request";
+import {CoreOptions, RequestCallback} from "request";
 import {IRequestResponse} from "./IRequestResponse";
 var urlJoin = require("url-join");
 
@@ -88,6 +88,11 @@ export interface ICallConfigParams {
     requestOptions?:CoreOptions;
 
     /**
+     * Callback that is executed directly after the request is made with the raw request options.
+     **/
+    requestCallback?:RequestCallback;
+
+    /**
      * If set to true, errors returned from the request framework will not mark a test as failed.
      * These include things like timeouts, SSL errors, etc.
      */
@@ -139,6 +144,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     public checkRequestSchema:boolean;
     public checkResponseSchema:boolean;
     public requestOptions:CoreOptions;
+    public requestCallback:RequestCallback;
     public allowHTTPErrors:boolean|IAllowErrorFunc;
 
     constructor(params?:ICallConfigParams){

@@ -1,7 +1,7 @@
 /// <reference types="request" />
 import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
 import { ExtendingObject } from "./ExtendingObject";
-import { CoreOptions } from "request";
+import { CoreOptions, RequestCallback } from "request";
 import { IRequestResponse } from "./IRequestResponse";
 export interface ICallConfigParams {
     /** Only used when auto generating tests using a utility*/
@@ -67,6 +67,10 @@ export interface ICallConfigParams {
      */
     requestOptions?: CoreOptions;
     /**
+     * Callback that is executed directly after the request is made with the raw request options.
+     **/
+    requestCallback?: RequestCallback;
+    /**
      * If set to true, errors returned from the request framework will not mark a test as failed.
      * These include things like timeouts, SSL errors, etc.
      */
@@ -116,6 +120,7 @@ export declare class CallConfig extends ExtendingObject implements ICallConfigPa
     checkRequestSchema: boolean;
     checkResponseSchema: boolean;
     requestOptions: CoreOptions;
+    requestCallback: RequestCallback;
     allowHTTPErrors: boolean | IAllowErrorFunc;
     constructor(params?: ICallConfigParams);
     /**
