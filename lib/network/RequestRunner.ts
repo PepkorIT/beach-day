@@ -100,7 +100,10 @@ export class RequestRunner {
                 // This should be removed when jasmine supports it: https://github.com/jasmine/jasmine/issues/529
                 try{
                     if (call.requestCallback){
-                        call.requestCallback(error, sourceRes, body);
+                        let response    = call.requestCallback(error, sourceRes, body);
+                        error           = response.error;
+                        sourceRes       = response.response;
+                        body            = response.body;
                     }
 
                     // Ensure the same tests is still running
