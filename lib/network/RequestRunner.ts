@@ -204,7 +204,11 @@ export class RequestRunner {
                     }
 
                 }).catch((err) => {
-                    TestUtils.throwImplementationError(err);
+                    let message = "requestCallback promise rejection";
+                    if (err && err.stack){
+                        message = err.stack;
+                    }
+                    TestUtils.throwImplementationError(message);
                     env.done();
                 })
 
