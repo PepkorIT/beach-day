@@ -77,7 +77,7 @@ export interface ICallConfigParams {
     allowHTTPErrors?: boolean | IAllowErrorFunc;
 }
 export interface IRequestCallbackHook {
-    (error: any, response: RequestResponse, body: any): IRequestCallbackResponse;
+    (error: any, response: RequestResponse, body: any): Promise<IRequestCallbackResponse>;
 }
 export interface IRequestCallbackResponse {
     error: any;

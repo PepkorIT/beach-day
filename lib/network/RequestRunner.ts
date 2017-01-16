@@ -7,6 +7,8 @@ import * as request from "request";
 import * as URL from "url";
 import ObjectUtils from "../utils/ObjectUtils";
 import {IRequestResponse} from "./IRequestResponse";
+import {IRequestCallbackHook} from "./CallConfig";
+import {IRequestCallbackResponse} from "./CallConfig";
 var escapeHtml = require("escape-html");
 
 export class RequestRunner {
@@ -96,98 +98,117 @@ export class RequestRunner {
 
             RequestRunner.request(options, (error:any, sourceRes:any, body:any) => {
                 var res:IRequestResponse = sourceRes;
+
                 // We wrap this section as it is executed asynchronously and jasmine cannot catch it.
                 // This should be removed when jasmine supports it: https://github.com/jasmine/jasmine/issues/529
-                try{
-                    if (call.requestCallback){
-                        let response    = call.requestCallback(error, sourceRes, body);
+                let promise:Promise<IRequestCallbackResponse>;
+                if (call.requestCallback){
+                    promise = call.requestCallback(error, sourceRes, body);
+                }
+                else{
+                    promise = Promise.resolve({error:error, response:sourceRes, body:body});
+                }
+                promise.then((response) => {
+                    if (response){
                         error           = response.error;
                         sourceRes       = response.response;
                         body            = response.body;
                     }
-
-                    // Ensure the same tests is still running
-                    if (currSpecId != ReporterAPI.getCurrentSpecId()){
-                        TestUtils.throwImplementationError("HTTP callback was executed after the test had been completed. Please check your timeouts to make sure the test is not timing out before the HTTP request.");
-                        return;
+                    else{
+                        TestUtils.throwImplementationError("requestCallback did not return a response");
                     }
-                    if (error){
-                        // Log out the request and response
-                        // Generate a response object that is partially populated with only the request information
-                        // We do this so the data for the request resides in the same place, always
-                        var fakeResponse:IRequestResponse = {
-                            headers     : null,
-                            statusCode  : 0,
-                            body        : null,
-                            request     : {
-                                uri     : URL.parse(<string> options.uri),
-                                method  : options["method"],
-                                headers : options["headers"],
-                                body    : options["body"]
-                            }
-                        };
-                        call.obfuscateFuncImpl(env, null, fakeResponse);
 
-                        RequestRunner.logRequestResponse(error, fakeResponse, body, options, true, true);
-                        if (call.allowHTTPErrors != null){
-                            if (call.allowHTTPErrors === true){
-                                // Do nothing
+
+                    try{
+                        // Ensure the same tests is still running
+                        if (currSpecId != ReporterAPI.getCurrentSpecId()){
+                            TestUtils.throwImplementationError("HTTP callback was executed after the test had been completed. Please check your timeouts to make sure the test is not timing out before the HTTP request.");
+                            return;
+                        }
+                        if (error){
+                            // Log out the request and response
+                            // Generate a response object that is partially populated with only the request information
+                            // We do this so the data for the request resides in the same place, always
+                            var fakeResponse:IRequestResponse = {
+                                headers     : null,
+                                statusCode  : 0,
+                                body        : null,
+                                request     : {
+                                    uri     : URL.parse(<string> options.uri),
+                                    method  : options["method"],
+                                    headers : options["headers"],
+                                    body    : options["body"]
+                                }
+                            };
+                            call.obfuscateFuncImpl(env, null, fakeResponse);
+
+                            RequestRunner.logRequestResponse(error, fakeResponse, body, options, true, true);
+                            if (call.allowHTTPErrors != null){
+                                if (call.allowHTTPErrors === true){
+                                    // Do nothing
+                                }
+                                else if (typeof call.allowHTTPErrors == "function" && !(<IAllowErrorFunc> call.allowHTTPErrors)(error, env, call, fakeResponse)){
+                                    TestUtils.throwExpectError("Expected HTTP call to be successful");
+                                }
                             }
-                            else if (typeof call.allowHTTPErrors == "function" && !(<IAllowErrorFunc> call.allowHTTPErrors)(error, env, call, fakeResponse)){
+                            else{
                                 TestUtils.throwExpectError("Expected HTTP call to be successful");
                             }
                         }
                         else{
-                            TestUtils.throwExpectError("Expected HTTP call to be successful");
-                        }
-                    }
-                    else{
-                        // Try convert the response using the dataDeSerialisationFunc or JSON.parse()
-                        var parsePassed = true;
-                        if (body && typeof body == "string"){
-                            try{
-                                if (call.dataDeSerialisationFunc != null){
-                                    body = call.dataDeSerialisationFunc(env, call, body, res);
+                            // Try convert the response using the dataDeSerialisationFunc or JSON.parse()
+                            var parsePassed = true;
+                            if (body && typeof body == "string"){
+                                try{
+                                    if (call.dataDeSerialisationFunc != null){
+                                        body = call.dataDeSerialisationFunc(env, call, body, res);
+                                    }
+                                    else{
+                                        body = JSON.parse(body);
+                                    }
                                 }
-                                else{
-                                    body = JSON.parse(body);
+                                catch (e){
+                                    parsePassed = false;
+                                    TestUtils.throwExpectError("Expected JSON parsing from the server to pass");
+                                    console.log("Parsing Error: ");
+                                    console.log(e.message);
+                                    console.log("Original data from server:");
+                                    // Escape before logging it as this will form part of the report
+                                    console.log(escapeHtml(body));
                                 }
                             }
-                            catch (e){
-                                parsePassed = false;
-                                TestUtils.throwExpectError("Expected JSON parsing from the server to pass");
-                                console.log("Parsing Error: ");
-                                console.log(e.message);
-                                console.log("Original data from server:");
-                                // Escape before logging it as this will form part of the report
-                                console.log(escapeHtml(body));
-                            }
+
+                            // Set the body on the environment
+                            env.currentBody = body;
+
+                            // Run obfuscation
+                            if (parsePassed) call.obfuscateFuncImpl(env, body, res);
+
+                            // Log out the request and response
+                            RequestRunner.logRequestResponse(error, res, body, options, false, parsePassed);
+
+                            // Check schemas if setup
+                            if (parsePassed) call.checkSchemaImpl(env, body, false, res);
+
+                            // Run assertions
+                            if (parsePassed) call.assertFuncImpl(env, body, res);
                         }
 
-                        // Set the body on the environment
-                        env.currentBody = body;
-
-                        // Run obfuscation
-                        if (parsePassed) call.obfuscateFuncImpl(env, body, res);
-
-                        // Log out the request and response
-                        RequestRunner.logRequestResponse(error, res, body, options, false, parsePassed);
-
-                        // Check schemas if setup
-                        if (parsePassed) call.checkSchemaImpl(env, body, false, res);
-
-                        // Run assertions
-                        if (parsePassed) call.assertFuncImpl(env, body, res);
+                        // Lastly call done()
+                        env.done();
+                    }
+                        // Here we manually log an implementation error with the error stack.
+                    catch (e){
+                        TestUtils.throwImplementationError(e.stack);
+                        env.done();
                     }
 
-                    // Lastly call done()
+                }).catch((err) => {
+                    TestUtils.throwImplementationError(err);
                     env.done();
-                }
-                // Here we manually log an implementation error with the error stack.
-                catch (e){
-                    TestUtils.throwImplementationError(e.stack);
-                    env.done();
-                }
+                })
+
+
             });
         }
     }
