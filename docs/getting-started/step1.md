@@ -131,7 +131,7 @@ node boot.js
 
 **VERY IMPORTANT**
 
-The beach-day report output one of the framework's most valuable features. Be sure to check out the report generated after every test run.
+The beach-day report output is one of the framework's most valuable features. Be sure to check out the report generated after every test run.
 You can view the report by opening `reports/beach-day-report.html` in your browser.
 In step 3 we add API calls that can then be viewed in detail in the report.
 
