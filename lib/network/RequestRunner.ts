@@ -24,8 +24,8 @@ export class RequestRunner {
         call = RequestRunner.globalDefaults ? RequestRunner.globalDefaults.extend(call) : call;
 
         // Check required props
-        var required = ["endPoint", "baseURL"];
-        for (var i = 0; i < required.length; i++) {
+        let required = ["endPoint", "baseURL"];
+        for (let i = 0; i < required.length; i++) {
             if (call[required[i]] == null){
                 TestUtils.throwImplementationError(`${required[i]} is a required property to run your CallConfig: ${JSON.stringify(call, null, 4)}`);
                 env.done();
@@ -41,26 +41,18 @@ export class RequestRunner {
         call.beforeProxy(env);
 
         // Header generation
-        var headers = {};
+        let sendHeaders = call.getHeadersImpl(env) || {};
 
         // Default headers to use json
-        if (!RequestRunner.hasHeader(call.headers, "content-type")){
-            headers["content-type"] = "application/json";
+        if (!RequestRunner.hasHeader(sendHeaders, "content-type")){
+            sendHeaders["content-type"] = "application/json";
         }
 
-        if (call.headers) {
-            for (var propName in call.headers){
-                if (!headers.hasOwnProperty(propName.toLowerCase())){
-                    headers[propName] = call.headers[propName];
-                }
-            }
-        }
+        let requestPassed = true;
 
-        var requestPassed = true;
-
-        var sendBody;
+        let sendBody;
         if (call.method != "GET"){
-            var data = call.getDataImpl(env);
+            let data = call.getDataImpl(env);
             if (data) {
                 requestPassed   = call.checkSchemaImpl(env, data, true, null);
                 if (call.dataSerialisationFunc != null){
@@ -78,10 +70,10 @@ export class RequestRunner {
         }
         else{
             // Create the options from the options in the config then the derived data
-            var options = <request.UriOptions> _.extend({}, call.requestOptions, <request.CoreOptions> {
+            let options = <request.UriOptions> _.extend({}, call.requestOptions, <request.CoreOptions> {
                 uri     : call.getFullURL(env),
                 method  : call.method.toUpperCase(),
-                headers : headers,
+                headers : sendHeaders,
                 json    : false, // This is done manually so we can catch errors
                 body    : sendBody,
                 timeout : call.timeout
@@ -92,10 +84,10 @@ export class RequestRunner {
 
             // Fetch the current spec ID from the reporter so we can
             // ensure the test is still running when we complete the request call
-            var currSpecId = ReporterAPI.getCurrentSpecId();
+            let currSpecId = ReporterAPI.getCurrentSpecId();
 
             RequestRunner.request(options, (error:any, sourceRes:any, body:any) => {
-                var res:IRequestResponse = sourceRes;
+                let res:IRequestResponse = sourceRes;
 
                 // We wrap this section as it is executed asynchronously and jasmine cannot catch it.
                 // This should be removed when jasmine supports it: https://github.com/jasmine/jasmine/issues/529
@@ -127,14 +119,14 @@ export class RequestRunner {
                             // Log out the request and response
                             // Generate a response object that is partially populated with only the request information
                             // We do this so the data for the request resides in the same place, always
-                            var fakeResponse:IRequestResponse = {
+                            let fakeResponse:IRequestResponse = {
                                 headers     : null,
                                 statusCode  : 0,
                                 body        : null,
                                 request     : {
                                     uri     : URL.parse(<string> options.uri),
                                     method  : options["method"],
-                                    headers : options["headers"],
+                                    headers : options["sendHeaders"],
                                     body    : options["body"]
                                 }
                             };
@@ -155,7 +147,7 @@ export class RequestRunner {
                         }
                         else{
                             // Try convert the response using the dataDeSerialisationFunc or JSON.parse()
-                            var parsePassed = true;
+                            let parsePassed = true;
                             if (body && typeof body == "string"){
                                 try{
                                     if (call.dataDeSerialisationFunc != null){
