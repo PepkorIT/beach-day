@@ -214,11 +214,9 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
      * Proxy for executing the headersArr calls
      */
     public getHeadersImpl(env:JasmineAsyncEnv):any {
-        if (this.headersArr == null || this.headersArr.length == 0){
-            return null;
-        }
-        else{
-            var result = _.extend({}, this.headers);
+        var result = _.extend({}, this.headers);
+
+        if (this.headersArr != null){
             for (var i = 0; i < this.headersArr.length; i++) {
                 var arrItem = this.headersArr[i];
                 var dataResult;
@@ -233,8 +231,8 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
                 }
                 _.extend(result, dataResult);
             }
-            return result;
         }
+        return result;
     }
 
     /**

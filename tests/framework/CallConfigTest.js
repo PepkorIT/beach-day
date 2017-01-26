@@ -134,4 +134,10 @@ describe("Config system used to power the framework calls", function () {
         config2.dataArr.push("2");
         expect(config1.dataArr.length).toBe(1);
     });
+    it("old school only headers should still be returned", function () {
+        var config = new index_1.CallConfig({
+            headers: { param1: "1" }
+        });
+        expect(config.getHeadersImpl(env).param1).toBe("1");
+    });
 });
