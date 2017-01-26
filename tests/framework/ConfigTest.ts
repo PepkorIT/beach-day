@@ -135,12 +135,23 @@ describe("Config system used to power the framework calls", function(){
         let config1 = new CallConfig({
             headers: {option1:"123"}
         });
-        console.log("-------------->");
         let config2 = new CallConfig().extend(config1);
 
         // now update config2
         config2.headers.option1 = "456";
 
         expect(config1.headers.option1).toBe("123");
+    });
+
+    it("Ensure no leakage in array properties", function(){
+        let config1 = new CallConfig({
+            dataArr: ["1"]
+        });
+        let config2 = new CallConfig().extend(config1);
+
+        // now update config2
+        config2.dataArr.push("2");
+
+        expect(config1.dataArr.length).toBe(1);
     });
 });

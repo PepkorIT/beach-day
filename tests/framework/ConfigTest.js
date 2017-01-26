@@ -112,10 +112,18 @@ describe("Config system used to power the framework calls", function () {
         var config1 = new index_1.CallConfig({
             headers: { option1: "123" }
         });
-        index_1.console.log("-------------->");
         var config2 = new index_1.CallConfig().extend(config1);
         // now update config2
         config2.headers.option1 = "456";
         expect(config1.headers.option1).toBe("123");
+    });
+    it("Ensure no leakage in array properties", function () {
+        var config1 = new index_1.CallConfig({
+            dataArr: ["1"]
+        });
+        var config2 = new index_1.CallConfig().extend(config1);
+        // now update config2
+        config2.dataArr.push("2");
+        expect(config1.dataArr.length).toBe(1);
     });
 });

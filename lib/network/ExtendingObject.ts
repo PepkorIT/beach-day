@@ -7,18 +7,28 @@ export class ExtendingObject {
         let sourcePopulated = sourceValue != null && sourceValue != undefined;
         let destPopulated   = destValue != null && destValue != undefined;
         let bothPopulated   = destPopulated && sourcePopulated;
-        let bothArrays      = (destValue instanceof Array && sourceValue instanceof Array);
+
+        let sourceArray     = (sourceValue instanceof Array);
+        let destArray       = (sourceValue instanceof Array);
+        let bothArrays      = (destArray && sourceArray);
+
         let destObject      = typeof destValue == "object" && !(destValue instanceof Array);
         let sourceObject    = typeof sourceValue == "object" && !(sourceValue instanceof Array);
         let bothObjects     = sourceObject && destObject;
 
         let result:any;
+        // Array checks
         if (bothArrays && bothPopulated) {
             //if (key == "checkRequestSchema") console.log("array merge");
             result      = [];
             result      = result.concat(destValue);
             result      = result.concat(sourceValue);
         }
+        else if (sourceArray && !destPopulated){
+            result      = [].concat(sourceValue);
+        }
+
+        // Object checks
         else if (bothPopulated && bothObjects){
             //if (key == "checkRequestSchema") console.log("object merge");
             result = _.extend({}, destValue, sourceValue);
@@ -26,6 +36,8 @@ export class ExtendingObject {
         else if (sourcePopulated && sourceObject){
             result = _.extend({}, destValue, sourceValue);
         }
+
+        // Otherwise
         else{
             //if (key == "checkRequestSchema") console.log("undefined check");
             result = sourceValue == undefined || sourceValue == null ? destValue : sourceValue;
