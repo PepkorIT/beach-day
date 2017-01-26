@@ -25,6 +25,7 @@
   "license": "ISC",
   "devDependencies": {
     "minami": "^1.1.1",
+    "mock-promises": "^0.8.1",
     "typedoc": "^0.5.3",
     "typescript": "^2.1.0"
   },

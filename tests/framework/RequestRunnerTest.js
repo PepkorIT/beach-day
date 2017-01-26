@@ -3,6 +3,8 @@ var RequestRunner_1 = require("../../lib/network/RequestRunner");
 var JasmineAsyncEnv_1 = require("../../lib/utils/JasmineAsyncEnv");
 var CallConfig_1 = require("../../lib/network/CallConfig");
 var TestUtils_1 = require("../../lib/utils/TestUtils");
+var mockPromises = require("mock-promises");
+Promise = mockPromises.getMockPromise(Promise);
 describe("RequestRunner tester", function () {
     var dummyEnv = new JasmineAsyncEnv_1.JasmineAsyncEnv();
     var done, throwImplementationError, throwExpectError, request;
@@ -88,12 +90,14 @@ describe("RequestRunner tester", function () {
     it("Ensure errors are caught", function () {
         RequestRunner_1.RequestRunner.run(defaultConf, dummyEnv);
         requestCB({ message: "error here" });
+        mockPromises.tickAllTheWay();
         expect(throwExpectError).toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
     });
     it("Ensure errors are allowed for boolean", function () {
         RequestRunner_1.RequestRunner.run(defaultConf.extend({ allowHTTPErrors: true }), dummyEnv);
         requestCB({ message: "error here" });
+        mockPromises.tickAllTheWay();
         expect(throwExpectError).not.toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
     });
@@ -104,6 +108,7 @@ describe("RequestRunner tester", function () {
                 return true;
             } }), dummyEnv);
         requestCB({ message: "error here" });
+        mockPromises.tickAllTheWay();
         expect(throwExpectError).not.toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
         expect(errorPassed.message).toBe("error here");
@@ -111,6 +116,7 @@ describe("RequestRunner tester", function () {
     it("Ensure invalid JSON is caught", function () {
         RequestRunner_1.RequestRunner.run(defaultConf, dummyEnv);
         requestCB(null, {}, "{something: sdds");
+        mockPromises.tickAllTheWay();
         expect(throwExpectError).toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
         expect(dummyEnv.currentBody).toBe("{something: sdds");
@@ -121,6 +127,7 @@ describe("RequestRunner tester", function () {
             dataDeSerialisationFunc: dataDeSerialisationFunc
         }), dummyEnv);
         requestCB(null, {}, "{something: sdds");
+        mockPromises.tickAllTheWay();
         expect(dataDeSerialisationFunc).toHaveBeenCalled();
     });
     it("Ensure obsfucate is called", function () {
@@ -129,6 +136,7 @@ describe("RequestRunner tester", function () {
             obfuscateArr: [obsfu]
         }), dummyEnv);
         requestCB(null, {}, "");
+        mockPromises.tickAllTheWay();
         expect(obsfu).toHaveBeenCalled();
     });
     it("Ensure check schema is called", function () {
@@ -138,6 +146,7 @@ describe("RequestRunner tester", function () {
             checkResponseSchemaFunc: checkSchema
         }), dummyEnv);
         requestCB(null, {}, "{}");
+        mockPromises.tickAllTheWay();
         expect(checkSchema).toHaveBeenCalled();
     });
     it("Ensure assert func is called", function () {
@@ -146,6 +155,7 @@ describe("RequestRunner tester", function () {
             assertFuncArr: [assertFunc]
         }), dummyEnv);
         requestCB(null, {}, "{}");
+        mockPromises.tickAllTheWay();
         expect(assertFunc).toHaveBeenCalled();
     });
 });
