@@ -22,8 +22,15 @@ export interface ICallConfigParams {
     timeout?: number;
     /** Call endpoint*/
     endPoint?: IDataFunc | string;
-    /** Headers array*/
+    /**
+     * Headers object
+     * @deprecated since version 1.1.0 please use headersArr
+     */
     headers?: any;
+    /**
+     * Array of header objects / functions to be sent with the call, either a function that will be evoked to get the result or an object
+     */
+    headersArr?: Array<IDataFunc | any>;
     /** Call HTTP method to use*/
     method?: string;
     /**
@@ -116,6 +123,7 @@ export declare class CallConfig extends ExtendingObject implements ICallConfigPa
     timeout: number;
     endPoint: IDataFunc | string;
     headers: any;
+    headersArr?: Array<IDataFunc | any>;
     method: string;
     beforeFuncArr: Array<IBeforeFunc>;
     dataArr: Array<IDataFunc | any>;
@@ -139,6 +147,10 @@ export declare class CallConfig extends ExtendingObject implements ICallConfigPa
      * Proxy for executing the dataArr calls
      */
     getDataImpl(env: JasmineAsyncEnv): any;
+    /**
+     * Proxy for executing the headersArr calls
+     */
+    getHeadersImpl(env: JasmineAsyncEnv): any;
     /**
      * Proxy for running all assertions
      */

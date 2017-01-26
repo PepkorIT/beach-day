@@ -30,8 +30,16 @@ export interface ICallConfigParams {
     /** Call endpoint*/
     endPoint?:IDataFunc | string;
 
-    /** Headers array*/
+    /**
+     * Headers object
+     * @deprecated since version 1.1.0 please use headersArr
+     */
     headers?:any;
+
+    /**
+     * Array of header objects / functions to be sent with the call, either a function that will be evoked to get the result or an object
+     */
+    headersArr?:Array<IDataFunc|any>
 
     /** Call HTTP method to use*/
     method?:string;
@@ -142,6 +150,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     public timeout:number;
     public endPoint:IDataFunc | string;
     public headers:any;
+    public headersArr?:Array<IDataFunc|any>;
     public method:string;
     public beforeFuncArr:Array<IBeforeFunc>;
     public dataArr:Array<IDataFunc | any>;
@@ -182,9 +191,36 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
             return null;
         }
         else{
-            var result = {};
+            var result = this.headers || {};
             for (var i = 0; i < this.dataArr.length; i++) {
                 var arrItem = this.dataArr[i];
+                var dataResult;
+                if (typeof arrItem == "function"){
+                    dataResult = (<IDataFunc> arrItem)(env, this);
+                }
+                else if (typeof arrItem == "object" || arrItem == null){
+                    dataResult = arrItem;
+                }
+                else{
+                    throw new Error("Unsupported data object type, we only support: null, object or function: " + arrItem + JSON.stringify(this, null, 4));
+                }
+                _.extend(result, dataResult);
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Proxy for executing the headersArr calls
+     */
+    public getHeadersImpl(env:JasmineAsyncEnv):any {
+        if (this.headersArr == null || this.headersArr.length == 0){
+            return null;
+        }
+        else{
+            var result = {};
+            for (var i = 0; i < this.headersArr.length; i++) {
+                var arrItem = this.headersArr[i];
                 var dataResult;
                 if (typeof arrItem == "function"){
                     dataResult = (<IDataFunc> arrItem)(env, this);
