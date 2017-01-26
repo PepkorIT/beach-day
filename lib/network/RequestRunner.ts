@@ -1,14 +1,12 @@
 import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
 import {console, ReporterAPI} from "../reporter/BeachDayReporter";
 import {TestUtils} from "../utils/TestUtils";
-import {CallConfig, IAllowErrorFunc} from "./CallConfig";
+import {CallConfig, IAllowErrorFunc, IRequestCallbackResponse} from "./CallConfig";
 import * as _ from "lodash";
 import * as request from "request";
 import * as URL from "url";
 import ObjectUtils from "../utils/ObjectUtils";
 import {IRequestResponse} from "./IRequestResponse";
-import {IRequestCallbackHook} from "./CallConfig";
-import {IRequestCallbackResponse} from "./CallConfig";
 var escapeHtml = require("escape-html");
 
 export class RequestRunner {

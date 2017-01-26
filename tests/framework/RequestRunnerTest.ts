@@ -3,7 +3,9 @@ import {JasmineAsyncEnv} from "../../lib/utils/JasmineAsyncEnv";
 import {CallConfig} from "../../lib/network/CallConfig";
 import {TestUtils} from "../../lib/utils/TestUtils";
 import {CoreOptions} from "request";
-import {IBeforeFunc} from "../../lib/network/CallConfig";
+import * as mockPromises from "mock-promises";
+
+Promise = mockPromises.getMockPromise(Promise);
 
 describe("RequestRunner tester", function(){
 
@@ -115,6 +117,7 @@ describe("RequestRunner tester", function(){
     it("Ensure errors are caught", function(){
         RequestRunner.run(defaultConf, dummyEnv);
         requestCB({message:"error here"});
+        mockPromises.tickAllTheWay();
         expect(throwExpectError).toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
     });
@@ -122,6 +125,7 @@ describe("RequestRunner tester", function(){
     it("Ensure errors are allowed for boolean", function(){
         RequestRunner.run(defaultConf.extend({allowHTTPErrors:true}), dummyEnv);
         requestCB({message:"error here"});
+        mockPromises.tickAllTheWay();
         expect(throwExpectError).not.toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
     });
@@ -133,6 +137,7 @@ describe("RequestRunner tester", function(){
             return true;
         }}), dummyEnv);
         requestCB({message:"error here"});
+        mockPromises.tickAllTheWay();
         expect(throwExpectError).not.toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
         expect(errorPassed.message).toBe("error here");
@@ -141,6 +146,7 @@ describe("RequestRunner tester", function(){
     it("Ensure invalid JSON is caught", function(){
         RequestRunner.run(defaultConf, dummyEnv);
         requestCB(null, {}, "{something: sdds");
+        mockPromises.tickAllTheWay();
         expect(throwExpectError).toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
         expect(dummyEnv.currentBody).toBe("{something: sdds");
@@ -152,6 +158,7 @@ describe("RequestRunner tester", function(){
             dataDeSerialisationFunc : dataDeSerialisationFunc
         }), dummyEnv);
         requestCB(null, {}, "{something: sdds");
+        mockPromises.tickAllTheWay();
         expect(dataDeSerialisationFunc).toHaveBeenCalled();
     });
 
@@ -161,6 +168,7 @@ describe("RequestRunner tester", function(){
             obfuscateArr : [obsfu]
         }), dummyEnv);
         requestCB(null, {}, "");
+        mockPromises.tickAllTheWay();
         expect(obsfu).toHaveBeenCalled();
     });
 
@@ -171,6 +179,7 @@ describe("RequestRunner tester", function(){
             checkResponseSchemaFunc : checkSchema
         }), dummyEnv);
         requestCB(null, {}, "{}");
+        mockPromises.tickAllTheWay();
         expect(checkSchema).toHaveBeenCalled();
     });
 
@@ -180,6 +189,7 @@ describe("RequestRunner tester", function(){
             assertFuncArr : [assertFunc]
         }), dummyEnv);
         requestCB(null, {}, "{}");
+        mockPromises.tickAllTheWay();
         expect(assertFunc).toHaveBeenCalled();
     });
 

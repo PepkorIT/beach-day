@@ -1,3 +1,4 @@
+/*
 import { JasmineAsyncEnv, console, ReporterAPI, TestUtils} from "../../index";
 import * as request from "request";
 import {RequestRunner} from "../../lib/network/RequestRunner";
@@ -6,7 +7,7 @@ import {MatcherUtils} from "../../lib/utils/MatcherUtils";
 
 // Report is excluded by default as this suite is designed to check the output of the reporter
 // Enable it to test the reporter output
-xdescribe("Report testing wrapper", function(){
+describe("Report testing wrapper", function(){
 
     describe("Category 1", function(){
 
@@ -219,4 +220,4 @@ xdescribe("Report testing wrapper", function(){
             MatcherUtils.expectProp(data, "customer.address", "James");
         })
     })
-});
+});*/
