@@ -18,19 +18,23 @@ describe("Config system used to power the framework calls", function () {
             assertFuncArr: [assertSpy1],
             dataArr: [{ id: 1 }],
             obfuscateArr: [obfuSpy1],
+            headers: { param1: "1" },
+            headersArr: [{ param2: "2" }],
             checkRequestSchemaFunc: checkRequestSchemaSpy,
             checkResponseSchemaFunc: checkResponseSchemaSpy,
             checkRequestSchema: true,
             checkResponseSchema: true
         });
-        index_1.console.log("----------------------> Extend");
         var config = defaultConfig.extend({
             endPoint: "/fetch/user",
             assertFuncArr: [assertSpy2],
             dataArr: [function (env) {
                     return { name: "jon" };
                 }],
-            obfuscateArr: [obfuSpy2]
+            obfuscateArr: [obfuSpy2],
+            headersArr: [function (env, call) {
+                    return { param2: "3" };
+                }]
         });
         expect(config.baseURL).toBe(defaultConfig.baseURL);
         expect(config.endPoint).toBe("/fetch/user");
@@ -39,6 +43,10 @@ describe("Config system used to power the framework calls", function () {
         var data = config.getDataImpl(env);
         expect(data["id"]).toBe(1);
         expect(data["name"]).toBe("jon");
+        // Check headers expansion with depricated property
+        var headers = config.getHeadersImpl(env);
+        expect(headers.param1).toBe("1");
+        expect(headers.param2).toBe("3");
         // Check assert functions
         config.assertFuncImpl(env, null, null);
         expect(assertSpy1).toHaveBeenCalledWith(env, config, null, null);

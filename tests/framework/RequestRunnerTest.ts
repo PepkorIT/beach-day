@@ -63,10 +63,17 @@ describe("RequestRunner tester", function(){
         RequestRunner.run(defaultConfig.extend({}), dummyEnv);
         expect(requestOptions.headers["content-type"]).toBe("application/json");
 
-        RequestRunner.run(defaultConfig.extend({headers:{
+        RequestRunner.run(defaultConfig.extend({headersArr:[{
             "content-type": "text/html"
-        }}), dummyEnv);
+        }]}), dummyEnv);
         expect(requestOptions.headers["content-type"]).toBe("text/html");
+    });
+
+    it("Ensure default header does not override", function(){
+        RequestRunner.run(defaultConfig.extend({headersArr:[{
+            "Content-Type": "text/html"
+        }]}), dummyEnv);
+        expect(requestOptions.headers["Content-Type"]).toBe("text/html");
     });
 
     it("Ensure data is sent as default JSON", function(){
