@@ -191,7 +191,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
             return null;
         }
         else{
-            var result = this.headers || {};
+            var result = {};
             for (var i = 0; i < this.dataArr.length; i++) {
                 var arrItem = this.dataArr[i];
                 var dataResult;

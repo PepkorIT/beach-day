@@ -170,4 +170,17 @@ describe("Config system used to power the framework calls", function(){
         });
         expect(config.getHeadersImpl(env).param1).toBe("1");
     });
+
+    it("headers obj shouldn't leak into data", function(){
+        let config1 = new CallConfig({headers:{param1:"1"}});
+        let config2 = new CallConfig({
+            dataArr: [function(){
+                return {dataParam:"2"};
+            }]
+        });
+
+        let useConfig   = config1.extend(config2);
+        let dataResult  = useConfig.getDataImpl(env);
+        expect(dataResult.param1).toBeUndefined();
+    });
 });
