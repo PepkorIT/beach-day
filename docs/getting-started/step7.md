@@ -45,7 +45,7 @@ This gives us the power to build up config objects in a hierarchy that we so cho
 
 ## Global Defaults
 
-The `RequestRunner`'s `globalDefaults` property allows you to setup config that will applied to all calls is your test suite.  
+The `RequestRunner`'s `globalDefaults` property allows you to setup config that will be applied to all calls is your test suite.  
 
 Create a new file `tests/demo7-test.js` and paste the following:
 ```javascript
@@ -86,4 +86,4 @@ First up, thanks for getting this far in our tutorial! We hope you enjoy this fr
 Please checkout the FAQ section, we'll keep adding to it as we go.
 
 
-[<< Previous: JSON Schema validation (Swagger or equivalent)](step7.md)
+[<< Previous: JSON Schema validation (Swagger or equivalent)](step6.md)
