@@ -1,7 +1,29 @@
 {
   "name": "beach-day",
+  "description": "API integration testing as fun as a day on the beach",
+  "license": "ISC",
   "version": "1.2.1",
-  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PepkorIT/beach-day.git"
+  },
+  "keywords": [
+    "test",
+    "jasmine",
+    "tdd",
+    "bdd",
+    "frisby",
+    "integration-testing",
+    "jasmine",
+    "nodejs",
+    "postman",
+    "testing"
+  ],
+  "scripts": {
+    "test": "tsc && node ./boot.js",
+    "report": "tsc && node ./lib/reporter/TestReport.js",
+    "docs": "tsc && typedoc --ignoreCompilerErrors --excludeExternals --excludePrivate --options typedoc.json node_modules/@types"
+  },
   "main": "index.js",
   "module": "index.js",
   "typings": "index.d.ts",
@@ -12,17 +34,6 @@
     "index.d.ts",
     "index.js"
   ],
-  "scripts": {
-    "test": "tsc && node ./boot.js",
-    "report": "tsc && node ./lib/reporter/TestReport.js",
-    "docs": "tsc && typedoc --ignoreCompilerErrors --excludeExternals --excludePrivate --options typedoc.json node_modules/@types"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@bitbucket.org/leftandrightsoftware/beachday.git"
-  },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "minami": "^1.1.1",
     "mock-promises": "^0.8.1",
