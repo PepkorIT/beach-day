@@ -211,7 +211,7 @@ export class RequestRunner {
         }
     }
 
-    public static runPoll(call:CallConfig, env:JasmineAsyncEnv, pollComplete:PollCompleteFunc):void {
+    public static runPoll(call:CallConfig, env:JasmineAsyncEnv, pollComplete:PollCompleteFunc, maximumRunTime:number):void {
         let executeNextCall = () => {
             RequestRunner.run(call, env);
         };
@@ -235,11 +235,20 @@ export class RequestRunner {
                 env.done();
             }
             else{
-                // Set the max test time to what has passed + the nextPollDelay + the max call time
                 let currentLength = (new Date()).getTime() - startTime;
-                ReporterAPI.overrideSpecMaxTestTime(currentLength + response.nextPollDelay + maxCallTime);
 
-                setTimeout(executeNextCall, response.nextPollDelay);
+                // Check the run time against the maximum
+                if (currentLength + response.nextPollDelay >= maximumRunTime){
+                    TestUtils.throwExpectError("Poll maximum run time met");
+                    env.done = originalDone;
+                    env.done();
+                }
+                else{
+                    // Set the max test time to what has passed + the nextPollDelay + the max call time
+                    ReporterAPI.overrideSpecMaxTestTime(currentLength + response.nextPollDelay + maxCallTime);
+
+                    setTimeout(executeNextCall, response.nextPollDelay);
+                }
             }
         };
 

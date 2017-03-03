@@ -17,7 +17,7 @@ export declare class RequestRunner {
      * call using a CallConfig and an environment
      */
     static run(call: CallConfig, env: JasmineAsyncEnv): void;
-    static runPoll(call: CallConfig, env: JasmineAsyncEnv, pollComplete: PollCompleteFunc): void;
+    static runPoll(call: CallConfig, env: JasmineAsyncEnv, pollComplete: PollCompleteFunc, maximumRunTime: number): void;
     static hasHeader(headers: any, name: string, value?: string): boolean;
     /**
      * Pretty logging for the reporter of the request and repsonse
