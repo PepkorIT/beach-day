@@ -89,13 +89,14 @@ export declare var ReporterAPI: {
     overrideSpecMaxTestTime: (value: number) => void;
     getCurrentSpecId: () => string;
     setCurrentEnvironment: (env: JasmineAsyncEnv) => void;
+    getReporterConfig: () => ReporterConfig;
 };
 export declare class BeachDayReporter {
+    config: ReporterConfig;
     private dataStore;
     private currentSuite;
     private _currentEnvironment;
     private currentSpec;
-    private config;
     private static STATUS_PASSED;
     private static STATUS_FAILED;
     private static STATUS_SKIPPED;
