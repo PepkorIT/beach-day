@@ -24,7 +24,7 @@ npm init
 **1.3\. Install beach-day module**
 
 ```
-npm install git+ssh://gogs@git.pdws.co.za:922/PepkorIT/beach-day.git#master --save
+npm install beach-day --save
 ```
 This will download beach-day and save it as a project dependency in your `package.json` file.
 
