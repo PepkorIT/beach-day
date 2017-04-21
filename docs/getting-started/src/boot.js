@@ -1,7 +1,7 @@
 // Import the required dependencies for the booting of jasmine
 var BeachDayReporter    = require("beach-day").BeachDayReporter;
 var Jasmine             = require("jasmine");
-var SpecReporter        = require("jasmine-spec-reporter");
+var SpecReporter        = require("jasmine-spec-reporter").SpecReporter;
 
 // Create a new instance of the jasmine framework
 var jasmineInst         = new Jasmine();

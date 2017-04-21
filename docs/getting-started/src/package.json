@@ -9,9 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "beach-day": "git+ssh://gogs@git.pdws.co.za:922/PepkorIT/beach-day.git#master",
-    "jasmine": "^2.4.1",
-    "jasmine-spec-reporter": "^2.4.0",
+    "beach-day": "^1.2.2",
+    "jasmine": "^2.5.2",
+    "jasmine-spec-reporter": "^3.1.0",
     "tv4": "^1.2.7"
   }
 }
