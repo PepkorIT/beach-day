@@ -103,7 +103,7 @@ export class ReporterConfig implements IReporterConfig{
         this.latestTemplatePath     = config.latestTemplatePath ? config.latestTemplatePath : path.resolve(__dirname, "../templates/latest.mustache");
         this.logToConsole           = config.hasOwnProperty("logToConsole") ? config.logToConsole : true;
         this.includeAllConsoleLogs  = config.hasOwnProperty("includeAllConsoleLogs") ? config.includeAllConsoleLogs : false;
-        this.maxTestTime            = config.maxTestTime; // Default is not set
+        this.maxTestTime            = config.maxTestTime != null ? config.maxTestTime : 2000;
     }
 
     public get viewDataDir():string {
@@ -248,17 +248,26 @@ export var ReporterAPI = {
      */
     setCurrentEnvironment: function(env:JasmineAsyncEnv):void {
         lastCreatedInstance.currentEnvironment = env;
+    },
+
+    /**
+     * Used to retrieve the reporters config
+     * @returns {ReporterConfig}
+     */
+    getReporterConfig: function():ReporterConfig {
+        return lastCreatedInstance.config;
     }
 };
 
 
 
 export class BeachDayReporter{
+    public config:ReporterConfig;
+
     private dataStore:IDataStore;
     private currentSuite:ICustomSuite;
     private _currentEnvironment:JasmineAsyncEnv;
     private currentSpec:ICustomSpec;
-    private config:ReporterConfig;
 
     private static STATUS_PASSED    = "passed";
     private static STATUS_FAILED    = "failed";

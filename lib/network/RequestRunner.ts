@@ -2,12 +2,16 @@ import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
 import {console, ReporterAPI} from "../reporter/BeachDayReporter";
 import {TestUtils} from "../utils/TestUtils";
 import {CallConfig, IAllowErrorFunc, IRequestCallbackResponse} from "./CallConfig";
+import ObjectUtils from "../utils/ObjectUtils";
+import {IRequestResponse} from "./IRequestResponse";
 import * as _ from "lodash";
 import * as request from "request";
 import * as URL from "url";
-import ObjectUtils from "../utils/ObjectUtils";
-import {IRequestResponse} from "./IRequestResponse";
-var escapeHtml = require("escape-html");
+import * as escapeHtml from "escape-html";
+
+export interface PollCompleteFunc {
+    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):{complete:boolean, nextPollDelay:number};
+}
 
 export class RequestRunner {
 
@@ -205,6 +209,50 @@ export class RequestRunner {
 
             });
         }
+    }
+
+    public static runPoll(call:CallConfig, env:JasmineAsyncEnv, pollComplete:PollCompleteFunc, maximumRunTime:number):void {
+        let executeNextCall = () => {
+            RequestRunner.run(call, env);
+        };
+
+        let startTime       = new Date().getTime();
+        let maxCallTime     = ReporterAPI.getReporterConfig().maxTestTime;
+        let originalDone    = env.done;
+        call.assertFuncArr  = call.assertFuncArr || [];
+
+        let lastBody:any;
+        let lastRes:IRequestResponse;
+        call.assertFuncArr.push((env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse) => {
+            lastBody = body;
+            lastRes = res;
+        });
+
+        env.done         = () => {
+            let response = pollComplete(env, call, lastBody, lastRes);
+            if (response.complete){
+                env.done = originalDone;
+                env.done();
+            }
+            else{
+                let currentLength = (new Date()).getTime() - startTime;
+
+                // Check the run time against the maximum
+                if (currentLength + response.nextPollDelay >= maximumRunTime){
+                    TestUtils.throwExpectError("Poll maximum run time met");
+                    env.done = originalDone;
+                    env.done();
+                }
+                else{
+                    // Set the max test time to what has passed + the nextPollDelay + the max call time
+                    ReporterAPI.overrideSpecMaxTestTime(currentLength + response.nextPollDelay + maxCallTime);
+
+                    setTimeout(executeNextCall, response.nextPollDelay);
+                }
+            }
+        };
+
+        executeNextCall();
     }
 
     public static hasHeader(headers:any, name:string, value?:string):boolean {
