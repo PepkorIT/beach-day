@@ -2,6 +2,7 @@
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 var Matchers_1 = require("./lib/utils/Matchers");
 __export(require("./lib/reporter/BeachDayReporter"));
 __export(require("./lib/utils/JasmineAsyncEnv"));

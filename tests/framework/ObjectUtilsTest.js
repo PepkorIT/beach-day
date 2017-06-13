@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var ObjectUtils_1 = require("../../lib/utils/ObjectUtils");
 describe("ObjectUtils test suite", function () {
     var source = {

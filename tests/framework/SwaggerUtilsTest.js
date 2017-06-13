@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var SwaggerUtils_1 = require("../../lib/utils/SwaggerUtils");
 var path = require("path");
 var tv4 = require("tv4");

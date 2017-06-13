@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var BeachDayReporter_1 = require("./lib/reporter/BeachDayReporter");
 var Jasmine = require("jasmine");
 var SpecReporter = require("jasmine-spec-reporter").SpecReporter;
