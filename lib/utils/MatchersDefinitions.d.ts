@@ -1,5 +1,5 @@
 declare namespace jasmine {
-    export interface Matchers {
+    export interface Matchers<T> {
         toBePassing(): boolean;
         throwExpectError(message:string): boolean;
         throwImplementationError(message:string): boolean;

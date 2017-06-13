@@ -71,8 +71,14 @@ export var TestUtils = {
 
             // Remove the stack trace as it just clogs up the reports
             if (result.errors) result.errors.forEach((error:any) => { delete error.stack; });
+
+            if (!isResponse){
+                console.log("Request Data:");
+                console.log(JSON.stringify(data, null, 4));
+                console.log("");
+            }
+
             console.log(`${isResponse? "Response" : "Request"} Schema Failure Result:`);
-            console.log("<hr />");
             console.log(JSON.stringify(result, null, 4));
 
             if (!isResponse) {

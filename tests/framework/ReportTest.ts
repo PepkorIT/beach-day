@@ -120,6 +120,19 @@ describe("Report testing wrapper", function(){
             TestUtils.validateSwaggerSchema({}, {}, "/fetch/user", "Get", true, 200);
         });
 
+        it("Expect invalid request schema (expect impl error)", function(){
+            let swagger = {paths:{
+                "/fetch/user": {
+                    post:{
+                        parameters:[
+                            {in:"body", schema:schema}
+                        ]
+                    }
+                }
+            }};
+            TestUtils.validateSwaggerSchema({}, swagger, "/fetch/user", "POST", false);
+        });
+
         it("Expect an invalid schema (expect fail)", function(){
             var swagger = {
                 paths: {
@@ -220,4 +233,5 @@ describe("Report testing wrapper", function(){
             MatcherUtils.expectProp(data, "customer.address", "James");
         })
     })
-});*/
+});
+*/
