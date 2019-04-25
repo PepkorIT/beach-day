@@ -1,3 +1,4 @@
+/// <reference types="jasmine" />
 import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
 export interface IDataStore extends IViewData {
     suiteInfo: ISuiteInfo;
@@ -82,13 +83,31 @@ export declare class ReporterConsole {
     warn: (...args: any[]) => void;
     error: (...args: any[]) => void;
     currentSpec: ICustomSpec;
-    private store(args, logger);
+    private store;
 }
 export declare var console: ReporterConsole;
 export declare var ReporterAPI: {
+    /**
+     * Overrides the default max test time for the reporter for a specific test
+     * Note: this can only be called inside the execution block of a test
+     *
+     * @param value {number} The max test time to used, milliseconds
+     */
     overrideSpecMaxTestTime: (value: number) => void;
+    /**
+     * Can be used used to ensure async tasks don't run after a test timeout or failure
+     * @returns {string} The current spec's id
+     */
     getCurrentSpecId: () => string;
+    /**
+     * Used by the JasmineAsyncEnv to set a reference to itself on the reporter
+     * @param env {JasmineAsyncEnv}
+     */
     setCurrentEnvironment: (env: JasmineAsyncEnv) => void;
+    /**
+     * Used to retrieve the reporters config
+     * @returns {ReporterConfig}
+     */
     getReporterConfig: () => ReporterConfig;
 };
 export declare class BeachDayReporter {
@@ -106,18 +125,18 @@ export declare class BeachDayReporter {
     currentEnvironment: JasmineAsyncEnv;
     readonly currentSpecId: string;
     overrideSpecMaxTestTime(value: number): void;
-    private wrap(cb);
+    private wrap;
     jasmineStarted(suiteInfo: ISuiteInfo): void;
     suiteStarted(result: ICustomSuite): void;
     suiteDone(result: ICustomSuite): void;
     specStarted(result: ICustomSpec): void;
     specDone(result: ICustomSpec): void;
     jasmineDone(result: any): void;
-    private recurseSuitesPopulateViewData(data, level?);
-    private prettyProps(data);
-    private formatDuration(durationMilli);
-    private initIViewData(value);
-    private incrementIViewData(source, dest);
-    private getDate(date1, date2, earliest);
-    private stringLogs(data);
+    private recurseSuitesPopulateViewData;
+    private prettyProps;
+    private formatDuration;
+    private initIViewData;
+    private incrementIViewData;
+    private getDate;
+    private stringLogs;
 }

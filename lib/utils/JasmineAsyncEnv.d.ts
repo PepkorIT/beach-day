@@ -1,5 +1,5 @@
 export declare class JasmineAsyncEnv {
-    linkedEnv: JasmineAsyncEnv;
+    linkedEnv?: JasmineAsyncEnv;
     id: number;
     /**
      * Property to hold the current data response from the server.
@@ -37,7 +37,7 @@ export declare class JasmineAsyncEnv {
      * @param cb {Function} The test method to wrap
      * @returns {Function} A function to pass to the jasmine it() method.
      */
-    wrap(cb: (env: JasmineAsyncEnv) => void): (done) => void;
+    wrap(cb: (env: JasmineAsyncEnv) => void): (done: any) => void;
     /**
      * Utility method, used to set a property from this.currentBody onto this object.
      * Property identifiers for source and destination are passed using string values that can contain dots and array accessors.

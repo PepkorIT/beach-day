@@ -1,4 +1,3 @@
-/// <reference types="tv4" />
 import * as tv4 from "tv4";
 export declare var TestUtils: {
     throwExpectError: (message: string) => void;

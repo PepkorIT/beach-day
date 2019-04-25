@@ -1,4 +1,3 @@
-/// <reference types="request" />
 import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
 import { ExtendingObject } from "./ExtendingObject";
 import { CoreOptions, RequestResponse } from "request";

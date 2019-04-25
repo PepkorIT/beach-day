@@ -1,4 +1,3 @@
-/// <reference types="request" />
 import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
 import { CallConfig } from "./CallConfig";
 import { IRequestResponse } from "./IRequestResponse";
