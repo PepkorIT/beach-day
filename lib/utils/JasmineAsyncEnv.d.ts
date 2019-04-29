@@ -21,6 +21,8 @@ export declare class JasmineAsyncEnv {
      * @type {function}
      */
     done: () => void;
+    private builtInProps;
+    private isolatedProps;
     /**
      * @class
      * @name JasmineAsyncEnv
@@ -89,4 +91,10 @@ export declare class JasmineAsyncEnv {
      * @returns {any}
      */
     expectProp(propertyName: string, expected: any, useExplicitEquality?: boolean): any;
+    /**
+     * Utility method to move all non built in properties on
+     * the env into an isolated object with a name
+     */
+    isolateEnvProperties<T = any>(propertyName: string): T;
+    getIsolate<T = any>(propertyName: string): T;
 }

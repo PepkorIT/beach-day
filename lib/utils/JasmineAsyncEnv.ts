@@ -1,6 +1,6 @@
-import {ReporterAPI} from "../reporter/BeachDayReporter";
-import ObjectUtils from "./ObjectUtils";
-import {MatcherUtils} from "./MatcherUtils";
+import {ReporterAPI} from '../reporter/BeachDayReporter';
+import ObjectUtils from './ObjectUtils';
+import {MatcherUtils} from './MatcherUtils';
 
 var counter = 0;
 
@@ -31,6 +31,9 @@ export class JasmineAsyncEnv {
      */
     public done:() => void = undefined;
 
+    private builtInProps:{ [key:string]:boolean } = {};
+    private isolatedProps:{ [key:string]:any }    = {};
+
     /**
      * @class
      * @name JasmineAsyncEnv
@@ -39,9 +42,11 @@ export class JasmineAsyncEnv {
      *
      * @param linkedEnv {JasmineAsyncEnv} Optional. Linked JasmineAsyncEnv to base the original this one on.
      */
-    constructor(public linkedEnv?:JasmineAsyncEnv){
+    constructor(public linkedEnv?:JasmineAsyncEnv) {
         this.id = counter;
         counter++;
+
+        Object.keys(this).forEach(key => this.builtInProps[key] = true);
     }
 
     /**
@@ -54,13 +59,13 @@ export class JasmineAsyncEnv {
     public wrap(cb:(env:JasmineAsyncEnv) => void):(done) => void {
         var _self = this;
 
-        return function(done)  {
+        return function (done) {
             // check for a linkedEnv and clone any dynamic properties
             // this allows us to have a starting point for the environment
             if (_self.linkedEnv != null) {
-                var exceptions = {id:true, currentBody:true, linkedEnv:true};
-                for (var propName in _self.linkedEnv){
-                    if (_self.linkedEnv.hasOwnProperty(propName) && typeof _self.linkedEnv[propName] != "function" && !exceptions[propName]){
+                var exceptions = {id: true, currentBody: true, linkedEnv: true};
+                for (var propName in _self.linkedEnv) {
+                    if (_self.linkedEnv.hasOwnProperty(propName) && typeof _self.linkedEnv[propName] != 'function' && !exceptions[propName]) {
                         _self[propName] = _self.linkedEnv[propName];
                     }
                 }
@@ -69,18 +74,18 @@ export class JasmineAsyncEnv {
             }
 
             ReporterAPI.setCurrentEnvironment(_self);
-            _self.done = function(){
+            _self.done = function () {
                 // hook to do stuff when complete
                 done();
             };
-            if (_self.failed === true){
+            if (_self.failed === true) {
                 expect(_self).toBePassing();
                 _self.done();
             }
-            else{
+            else {
                 cb(_self);
             }
-        }
+        };
     }
 
     /**
@@ -96,9 +101,9 @@ export class JasmineAsyncEnv {
      * @returns {any} The value from this.currentBody[sourceName] if found
      */
     public setProp(destinationName:string, sourceName:string):any {
-        if (destinationName == null) throw new Error("destinationName cannot be null");
+        if (destinationName == null) throw new Error('destinationName cannot be null');
         var value = this.checkProp(sourceName);
-        if (value != null){
+        if (value != null) {
             ObjectUtils.setProp(this, destinationName, value);
         }
         return value;
@@ -113,7 +118,7 @@ export class JasmineAsyncEnv {
      * @param properties {Array} List of properties to check
      */
     public checkProps(...properties:Array<string>):void {
-        for (var i = 0; i < properties.length; i++){
+        for (var i = 0; i < properties.length; i++) {
             this.checkProp(properties[i]);
         }
     }
@@ -155,5 +160,27 @@ export class JasmineAsyncEnv {
      */
     public expectProp(propertyName:string, expected:any, useExplicitEquality:boolean = false):any {
         return MatcherUtils.expectProp(this.currentBody, propertyName, expected, useExplicitEquality);
+    }
+
+
+    /**
+     * Utility method to move all non built in properties on
+     * the env into an isolated object with a name
+     */
+    public isolateEnvProperties<T = any>(propertyName:string):T {
+        const store:T = <any>{};
+        Object.keys(this).forEach(key => {
+            if (!this.builtInProps[key]) {
+                store[key] = this[key];
+                delete this[key];
+            }
+        });
+        this.isolatedProps[propertyName] = store;
+        return store;
+    }
+
+
+    public getIsolate<T = any>(propertyName:string):T {
+        return this.isolatedProps[propertyName];
     }
 }
