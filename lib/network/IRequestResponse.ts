@@ -1,4 +1,4 @@
-import {Url} from "url";
+import {Url} from 'url';
 
 export interface IRequestResponse {
     statusCode:number;
@@ -7,7 +7,7 @@ export interface IRequestResponse {
     headers?:any;
 }
 
-export interface IRequest{
+export interface IRequest {
     uri:Url;
     method:string;
     headers:any;

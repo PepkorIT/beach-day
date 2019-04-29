@@ -1,7 +1,7 @@
-import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
-import { ExtendingObject } from "./ExtendingObject";
-import { CoreOptions, RequestResponse } from "request";
-import { IRequestResponse } from "./IRequestResponse";
+import { JasmineAsyncEnv } from '../utils/JasmineAsyncEnv';
+import { ExtendingObject } from './ExtendingObject';
+import { CoreOptions, RequestResponse } from 'request';
+import { IRequestResponse } from './IRequestResponse';
 export interface ICallConfigParams {
     /** Only used when auto generating tests using a utility*/
     testName?: string;

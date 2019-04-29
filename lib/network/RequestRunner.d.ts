@@ -1,7 +1,7 @@
-import { JasmineAsyncEnv } from "../utils/JasmineAsyncEnv";
-import { CallConfig } from "./CallConfig";
-import { IRequestResponse } from "./IRequestResponse";
-import * as request from "request";
+import { JasmineAsyncEnv } from '../utils/JasmineAsyncEnv';
+import { CallConfig } from './CallConfig';
+import { IRequestResponse } from './IRequestResponse';
+import * as request from 'request';
 export interface PollCompleteFunc {
     (env: JasmineAsyncEnv, call: CallConfig, body: any, res: IRequestResponse): {
         complete: boolean;

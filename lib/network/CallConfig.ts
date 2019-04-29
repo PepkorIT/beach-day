@@ -1,9 +1,10 @@
-import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
-import * as _ from "lodash";
-import {ExtendingObject} from "./ExtendingObject";
-import {CoreOptions, RequestCallback, RequestResponse} from "request";
-import {IRequestResponse} from "./IRequestResponse";
-var urlJoin = require("url-join");
+import {JasmineAsyncEnv} from '../utils/JasmineAsyncEnv';
+import * as _ from 'lodash';
+import {ExtendingObject} from './ExtendingObject';
+import {CoreOptions, RequestResponse} from 'request';
+import {IRequestResponse} from './IRequestResponse';
+
+var urlJoin = require('url-join');
 
 export interface ICallConfigParams {
     /** Only used when auto generating tests using a utility*/
@@ -39,7 +40,7 @@ export interface ICallConfigParams {
     /**
      * Array of header objects / functions to be sent with the call, either a function that will be evoked to get the result or an object
      */
-    headersArr?:Array<IDataFunc|any>
+    headersArr?:Array<IDataFunc | any>
 
     /** Call HTTP method to use*/
     method?:string;
@@ -104,45 +105,52 @@ export interface ICallConfigParams {
      * If set to true, errors returned from the request framework will not mark a test as failed.
      * These include things like timeouts, SSL errors, etc.
      */
-    allowHTTPErrors?:boolean|IAllowErrorFunc;
+    allowHTTPErrors?:boolean | IAllowErrorFunc;
 }
 
-export interface IRequestCallbackHook{
-    (error: any, response: RequestResponse, body: any):Promise<IRequestCallbackResponse>;
+export interface IRequestCallbackHook {
+    (error:any, response:RequestResponse, body:any):Promise<IRequestCallbackResponse>;
 }
 
 export interface IRequestCallbackResponse {
-    error: any;
-    response: RequestResponse;
-    body: any;
+    error:any;
+    response:RequestResponse;
+    body:any;
 }
 
-export interface IBeforeFunc{
+export interface IBeforeFunc {
     (env:JasmineAsyncEnv, call:CallConfig):void;
 }
-export interface IAssertFunc{
+
+export interface IAssertFunc {
     (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):void;
 }
-export interface ISerialiseFunc{
+
+export interface ISerialiseFunc {
     (env:JasmineAsyncEnv, call:CallConfig, data:any):string;
 }
-export interface IDeSerialiseFunc{
+
+export interface IDeSerialiseFunc {
     (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):string;
 }
-export interface IDataFunc{
+
+export interface IDataFunc {
     (env:JasmineAsyncEnv, call:CallConfig):any;
 }
-export interface IObfuscateFunc{
+
+export interface IObfuscateFunc {
     (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):void;
 }
-export interface ISchemaFunc{
+
+export interface ISchemaFunc {
     (env:JasmineAsyncEnv, call:CallConfig, data:any, res:IRequestResponse):boolean;
 }
-export interface IAllowErrorFunc{
+
+export interface IAllowErrorFunc {
     (error:any, env:JasmineAsyncEnv, call:CallConfig, res:IRequestResponse):boolean;
 }
 
-export class CallConfig extends ExtendingObject implements ICallConfigParams{
+export class CallConfig extends ExtendingObject implements ICallConfigParams {
     public testName:string;
     public testModifier:string;
     public testTimeout:number;
@@ -150,7 +158,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     public timeout:number;
     public endPoint:IDataFunc | string;
     public headers:any;
-    public headersArr?:Array<IDataFunc|any>;
+    public headersArr?:Array<IDataFunc | any>;
     public method:string;
     public beforeFuncArr:Array<IBeforeFunc>;
     public dataArr:Array<IDataFunc | any>;
@@ -164,9 +172,9 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     public checkResponseSchema:boolean;
     public requestOptions:CoreOptions;
     public requestCallback:IRequestCallbackHook;
-    public allowHTTPErrors:boolean|IAllowErrorFunc;
+    public allowHTTPErrors:boolean | IAllowErrorFunc;
 
-    constructor(params?:ICallConfigParams){
+    constructor(params?:ICallConfigParams) {
         super();
         // Set defaults if not already done
         if (params) _.assignWith(this, params, this.extender);
@@ -176,7 +184,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
      * Proxy for executing the beforeFuncArr calls
      */
     public beforeProxy(env:JasmineAsyncEnv):void {
-        if (this.beforeFuncArr){
+        if (this.beforeFuncArr) {
             for (var i = 0; i < this.beforeFuncArr.length; i++) {
                 this.beforeFuncArr[i](env, this);
             }
@@ -187,22 +195,22 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
      * Proxy for executing the dataArr calls
      */
     public getDataImpl(env:JasmineAsyncEnv):any {
-        if (this.dataArr == null || this.dataArr.length == 0){
+        if (this.dataArr == null || this.dataArr.length == 0) {
             return null;
         }
-        else{
+        else {
             var result = {};
             for (var i = 0; i < this.dataArr.length; i++) {
                 var arrItem = this.dataArr[i];
                 var dataResult;
-                if (typeof arrItem == "function"){
-                    dataResult = (<IDataFunc> arrItem)(env, this);
+                if (typeof arrItem == 'function') {
+                    dataResult = (<IDataFunc>arrItem)(env, this);
                 }
-                else if (typeof arrItem == "object" || arrItem == null){
+                else if (typeof arrItem == 'object' || arrItem == null) {
                     dataResult = arrItem;
                 }
-                else{
-                    throw new Error("Unsupported data object type, we only support: null, object or function: " + arrItem + JSON.stringify(this, null, 4));
+                else {
+                    throw new Error('Unsupported data object type, we only support: null, object or function: ' + arrItem + JSON.stringify(this, null, 4));
                 }
                 _.extend(result, dataResult);
             }
@@ -216,18 +224,18 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     public getHeadersImpl(env:JasmineAsyncEnv):any {
         var result = _.extend({}, this.headers);
 
-        if (this.headersArr != null){
+        if (this.headersArr != null) {
             for (var i = 0; i < this.headersArr.length; i++) {
                 var arrItem = this.headersArr[i];
                 var dataResult;
-                if (typeof arrItem == "function"){
-                    dataResult = (<IDataFunc> arrItem)(env, this);
+                if (typeof arrItem == 'function') {
+                    dataResult = (<IDataFunc>arrItem)(env, this);
                 }
-                else if (typeof arrItem == "object" || arrItem == null){
+                else if (typeof arrItem == 'object' || arrItem == null) {
                     dataResult = arrItem;
                 }
-                else{
-                    throw new Error("Unsupported data object type, we only support: null, object or function: " + arrItem + JSON.stringify(this, null, 4));
+                else {
+                    throw new Error('Unsupported data object type, we only support: null, object or function: ' + arrItem + JSON.stringify(this, null, 4));
                 }
                 _.extend(result, dataResult);
             }
@@ -239,7 +247,7 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
      * Proxy for running all assertions
      */
     public assertFuncImpl(env:JasmineAsyncEnv, body:any, res:IRequestResponse):void {
-        if (this.assertFuncArr){
+        if (this.assertFuncArr) {
             for (var i = 0; i < this.assertFuncArr.length; i++) {
                 var func = this.assertFuncArr[i];
                 func(env, this, body, res);
@@ -250,8 +258,8 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
     /**
      * Proxy for all obfuscations
      */
-    public obfuscateFuncImpl(env:JasmineAsyncEnv, body:any, res:IRequestResponse){
-        if (this.obfuscateArr){
+    public obfuscateFuncImpl(env:JasmineAsyncEnv, body:any, res:IRequestResponse) {
+        if (this.obfuscateArr) {
             for (var i = 0; i < this.obfuscateArr.length; i++) {
                 var func = this.obfuscateArr[i];
                 func(env, this, body, res);
@@ -263,13 +271,13 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
      * Proxy for running schema checks
      */
     public checkSchemaImpl(env:JasmineAsyncEnv, data:any, isRequest:boolean, res:IRequestResponse):boolean {
-        if (isRequest && this.checkRequestSchema && this.checkRequestSchemaFunc != null){
+        if (isRequest && this.checkRequestSchema && this.checkRequestSchemaFunc != null) {
             return this.checkRequestSchemaFunc(env, this, data, null);
         }
-        else if (!isRequest && this.checkResponseSchema && this.checkResponseSchemaFunc != null){
+        else if (!isRequest && this.checkResponseSchema && this.checkResponseSchemaFunc != null) {
             return this.checkResponseSchemaFunc(env, this, data, res);
         }
-        else{
+        else {
             return true;
         }
     }
@@ -278,12 +286,14 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
      * Returns the full api url for running the call
      */
     public getFullURL(env:JasmineAsyncEnv):string {
-        if (this.baseURL != null && this.endPoint != null){
-            var valueFromMulti  = (source:any):string => { return typeof source == "function" ? source(env, this) : source; };
-            var result:string   = urlJoin(valueFromMulti(this.baseURL), valueFromMulti(this.endPoint));
+        if (this.baseURL != null && this.endPoint != null) {
+            var valueFromMulti = (source:any):string => {
+                return typeof source == 'function' ? source(env, this) : source;
+            };
+            var result:string  = urlJoin(valueFromMulti(this.baseURL), valueFromMulti(this.endPoint));
             // Strip trailing slash on any url
-            if (result.charAt(result.length - 1) == "/"){
-                result          = result.substr(0, result.length - 1);
+            if (result.charAt(result.length - 1) == '/') {
+                result = result.substr(0, result.length - 1);
             }
             return result;
         }
@@ -297,6 +307,6 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams{
      * By deeply cascaded we mean, properties that are objects are extended, properties that are arrays are joined
      */
     public extend(params:ICallConfigParams):CallConfig {
-        return <CallConfig> _.assignWith(new CallConfig(), this, params, this.extender);
+        return <CallConfig>_.assignWith(new CallConfig(), this, params, this.extender);
     }
 }

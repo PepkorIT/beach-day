@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { Url } from "url";
+import { Url } from 'url';
 export interface IRequestResponse {
     statusCode: number;
     request: IRequest;

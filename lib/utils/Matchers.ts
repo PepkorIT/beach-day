@@ -1,43 +1,43 @@
-import {JasmineAsyncEnv} from "../utils/JasmineAsyncEnv";
+import {JasmineAsyncEnv} from './JasmineAsyncEnv';
 
 var registered = false;
 
 export var Matchers = {
-    registerMatchers: function (){
+    registerMatchers: function () {
         if (registered) {
             return;
         }
-        else if (typeof beforeEach == "function"){
+        else if (typeof beforeEach == 'function') {
             registered = true;
 
-            beforeEach(function(){
-                function throwError(util, customEqualityTesters){
+            beforeEach(function () {
+                function throwError(util, customEqualityTesters) {
                     return {
-                        compare: function(actual:any, expected:string){
+                        compare: function (actual:any, expected:string) {
                             return {
-                                pass    : false,
-                                message : expected
-                            }
+                                pass   : false,
+                                message: expected
+                            };
                         }
                     };
                 }
 
                 jasmine.addMatchers({
-                    toBePassing: function(util, customEqualityTesters){
+                    toBePassing: function (util, customEqualityTesters) {
                         return {
-                            compare: function(actual:JasmineAsyncEnv){
+                            compare: function (actual:JasmineAsyncEnv) {
                                 return {
-                                    pass    : !actual.failed,
-                                    message : "Expected all previous tests to have passed"
-                                }
+                                    pass   : !actual.failed,
+                                    message: 'Expected all previous tests to have passed'
+                                };
                             }
                         };
                     },
 
-                    throwExpectError: throwError,
+                    throwExpectError        : throwError,
                     throwImplementationError: throwError
                 });
-            })
+            });
         }
     }
 };

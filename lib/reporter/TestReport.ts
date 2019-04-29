@@ -1,2 +1,3 @@
-import { generate } from "./ReportGenerator";
+import {generate} from './ReportGenerator';
+
 generate();
