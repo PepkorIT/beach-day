@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import {IDataStore, ReporterConfig} from './BeachDayReporter';
+import {IDataStore, ReporterConfig} from './beach-day-reporter';
 import * as sass from 'node-sass';
 import * as mustache from 'mustache';
 import * as _ from 'lodash';

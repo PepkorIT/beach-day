@@ -1,5 +1,5 @@
-import {console} from '../reporter/BeachDayReporter';
-import ObjectUtils from './ObjectUtils';
+import {console} from '../reporter/beach-day-reporter';
+import ObjectUtils from './object-utils';
 import * as tv4 from 'tv4';
 
 export var TestUtils = {

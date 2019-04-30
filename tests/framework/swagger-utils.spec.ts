@@ -1,4 +1,4 @@
-import {SwaggerUtils} from '../../lib/utils/SwaggerUtils';
+import {SwaggerUtils} from '../../lib/utils/swagger-utils';
 import path = require('path');
 import tv4 = require('tv4');
 

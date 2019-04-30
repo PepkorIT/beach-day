@@ -1,4 +1,4 @@
-import ObjectUtils from '../../lib/utils/ObjectUtils';
+import ObjectUtils from '../../lib/utils/object-utils';
 
 describe('ObjectUtils test suite', function () {
     var source = {

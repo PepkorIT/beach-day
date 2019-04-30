@@ -1,6 +1,6 @@
-import {JasmineAsyncEnv} from '../../lib/utils/JasmineAsyncEnv';
-import {TestUtils} from '../../lib/utils/TestUtils';
-import ObjectUtils from '../../lib/utils/ObjectUtils';
+import {JasmineAsyncEnv} from '../../lib/utils/jasmine-async-env';
+import {TestUtils} from '../../lib/utils/test-utils';
+import ObjectUtils from '../../lib/utils/object-utils';
 
 interface MockEnv extends JasmineAsyncEnv {
     prop1?:string;

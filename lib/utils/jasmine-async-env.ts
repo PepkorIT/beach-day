@@ -1,10 +1,39 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var BeachDayReporter_1 = require("../reporter/BeachDayReporter");
-var ObjectUtils_1 = require("./ObjectUtils");
-var MatcherUtils_1 = require("./MatcherUtils");
+import {ReporterAPI} from '../reporter/beach-day-reporter';
+import ObjectUtils from './object-utils';
+import {MatcherUtils} from './matcher-utils';
+
 var counter = 0;
-var JasmineAsyncEnv = /** @class */ (function () {
+
+export class JasmineAsyncEnv {
+
+    public id:number;
+
+    /**
+     * Property to hold the current data response from the server.
+     * Utility methods on this class act upon this object.
+     * @memberof! JasmineAsyncEnv#
+     */
+    public currentBody:any = undefined;
+
+    /**
+     * Indicates if any of the tests using this envionment have failed.
+     * The wrap() method will not execute its callback on any further tests if this is true
+     * @memberof! JasmineAsyncEnv#
+     * @type {boolean}
+     */
+    public failed:boolean = false;
+
+    /**
+     * Should be called by the callback passed to wrap() to complete a test case.
+     * By default all tests that use wrap() are setup async so need to call this method
+     * @memberof! JasmineAsyncEnv#
+     * @type {function}
+     */
+    public done:() => void = undefined;
+
+    private builtInProps:{ [key:string]:boolean } = {};
+    private isolatedProps:{ [key:string]:any }    = {};
+
     /**
      * @class
      * @name JasmineAsyncEnv
@@ -13,35 +42,13 @@ var JasmineAsyncEnv = /** @class */ (function () {
      *
      * @param linkedEnv {JasmineAsyncEnv} Optional. Linked JasmineAsyncEnv to base the original this one on.
      */
-    function JasmineAsyncEnv(linkedEnv) {
-        var _this = this;
-        this.linkedEnv = linkedEnv;
-        /**
-         * Property to hold the current data response from the server.
-         * Utility methods on this class act upon this object.
-         * @memberof! JasmineAsyncEnv#
-         */
-        this.currentBody = undefined;
-        /**
-         * Indicates if any of the tests using this envionment have failed.
-         * The wrap() method will not execute its callback on any further tests if this is true
-         * @memberof! JasmineAsyncEnv#
-         * @type {boolean}
-         */
-        this.failed = false;
-        /**
-         * Should be called by the callback passed to wrap() to complete a test case.
-         * By default all tests that use wrap() are setup async so need to call this method
-         * @memberof! JasmineAsyncEnv#
-         * @type {function}
-         */
-        this.done = undefined;
-        this.builtInProps = {};
-        this.isolatedProps = {};
+    constructor(public linkedEnv?:JasmineAsyncEnv) {
         this.id = counter;
         counter++;
-        Object.keys(this).forEach(function (key) { return _this.builtInProps[key] = true; });
+
+        Object.keys(this).forEach(key => this.builtInProps[key] = true);
     }
+
     /**
      * Wrapper for a test method. The cb will only be executed if the all the previous tests have passed.
      * @memberof JasmineAsyncEnv
@@ -49,13 +56,14 @@ var JasmineAsyncEnv = /** @class */ (function () {
      * @param cb {Function} The test method to wrap
      * @returns {Function} A function to pass to the jasmine it() method.
      */
-    JasmineAsyncEnv.prototype.wrap = function (cb) {
+    public wrap(cb:(env:JasmineAsyncEnv) => void):(done) => void {
         var _self = this;
+
         return function (done) {
             // check for a linkedEnv and clone any dynamic properties
             // this allows us to have a starting point for the environment
             if (_self.linkedEnv != null) {
-                var exceptions = { id: true, currentBody: true, linkedEnv: true };
+                var exceptions = {id: true, currentBody: true, linkedEnv: true};
                 for (var propName in _self.linkedEnv) {
                     if (_self.linkedEnv.hasOwnProperty(propName) && typeof _self.linkedEnv[propName] != 'function' && !exceptions[propName]) {
                         _self[propName] = _self.linkedEnv[propName];
@@ -64,7 +72,8 @@ var JasmineAsyncEnv = /** @class */ (function () {
                 // trash the linked env so no changes are made after the initial test
                 _self.linkedEnv = null;
             }
-            BeachDayReporter_1.ReporterAPI.setCurrentEnvironment(_self);
+
+            ReporterAPI.setCurrentEnvironment(_self);
             _self.done = function () {
                 // hook to do stuff when complete
                 done();
@@ -77,7 +86,8 @@ var JasmineAsyncEnv = /** @class */ (function () {
                 cb(_self);
             }
         };
-    };
+    }
+
     /**
      * Utility method, used to set a property from this.currentBody onto this object.
      * Property identifiers for source and destination are passed using string values that can contain dots and array accessors.
@@ -90,15 +100,15 @@ var JasmineAsyncEnv = /** @class */ (function () {
      * @param sourceName {String} The identifier for the source property on this.currentBody
      * @returns {any} The value from this.currentBody[sourceName] if found
      */
-    JasmineAsyncEnv.prototype.setProp = function (destinationName, sourceName) {
-        if (destinationName == null)
-            throw new Error('destinationName cannot be null');
+    public setProp(destinationName:string, sourceName:string):any {
+        if (destinationName == null) throw new Error('destinationName cannot be null');
         var value = this.checkProp(sourceName);
         if (value != null) {
-            ObjectUtils_1.default.setProp(this, destinationName, value);
+            ObjectUtils.setProp(this, destinationName, value);
         }
         return value;
-    };
+    }
+
     /**
      * Utility method, used to check if an array of properties exist on this.currentBody
      * @see JasmineAsyncEnv#checkProp
@@ -107,15 +117,13 @@ var JasmineAsyncEnv = /** @class */ (function () {
      *
      * @param properties {Array} List of properties to check
      */
-    JasmineAsyncEnv.prototype.checkProps = function () {
-        var properties = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            properties[_i] = arguments[_i];
-        }
+    public checkProps(...properties:Array<string>):void {
         for (var i = 0; i < properties.length; i++) {
             this.checkProp(properties[i]);
         }
-    };
+    }
+
+
     /**
      * Utility method, used to check if a property exists on this.currentBody.
      * Property identifier propertyName is passed using string values that can contain dots and array accessors.
@@ -126,9 +134,10 @@ var JasmineAsyncEnv = /** @class */ (function () {
      * @param propertyName {String} The identifier for the source property on this.currentBody
      * @returns {any} The value from this.currentBody[propertyName] if found
      */
-    JasmineAsyncEnv.prototype.checkProp = function (propertyName) {
-        return MatcherUtils_1.MatcherUtils.checkProp(this.currentBody, propertyName);
-    };
+    public checkProp(propertyName:string):any {
+        return MatcherUtils.checkProp(this.currentBody, propertyName);
+    }
+
     /**
      * Makes sure the supplied property doesn't exist on the currentBody
      * @memberof JasmineAsyncEnv
@@ -136,9 +145,10 @@ var JasmineAsyncEnv = /** @class */ (function () {
      * @param propertyName
      * @returns Returns the value found on currentBody using the property name
      */
-    JasmineAsyncEnv.prototype.checkPropDoesntExist = function (propertyName) {
-        return MatcherUtils_1.MatcherUtils.checkPropDoesntExist(this.currentBody, propertyName);
-    };
+    public checkPropDoesntExist(propertyName:string):any {
+        return MatcherUtils.checkPropDoesntExist(this.currentBody, propertyName);
+    }
+
     /**
      * Utility method to check for a string based property on this.currentBody.
      * Will throw a descriptive expect().toBe() error if not found or not equal
@@ -148,29 +158,29 @@ var JasmineAsyncEnv = /** @class */ (function () {
      * @param useExplicitEquality Weather to check using a != vs !==
      * @returns {any}
      */
-    JasmineAsyncEnv.prototype.expectProp = function (propertyName, expected, useExplicitEquality) {
-        if (useExplicitEquality === void 0) { useExplicitEquality = false; }
-        return MatcherUtils_1.MatcherUtils.expectProp(this.currentBody, propertyName, expected, useExplicitEquality);
-    };
+    public expectProp(propertyName:string, expected:any, useExplicitEquality:boolean = false):any {
+        return MatcherUtils.expectProp(this.currentBody, propertyName, expected, useExplicitEquality);
+    }
+
+
     /**
      * Utility method to move all non built in properties on
      * the env into an isolated object with a name
      */
-    JasmineAsyncEnv.prototype.isolateEnvProperties = function (propertyName) {
-        var _this = this;
-        var store = {};
-        Object.keys(this).forEach(function (key) {
-            if (!_this.builtInProps[key]) {
-                store[key] = _this[key];
-                delete _this[key];
+    public isolateEnvProperties<T = any>(propertyName:string):T {
+        const store:T = <any>{};
+        Object.keys(this).forEach(key => {
+            if (!this.builtInProps[key]) {
+                store[key] = this[key];
+                delete this[key];
             }
         });
         this.isolatedProps[propertyName] = store;
         return store;
-    };
-    JasmineAsyncEnv.prototype.getIsolate = function (propertyName) {
+    }
+
+
+    public getIsolate<T = any>(propertyName:string):T {
         return this.isolatedProps[propertyName];
-    };
-    return JasmineAsyncEnv;
-}());
-exports.JasmineAsyncEnv = JasmineAsyncEnv;
+    }
+}

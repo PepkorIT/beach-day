@@ -1,4 +1,4 @@
-import {JasmineAsyncEnv} from './JasmineAsyncEnv';
+import {JasmineAsyncEnv} from './jasmine-async-env';
 
 var registered = false;
 

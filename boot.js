@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var BeachDayReporter_1 = require("./lib/reporter/BeachDayReporter");
+var beach_day_reporter_1 = require("./lib/reporter/beach-day-reporter");
 var Jasmine = require('jasmine');
 var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 var jasmineInst = new Jasmine();
@@ -19,7 +19,7 @@ jasmineInst.addReporter(new SpecReporter({
     displayPendingSpec: false
 }));
 // Add our custom HTML reporter
-jasmineInst.addReporter(new BeachDayReporter_1.BeachDayReporter({
+jasmineInst.addReporter(new beach_day_reporter_1.BeachDayReporter({
     logToConsole: true,
     includeAllConsoleLogs: false,
     maxTestTime: 2000

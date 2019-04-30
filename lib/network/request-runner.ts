@@ -1,9 +1,9 @@
-import {JasmineAsyncEnv} from '../utils/JasmineAsyncEnv';
-import {console, ReporterAPI} from '../reporter/BeachDayReporter';
-import {TestUtils} from '../utils/TestUtils';
-import {CallConfig, IAllowErrorFunc, IRequestCallbackResponse} from './CallConfig';
-import ObjectUtils from '../utils/ObjectUtils';
-import {IRequestResponse} from './IRequestResponse';
+import {JasmineAsyncEnv} from '../utils/jasmine-async-env';
+import {console, ReporterAPI} from '../reporter/beach-day-reporter';
+import {TestUtils} from '../utils/test-utils';
+import {CallConfig, IAllowErrorFunc, IRequestCallbackResponse} from './call-config';
+import ObjectUtils from '../utils/object-utils';
+import {IRequestResponse} from './i-request-response';
 import * as _ from 'lodash';
 import * as request from 'request';
 import * as URL from 'url';

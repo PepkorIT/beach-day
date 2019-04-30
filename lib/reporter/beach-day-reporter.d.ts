@@ -1,5 +1,5 @@
 /// <reference types="jasmine" />
-import { JasmineAsyncEnv } from '../utils/JasmineAsyncEnv';
+import { JasmineAsyncEnv } from '../utils/jasmine-async-env';
 export interface IDataStore extends IViewData {
     suiteInfo: ISuiteInfo;
     id: string;

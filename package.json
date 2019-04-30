@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "test": "tsc && node ./boot.js",
-    "report": "tsc && node ./lib/reporter/TestReport.js",
+    "report": "tsc && node lib/reporter/test-report.js",
     "docs": "tsc && typedoc --ignoreCompilerErrors --excludeExternals --excludePrivate --options typedoc.json node_modules/@types"
   },
   "main": "index.js",

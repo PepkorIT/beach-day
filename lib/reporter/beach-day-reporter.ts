@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as path from 'path';
-import {JasmineAsyncEnv} from '../utils/JasmineAsyncEnv';
-import {generate as generateReport} from './ReportGenerator';
-import {Matchers} from '../utils/Matchers';
+import {JasmineAsyncEnv} from '../utils/jasmine-async-env';
+import {generate as generateReport} from './report-generator';
+import {Matchers} from '../utils/matchers';
 
 // Non typescript dependencies
 var moment          = require('moment');

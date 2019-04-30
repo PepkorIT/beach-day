@@ -1,4 +1,4 @@
-import {CallConfig, IRequestCallbackResponse} from '../../lib/network/CallConfig';
+import {CallConfig, IRequestCallbackResponse} from '../../lib/network/call-config';
 import {RequestResponse} from 'request';
 
 const config           = new CallConfig();

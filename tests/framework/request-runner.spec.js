@@ -1,213 +1,178 @@
-import {RequestRunner} from '../../lib/network/RequestRunner';
-import {JasmineAsyncEnv} from '../../lib/utils/JasmineAsyncEnv';
-import {CallConfig} from '../../lib/network/CallConfig';
-import {TestUtils} from '../../lib/utils/TestUtils';
-import {CoreOptions} from 'request';
-import * as mockPromises from 'mock-promises';
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var request_runner_1 = require("../../lib/network/request-runner");
+var jasmine_async_env_1 = require("../../lib/utils/jasmine-async-env");
+var call_config_1 = require("../../lib/network/call-config");
+var test_utils_1 = require("../../lib/utils/test-utils");
+var mockPromises = require("mock-promises");
 Promise = mockPromises.getMockPromise(Promise);
-
 describe('RequestRunner tester', function () {
-
-    var dummyEnv = new JasmineAsyncEnv();
-    var done:jasmine.Spy,
-        throwImplementationError:jasmine.Spy,
-        throwExpectError:jasmine.Spy,
-        request:jasmine.Spy;
-
-    var defaultConfig = new CallConfig({endPoint: '/user', baseURL: 'www.something.com//'});
-    var requestOptions:CoreOptions,
-        requestCB;
-
+    var dummyEnv = new jasmine_async_env_1.JasmineAsyncEnv();
+    var done, throwImplementationError, throwExpectError, request;
+    var defaultConfig = new call_config_1.CallConfig({ endPoint: '/user', baseURL: 'www.something.com//' });
+    var requestOptions, requestCB;
     beforeEach(function () {
-        done          = jasmine.createSpy('done');
+        done = jasmine.createSpy('done');
         dummyEnv.done = done;
-
-        request = spyOn(RequestRunner, 'request').and.callFake(function (options, cb) {
+        request = spyOn(request_runner_1.RequestRunner, 'request').and.callFake(function (options, cb) {
             requestOptions = options;
-            requestCB      = cb;
+            requestCB = cb;
         });
-
-        throwImplementationError           = jasmine.createSpy('throwImplementationError');
-        throwExpectError                   = jasmine.createSpy('throwExpectError');
-        TestUtils.throwImplementationError = throwImplementationError;
-        TestUtils.throwExpectError         = throwExpectError;
+        throwImplementationError = jasmine.createSpy('throwImplementationError');
+        throwExpectError = jasmine.createSpy('throwExpectError');
+        test_utils_1.TestUtils.throwImplementationError = throwImplementationError;
+        test_utils_1.TestUtils.throwExpectError = throwExpectError;
     });
-
     it('Ensure errors for null props', function () {
-        RequestRunner.run(new CallConfig(), dummyEnv);
+        request_runner_1.RequestRunner.run(new call_config_1.CallConfig(), dummyEnv);
         expect(throwImplementationError.calls.count()).toBe(1);
-
-        RequestRunner.run(new CallConfig({endPoint: ''}), dummyEnv);
+        request_runner_1.RequestRunner.run(new call_config_1.CallConfig({ endPoint: '' }), dummyEnv);
         expect(throwImplementationError.calls.count()).toBe(2);
-
-        RequestRunner.run(new CallConfig({endPoint: '', baseURL: ''}), dummyEnv);
+        request_runner_1.RequestRunner.run(new call_config_1.CallConfig({ endPoint: '', baseURL: '' }), dummyEnv);
         expect(throwImplementationError.calls.count()).toBe(2);
     });
-
     it('Ensure default GET method', function () {
-        RequestRunner.run(defaultConfig, dummyEnv);
+        request_runner_1.RequestRunner.run(defaultConfig, dummyEnv);
         expect(requestOptions.method).toBe('GET');
-
-        RequestRunner.run(defaultConfig.extend({method: 'PUT'}), dummyEnv);
+        request_runner_1.RequestRunner.run(defaultConfig.extend({ method: 'PUT' }), dummyEnv);
         expect(requestOptions.method).toBe('PUT');
     });
-
     it('Ensure beforeProxy is called', function () {
         var before = jasmine.createSpy('before');
-        RequestRunner.run(defaultConfig.extend({beforeFuncArr: [before]}), dummyEnv);
+        request_runner_1.RequestRunner.run(defaultConfig.extend({ beforeFuncArr: [before] }), dummyEnv);
         expect(before).toHaveBeenCalled();
     });
-
     it('Ensure default header is set', function () {
-        RequestRunner.run(defaultConfig.extend({}), dummyEnv);
+        request_runner_1.RequestRunner.run(defaultConfig.extend({}), dummyEnv);
         expect(requestOptions.headers['content-type']).toBe('application/json');
-
-        RequestRunner.run(defaultConfig.extend({
+        request_runner_1.RequestRunner.run(defaultConfig.extend({
             headersArr: [{
-                'content-type': 'text/html'
-            }]
+                    'content-type': 'text/html'
+                }]
         }), dummyEnv);
         expect(requestOptions.headers['content-type']).toBe('text/html');
     });
-
     it('Ensure default header does not override', function () {
-        RequestRunner.run(defaultConfig.extend({
+        request_runner_1.RequestRunner.run(defaultConfig.extend({
             headersArr: [{
-                'Content-Type': 'text/html'
-            }]
+                    'Content-Type': 'text/html'
+                }]
         }), dummyEnv);
         expect(requestOptions.headers['Content-Type']).toBe('text/html');
     });
-
     it('Ensure data is sent as default JSON', function () {
-        RequestRunner.run(defaultConfig.extend({dataArr: [{id: 1}], method: 'post'}), dummyEnv);
-        expect(requestOptions.body).toBe(JSON.stringify({id: 1}));
+        request_runner_1.RequestRunner.run(defaultConfig.extend({ dataArr: [{ id: 1 }], method: 'post' }), dummyEnv);
+        expect(requestOptions.body).toBe(JSON.stringify({ id: 1 }));
     });
-
     it('Ensure serializer is used', function () {
-        RequestRunner.run(defaultConfig.extend({
-            dataArr: [{id: 1}], method: 'post', dataSerialisationFunc: function () {
+        request_runner_1.RequestRunner.run(defaultConfig.extend({
+            dataArr: [{ id: 1 }], method: 'post', dataSerialisationFunc: function () {
                 return '123';
             }
         }), dummyEnv);
         expect(requestOptions.body).toBe('123');
     });
-
     it('Ensure checkRequestSchema is called', function () {
         var checkRequest = jasmine.createSpy('check');
-        RequestRunner.run(defaultConfig.extend({dataArr: [{id: 1}], method: 'post', checkRequestSchema: true, checkRequestSchemaFunc: checkRequest}), dummyEnv);
+        request_runner_1.RequestRunner.run(defaultConfig.extend({ dataArr: [{ id: 1 }], method: 'post', checkRequestSchema: true, checkRequestSchemaFunc: checkRequest }), dummyEnv);
         expect(checkRequest).toHaveBeenCalled();
         expect(request).not.toHaveBeenCalled();
     });
-
     it('Check all props passed to request', function () {
-        RequestRunner.run(new CallConfig({
-            baseURL : 'www.google.com/',
+        request_runner_1.RequestRunner.run(new call_config_1.CallConfig({
+            baseURL: 'www.google.com/',
             endPoint: '/users',
-            method  : 'post',
-            dataArr : [{id: 1}],
-            timeout : 1000
+            method: 'post',
+            dataArr: [{ id: 1 }],
+            timeout: 1000
         }), dummyEnv);
-
         expect(request).toHaveBeenCalledWith(jasmine.objectContaining({
-            uri    : 'www.google.com/users',
-            headers: {'content-type': 'application/json'},
-            method : 'POST',
-            json   : false,
-            body   : '{"id":1}',
+            uri: 'www.google.com/users',
+            headers: { 'content-type': 'application/json' },
+            method: 'POST',
+            json: false,
+            body: '{"id":1}',
             timeout: 1000
         }), jasmine.any(Function));
     });
-
-
-    var defaultConf = new CallConfig({
-        baseURL : 'www.google.com/',
+    var defaultConf = new call_config_1.CallConfig({
+        baseURL: 'www.google.com/',
         endPoint: '/users',
-        method  : 'post',
-        dataArr : [{id: 1}],
-        timeout : 1000
+        method: 'post',
+        dataArr: [{ id: 1 }],
+        timeout: 1000
     });
-
     it('Ensure errors are caught', function () {
-        RequestRunner.run(defaultConf, dummyEnv);
-        requestCB({message: 'error here'});
+        request_runner_1.RequestRunner.run(defaultConf, dummyEnv);
+        requestCB({ message: 'error here' });
         mockPromises.tickAllTheWay();
         expect(throwExpectError).toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
     });
-
     it('Ensure errors are allowed for boolean', function () {
-        RequestRunner.run(defaultConf.extend({allowHTTPErrors: true}), dummyEnv);
-        requestCB({message: 'error here'});
+        request_runner_1.RequestRunner.run(defaultConf.extend({ allowHTTPErrors: true }), dummyEnv);
+        requestCB({ message: 'error here' });
         mockPromises.tickAllTheWay();
         expect(throwExpectError).not.toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
     });
-
     it('Ensure errors are allowed for function', function () {
         var errorPassed;
-        RequestRunner.run(defaultConf.extend({
+        request_runner_1.RequestRunner.run(defaultConf.extend({
             allowHTTPErrors: function (error) {
                 errorPassed = error;
                 return true;
             }
         }), dummyEnv);
-        requestCB({message: 'error here'});
+        requestCB({ message: 'error here' });
         mockPromises.tickAllTheWay();
         expect(throwExpectError).not.toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
         expect(errorPassed.message).toBe('error here');
     });
-
     it('Ensure invalid JSON is caught', function () {
-        RequestRunner.run(defaultConf, dummyEnv);
+        request_runner_1.RequestRunner.run(defaultConf, dummyEnv);
         requestCB(null, {}, '{something: sdds');
         mockPromises.tickAllTheWay();
         expect(throwExpectError).toHaveBeenCalled();
         expect(done).toHaveBeenCalled();
         expect(dummyEnv.currentBody).toBe('{something: sdds');
     });
-
     it('Ensure deserialise is run', function () {
         var dataDeSerialisationFunc = jasmine.createSpy('dataDeSerialisationFunc');
-        RequestRunner.run(defaultConf.extend({
+        request_runner_1.RequestRunner.run(defaultConf.extend({
             dataDeSerialisationFunc: dataDeSerialisationFunc
         }), dummyEnv);
         requestCB(null, {}, '{something: sdds');
         mockPromises.tickAllTheWay();
         expect(dataDeSerialisationFunc).toHaveBeenCalled();
     });
-
     it('Ensure obsfucate is called', function () {
         var obsfu = jasmine.createSpy('dataDeSerialisationFunc');
-        RequestRunner.run(defaultConf.extend({
+        request_runner_1.RequestRunner.run(defaultConf.extend({
             obfuscateArr: [obsfu]
         }), dummyEnv);
         requestCB(null, {}, '');
         mockPromises.tickAllTheWay();
         expect(obsfu).toHaveBeenCalled();
     });
-
     it('Ensure check schema is called', function () {
         var checkSchema = jasmine.createSpy('checkSchema');
-        RequestRunner.run(defaultConf.extend({
-            checkResponseSchema    : true,
+        request_runner_1.RequestRunner.run(defaultConf.extend({
+            checkResponseSchema: true,
             checkResponseSchemaFunc: checkSchema
         }), dummyEnv);
         requestCB(null, {}, '{}');
         mockPromises.tickAllTheWay();
         expect(checkSchema).toHaveBeenCalled();
     });
-
     it('Ensure assert func is called', function () {
         var assertFunc = jasmine.createSpy('checkSchema');
-        RequestRunner.run(defaultConf.extend({
+        request_runner_1.RequestRunner.run(defaultConf.extend({
             assertFuncArr: [assertFunc]
         }), dummyEnv);
         requestCB(null, {}, '{}');
         mockPromises.tickAllTheWay();
         expect(assertFunc).toHaveBeenCalled();
     });
-
 });

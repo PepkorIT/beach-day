@@ -1,8 +1,8 @@
-import {JasmineAsyncEnv} from '../utils/JasmineAsyncEnv';
+import {JasmineAsyncEnv} from '../utils/jasmine-async-env';
 import * as _ from 'lodash';
-import {ExtendingObject} from './ExtendingObject';
+import {ExtendingObject} from './extending-object';
 import {CoreOptions, RequestResponse} from 'request';
-import {IRequestResponse} from './IRequestResponse';
+import {IRequestResponse} from './i-request-response';
 
 var urlJoin = require('url-join');
 

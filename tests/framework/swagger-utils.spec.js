@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var SwaggerUtils_1 = require("../../lib/utils/SwaggerUtils");
+var swagger_utils_1 = require("../../lib/utils/swagger-utils");
 var path = require("path");
 var tv4 = require("tv4");
 describe('SwaggerUtilsTest Tests', function () {
@@ -8,7 +8,7 @@ describe('SwaggerUtilsTest Tests', function () {
     beforeEach(function () {
         try {
             var filePath = path.join(__dirname, 'assets/swagger-test.json');
-            converted = SwaggerUtils_1.SwaggerUtils.parseSwaggerJSON(filePath);
+            converted = swagger_utils_1.SwaggerUtils.parseSwaggerJSON(filePath);
             //console.log('converted', JSON.stringify(converted, null, 4));
             rootPath = converted['paths']['/customerCollection/validateCustomerReferenceNumber']['post'];
             //console.log("rootPath = ", JSON.stringify(rootPath, null, 4));
@@ -39,7 +39,7 @@ describe('SwaggerUtilsTest Tests', function () {
         var data = {
             reason: null
         };
-        var schema = SwaggerUtils_1.SwaggerUtils.recurseSwagger({
+        var schema = swagger_utils_1.SwaggerUtils.recurseSwagger({
             'type': 'object',
             'properties': {
                 'reason': {
@@ -64,7 +64,7 @@ describe('SwaggerUtilsTest Tests', function () {
         client.siblings = client;
         var obj = { paths: { '/path/one': { properties: { client: client } } } };
         expect(function () {
-            SwaggerUtils_1.SwaggerUtils.recurseSwagger(obj);
+            swagger_utils_1.SwaggerUtils.recurseSwagger(obj);
         }).not.toThrow();
     });
 });
