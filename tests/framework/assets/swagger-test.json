@@ -86,7 +86,7 @@
                                                         "type": "string"
                                                     },
                                                     "identificationRequired": {
-                                                        "description": "Does this supplier and productType require the customer to have an itentification supplied to collect. If this is true collectorDetails will need to be populated if available.\n",
+                                                        "description": "Does this supplier and productType require the customer to have an identification supplied to collect. If this is true collectorDetails will need to be populated if available.",
                                                         "type": "boolean"
                                                     },
                                                     "pinRequired": {

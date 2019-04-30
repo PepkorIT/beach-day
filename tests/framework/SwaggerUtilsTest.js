@@ -6,10 +6,17 @@ var tv4 = require("tv4");
 describe('SwaggerUtilsTest Tests', function () {
     var converted, rootPath;
     beforeEach(function () {
-        var filePath = path.join(__dirname, 'assets/swagger-test.json');
-        converted = SwaggerUtils_1.SwaggerUtils.parseSwaggerJSON(filePath);
-        rootPath = converted['paths']['/customerCollection/validateCustomerReferenceNumber']['post'];
-        //console.log("rootPath = ", JSON.stringify(rootPath, null, 4));
+        try {
+            var filePath = path.join(__dirname, 'assets/swagger-test.json');
+            converted = SwaggerUtils_1.SwaggerUtils.parseSwaggerJSON(filePath);
+            //console.log('converted', JSON.stringify(converted, null, 4));
+            rootPath = converted['paths']['/customerCollection/validateCustomerReferenceNumber']['post'];
+            //console.log("rootPath = ", JSON.stringify(rootPath, null, 4));
+        }
+        catch (err) {
+            console.log('ERROR');
+            console.log(err);
+        }
     });
     it('Test basic required update', function () {
         var parcelObj = rootPath['responses']['200']['schema']['properties']['parcels']['items']['properties']['parcel'];
@@ -51,5 +58,13 @@ describe('SwaggerUtilsTest Tests', function () {
         expect(schema.properties.reason.enum[3]).toBe(null);
         var result = tv4.validateMultiple(data, schema, null, true);
         expect(result.valid).toBe(true);
+    });
+    it('Test recurseSwagger() with circular referenced objects', function () {
+        var client = { name: 'string', age: 'string', siblings: null };
+        client.siblings = client;
+        var obj = { paths: { '/path/one': { properties: { client: client } } } };
+        expect(function () {
+            SwaggerUtils_1.SwaggerUtils.recurseSwagger(obj);
+        }).not.toThrow();
     });
 });

@@ -1,15 +1,38 @@
 import * as fs from 'fs';
 
-function loopObject(currObject, callback) {
-    // Run through the entire object and update the type of all schemas to include null if x-isnullable is set to true
-    for (var propName in currObject) {
-        var value = currObject[propName];
-        if (typeof value == 'object') {
-            loopObject(value, callback);
+const loopProcess = '__loop__process__';
+
+function loopObject(loopObj, callback) {
+
+    const runIteration = (currObject) => {
+        // Run through the entire object and update the type of all schemas to include null if x-isnullable is set to true
+        for (var propName in currObject) {
+            var value = currObject[propName];
+            if (typeof value == 'object' && value[loopProcess] == null) {
+                value[loopProcess] = 'done';
+                runIteration(value);
+            }
+            callback(propName, currObject, value);
         }
-        callback(propName, currObject, value);
-    }
-    return currObject;
+        return currObject;
+    };
+
+    const result = runIteration(loopObj);
+
+    const cleanIteration = (currObject) => {
+        // Run through the entire object and update the type of all schemas to include null if x-isnullable is set to true
+        for (var propName in currObject) {
+            var value = currObject[propName];
+            if (typeof value == 'object' && value != null && value[loopProcess] != null) {
+                delete value[loopProcess];
+                cleanIteration(value);
+            }
+        }
+        return currObject;
+    };
+    cleanIteration(result);
+
+    return result;
 }
 
 function convertXIsNullable(propName, currObject, value) {
@@ -36,6 +59,8 @@ function convertNullableBasedOnRequired(sourcePropName, currObject, value) {
         var properties = value;
 
         for (var propName in properties) {
+            if (propName === loopProcess) continue;
+
             var type = properties[propName].type;
 
             // Determine if the property already has null
