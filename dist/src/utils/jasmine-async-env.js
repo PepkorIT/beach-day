@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var beach_day_reporter_1 = require("../reporter/beach-day-reporter");
+var __1 = require("..");
 var matcher_utils_1 = require("./matcher-utils");
 var object_utils_1 = require("./object-utils");
+var beach_day_status_1 = require("./beach-day-status");
 var counter = 0;
 var JasmineAsyncEnv = /** @class */ (function () {
     /**
@@ -23,13 +24,6 @@ var JasmineAsyncEnv = /** @class */ (function () {
          */
         this.currentBody = undefined;
         /**
-         * Indicates if any of the tests using this envionment have failed.
-         * The wrap() method will not execute its callback on any further tests if this is true
-         * @memberof! JasmineAsyncEnv#
-         * @type {boolean}
-         */
-        this.failed = false;
-        /**
          * Should be called by the callback passed to wrap() to complete a test case.
          * By default all tests that use wrap() are setup async so need to call this method
          * @memberof! JasmineAsyncEnv#
@@ -38,10 +32,24 @@ var JasmineAsyncEnv = /** @class */ (function () {
         this.done = undefined;
         this.builtInProps = {};
         this.isolatedProps = {};
+        this._failed = false;
         this.id = counter;
         counter++;
         Object.keys(this).forEach(function (key) { return _this.builtInProps[key] = true; });
     }
+    Object.defineProperty(JasmineAsyncEnv.prototype, "failed", {
+        /**
+         * Indicates if any of the tests using this environment have failed.
+         * The wrap() method will not execute its callback on any further tests if this is true
+         * @memberof! JasmineAsyncEnv#
+         * @type {boolean}
+         */
+        get: function () {
+            return this._failed || beach_day_status_1.BeachDayStatus.failed;
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Wrapper for a test method. The cb will only be executed if the all the previous tests have passed.
      * @memberof JasmineAsyncEnv
@@ -64,7 +72,7 @@ var JasmineAsyncEnv = /** @class */ (function () {
                 // trash the linked env so no changes are made after the initial test
                 _self.linkedEnv = null;
             }
-            beach_day_reporter_1.ReporterAPI.setCurrentEnvironment(_self);
+            __1.ReporterAPI.setCurrentEnvironment(_self);
             _self.done = function () {
                 // hook to do stuff when complete
                 done();
@@ -170,6 +178,12 @@ var JasmineAsyncEnv = /** @class */ (function () {
     };
     JasmineAsyncEnv.prototype.getIsolate = function (propertyName) {
         return this.isolatedProps[propertyName];
+    };
+    JasmineAsyncEnv.prototype.setFailed = function () {
+        this._failed = true;
+    };
+    JasmineAsyncEnv.prototype.setFailedGlobally = function () {
+        beach_day_status_1.BeachDayStatus.failed = true;
     };
     return JasmineAsyncEnv;
 }());

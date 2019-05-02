@@ -87,9 +87,14 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="jasmineasyncenv.html#currentbody" class="tsd-kind-icon">current<wbr>Body</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="jasmineasyncenv.html#done" class="tsd-kind-icon">done</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="jasmineasyncenv.html#failed" class="tsd-kind-icon">failed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="jasmineasyncenv.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="jasmineasyncenv.html#linkedenv" class="tsd-kind-icon">linked<wbr>Env</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Accessors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="jasmineasyncenv.html#failed" class="tsd-kind-icon">failed</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -101,6 +106,8 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="jasmineasyncenv.html#expectprop" class="tsd-kind-icon">expect<wbr>Prop</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="jasmineasyncenv.html#getisolate" class="tsd-kind-icon">get<wbr>Isolate</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="jasmineasyncenv.html#isolateenvproperties" class="tsd-kind-icon">isolate<wbr>Env<wbr>Properties</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="jasmineasyncenv.html#setfailed" class="tsd-kind-icon">set<wbr>Failed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="jasmineasyncenv.html#setfailedglobally" class="tsd-kind-icon">set<wbr>Failed<wbr>Globally</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="jasmineasyncenv.html#setprop" class="tsd-kind-icon">set<wbr>Prop</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="jasmineasyncenv.html#wrap" class="tsd-kind-icon">wrap</a></li>
 							</ul>
@@ -120,7 +127,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/jasmine-async-env.ts:35</li>
+									<li>Defined in utils/jasmine-async-env.ts:39</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -159,7 +166,7 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Body<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in utils/jasmine-async-env.ts:16</li>
+							<li>Defined in utils/jasmine-async-env.ts:17</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -180,7 +187,7 @@
 					<div class="tsd-signature tsd-kind-icon">done<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span><span class="tsd-signature-symbol"> =&nbsp;undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in utils/jasmine-async-env.ts:32</li>
+							<li>Defined in utils/jasmine-async-env.ts:35</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -214,36 +221,12 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="failed" class="tsd-anchor"></a>
-					<h3>failed</h3>
-					<div class="tsd-signature tsd-kind-icon">failed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in utils/jasmine-async-env.ts:24</li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Indicates if any of the tests using this envionment have failed.
-							The wrap() method will not execute its callback on any further tests if this is true</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>memberof!</dt>
-							<dd><p>JasmineAsyncEnv#</p>
-							</dd>
-							<dt>type</dt>
-							<dd><p>{boolean}</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="id" class="tsd-anchor"></a>
 					<h3>id</h3>
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in utils/jasmine-async-env.ts:9</li>
+							<li>Defined in utils/jasmine-async-env.ts:10</li>
 						</ul>
 					</aside>
 				</section>
@@ -253,7 +236,7 @@
 					<div class="tsd-signature tsd-kind-icon">linked<wbr>Env<span class="tsd-signature-symbol">:</span> <a href="jasmineasyncenv.html" class="tsd-signature-type">JasmineAsyncEnv</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in utils/jasmine-async-env.ts:45</li>
+							<li>Defined in utils/jasmine-async-env.ts:49</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -261,6 +244,40 @@
 							<p>Optional. Linked JasmineAsyncEnv to base the original this one on.</p>
 						</div>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="failed" class="tsd-anchor"></a>
+					<h3>failed</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> failed<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in utils/jasmine-async-env.ts:25</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Indicates if any of the tests using this environment have failed.
+									The wrap() method will not execute its callback on any further tests if this is true</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof!</dt>
+									<dd><p>JasmineAsyncEnv#</p>
+									</dd>
+									<dt>type</dt>
+									<dd><p>{boolean}</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -275,7 +292,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/jasmine-async-env.ts:137</li>
+									<li>Defined in utils/jasmine-async-env.ts:141</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -314,7 +331,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/jasmine-async-env.ts:148</li>
+									<li>Defined in utils/jasmine-async-env.ts:152</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -348,7 +365,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/jasmine-async-env.ts:120</li>
+									<li>Defined in utils/jasmine-async-env.ts:124</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -387,7 +404,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/jasmine-async-env.ts:161</li>
+									<li>Defined in utils/jasmine-async-env.ts:165</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -431,7 +448,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/jasmine-async-env.ts:183</li>
+									<li>Defined in utils/jasmine-async-env.ts:187</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -460,7 +477,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/jasmine-async-env.ts:170</li>
+									<li>Defined in utils/jasmine-async-env.ts:174</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -486,6 +503,40 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setfailed" class="tsd-anchor"></a>
+					<h3>set<wbr>Failed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Failed<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in utils/jasmine-async-env.ts:191</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setfailedglobally" class="tsd-anchor"></a>
+					<h3>set<wbr>Failed<wbr>Globally</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Failed<wbr>Globally<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in utils/jasmine-async-env.ts:195</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="setprop" class="tsd-anchor"></a>
 					<h3>set<wbr>Prop</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -495,7 +546,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/jasmine-async-env.ts:103</li>
+									<li>Defined in utils/jasmine-async-env.ts:107</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -541,7 +592,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in utils/jasmine-async-env.ts:59</li>
+									<li>Defined in utils/jasmine-async-env.ts:63</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -631,13 +682,13 @@
 								<a href="jasmineasyncenv.html#done" class="tsd-kind-icon">done</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="jasmineasyncenv.html#failed" class="tsd-kind-icon">failed</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="jasmineasyncenv.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="jasmineasyncenv.html#linkedenv" class="tsd-kind-icon">linked<wbr>Env</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="jasmineasyncenv.html#failed" class="tsd-kind-icon">failed</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="jasmineasyncenv.html#checkprop" class="tsd-kind-icon">check<wbr>Prop</a>
@@ -656,6 +707,12 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="jasmineasyncenv.html#isolateenvproperties" class="tsd-kind-icon">isolate<wbr>Env<wbr>Properties</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="jasmineasyncenv.html#setfailed" class="tsd-kind-icon">set<wbr>Failed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="jasmineasyncenv.html#setfailedglobally" class="tsd-kind-icon">set<wbr>Failed<wbr>Globally</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="jasmineasyncenv.html#setprop" class="tsd-kind-icon">set<wbr>Prop</a>

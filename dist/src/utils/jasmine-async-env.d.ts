@@ -8,12 +8,12 @@ export declare class JasmineAsyncEnv {
      */
     currentBody: any;
     /**
-     * Indicates if any of the tests using this envionment have failed.
+     * Indicates if any of the tests using this environment have failed.
      * The wrap() method will not execute its callback on any further tests if this is true
      * @memberof! JasmineAsyncEnv#
      * @type {boolean}
      */
-    failed: boolean;
+    readonly failed: boolean;
     /**
      * Should be called by the callback passed to wrap() to complete a test case.
      * By default all tests that use wrap() are setup async so need to call this method
@@ -23,6 +23,7 @@ export declare class JasmineAsyncEnv {
     done: () => void;
     private builtInProps;
     private isolatedProps;
+    private _failed;
     /**
      * @class
      * @name JasmineAsyncEnv
@@ -97,4 +98,6 @@ export declare class JasmineAsyncEnv {
      */
     isolateEnvProperties<T = any>(propertyName: string): T;
     getIsolate<T = any>(propertyName: string): T;
+    setFailed(): void;
+    setFailedGlobally(): void;
 }

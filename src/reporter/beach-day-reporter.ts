@@ -400,7 +400,7 @@ export class BeachDayReporter {
                 else {
                     // If the test failed, fail the entire environment
                     if (result.beachStatus == BeachDayReporter.STATUS_FAILED) {
-                        this._currentEnvironment.failed = true;
+                        this._currentEnvironment.setFailed();
                     }
                 }
             }

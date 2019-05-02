@@ -330,7 +330,7 @@ var BeachDayReporter = /** @class */ (function () {
                 else {
                     // If the test failed, fail the entire environment
                     if (result.beachStatus == BeachDayReporter.STATUS_FAILED) {
-                        _this._currentEnvironment.failed = true;
+                        _this._currentEnvironment.setFailed();
                     }
                 }
             }

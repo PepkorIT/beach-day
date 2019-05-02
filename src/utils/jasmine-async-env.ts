@@ -1,6 +1,7 @@
-import {ReporterAPI} from '../reporter/beach-day-reporter';
+import {ReporterAPI} from '..';
 import {MatcherUtils} from './matcher-utils';
 import {ObjectUtils} from './object-utils';
+import {BeachDayStatus} from './beach-day-status';
 
 var counter = 0;
 
@@ -16,12 +17,14 @@ export class JasmineAsyncEnv {
     public currentBody:any = undefined;
 
     /**
-     * Indicates if any of the tests using this envionment have failed.
+     * Indicates if any of the tests using this environment have failed.
      * The wrap() method will not execute its callback on any further tests if this is true
      * @memberof! JasmineAsyncEnv#
      * @type {boolean}
      */
-    public failed:boolean = false;
+    public get failed():boolean {
+        return this._failed || BeachDayStatus.failed;
+    }
 
     /**
      * Should be called by the callback passed to wrap() to complete a test case.
@@ -33,6 +36,7 @@ export class JasmineAsyncEnv {
 
     private builtInProps:{ [key:string]:boolean } = {};
     private isolatedProps:{ [key:string]:any }    = {};
+    private _failed                               = false;
 
     /**
      * @class
@@ -182,5 +186,13 @@ export class JasmineAsyncEnv {
 
     public getIsolate<T = any>(propertyName:string):T {
         return this.isolatedProps[propertyName];
+    }
+
+    public setFailed() {
+        this._failed = true;
+    }
+
+    public setFailedGlobally() {
+        BeachDayStatus.failed = true;
     }
 }
