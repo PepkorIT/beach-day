@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var beach_day_reporter_1 = require("./src/reporter/beach-day-reporter");
+var src_1 = require("./src");
 var Jasmine = require('jasmine');
 var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 var jasmineInst = new Jasmine();
@@ -19,11 +19,22 @@ jasmineInst.addReporter(new SpecReporter({
     displayPendingSpec: false
 }));
 // Add our custom HTML reporter
-jasmineInst.addReporter(new beach_day_reporter_1.BeachDayReporter({
+jasmineInst.addReporter(new src_1.BeachDayReporter({
     logToConsole: true,
     includeAllConsoleLogs: false,
     maxTestTime: 2000
 }));
-jasmineInst.loadConfigFile('jasmine_config.json');
+var config = {
+    spec_dir: '',
+    spec_files: [
+        'dist/src/**/*.spec.js'
+    ],
+    helpers: [
+    //'helpers/**/*.js'
+    ],
+    stopSpecOnExpectationFailure: false,
+    random: false
+};
+jasmineInst.loadConfig(config);
 jasmineInst.execute();
 //# sourceMappingURL=boot.js.map

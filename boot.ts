@@ -1,4 +1,4 @@
-import {BeachDayReporter} from './src/reporter/beach-day-reporter';
+import {BeachDayReporter} from './src';
 
 var Jasmine      = require('jasmine');
 var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
@@ -30,5 +30,15 @@ jasmineInst.addReporter(new BeachDayReporter({
     maxTestTime          : 2000
 }));
 
-jasmineInst.loadConfigFile('jasmine_config.json');
+const config = {
+    spec_dir                    : '',
+    spec_files                  : [
+        'dist/src/**/*.spec.js'
+    ],
+    helpers                     : [],
+    stopSpecOnExpectationFailure: false,
+    random                      : false
+};
+
+jasmineInst.loadConfig(config);
 jasmineInst.execute();

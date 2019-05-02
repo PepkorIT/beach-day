@@ -1,13 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var request_runner_1 = require("./request-runner");
-var jasmine_async_env_1 = require("../utils/jasmine-async-env");
 var call_config_1 = require("./call-config");
-var test_utils_1 = require("../utils/test-utils");
 var mockPromises = require("mock-promises");
+var __1 = require("..");
 Promise = mockPromises.getMockPromise(Promise);
 describe('RequestRunner tester', function () {
-    var dummyEnv = new jasmine_async_env_1.JasmineAsyncEnv();
+    var dummyEnv = new __1.JasmineAsyncEnv();
     var done, throwImplementationError, throwExpectError, request;
     var defaultConfig = new call_config_1.CallConfig({ endPoint: '/user', baseURL: 'www.something.com//' });
     var requestOptions, requestCB;
@@ -20,8 +19,8 @@ describe('RequestRunner tester', function () {
         });
         throwImplementationError = jasmine.createSpy('throwImplementationError');
         throwExpectError = jasmine.createSpy('throwExpectError');
-        test_utils_1.TestUtils.throwImplementationError = throwImplementationError;
-        test_utils_1.TestUtils.throwExpectError = throwExpectError;
+        __1.TestUtils.throwImplementationError = throwImplementationError;
+        __1.TestUtils.throwExpectError = throwExpectError;
     });
     it('Ensure errors for null props', function () {
         request_runner_1.RequestRunner.run(new call_config_1.CallConfig(), dummyEnv);

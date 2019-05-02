@@ -9,6 +9,7 @@ __export(require("./utils/jasmine-async-env"));
 __export(require("./utils/random-utils"));
 __export(require("./utils/swagger-utils"));
 __export(require("./utils/test-utils"));
+__export(require("./utils/object-utils"));
 __export(require("./network/call-config"));
 __export(require("./network/request-runner"));
 // Register initially, this will help register matchers

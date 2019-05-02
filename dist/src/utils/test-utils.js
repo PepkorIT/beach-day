@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var beach_day_reporter_1 = require("../reporter/beach-day-reporter");
+var __1 = require("..");
 var object_utils_1 = require("./object-utils");
 var tv4 = require("tv4");
 exports.TestUtils = {
@@ -70,12 +70,12 @@ exports.TestUtils = {
                     delete error.stack;
                 });
             if (!isResponse) {
-                beach_day_reporter_1.console.log('Request Data:');
-                beach_day_reporter_1.console.log(JSON.stringify(data, null, 4));
-                beach_day_reporter_1.console.log('');
+                __1.console.log('Request Data:');
+                __1.console.log(JSON.stringify(data, null, 4));
+                __1.console.log('');
             }
-            beach_day_reporter_1.console.log((isResponse ? 'Response' : 'Request') + " Schema Failure Result:");
-            beach_day_reporter_1.console.log(JSON.stringify(result, null, 4));
+            __1.console.log((isResponse ? 'Response' : 'Request') + " Schema Failure Result:");
+            __1.console.log(JSON.stringify(result, null, 4));
             if (!isResponse) {
                 this.throwImplementationError('Expected REQUEST body to match the JSON schema defined');
             }
