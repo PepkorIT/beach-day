@@ -1,5 +1,5 @@
-import ObjectUtils from './object-utils';
 import {TestUtils} from './test-utils';
+import {ObjectUtils} from './object-utils';
 
 var stringifyObject = require('stringify-object');
 

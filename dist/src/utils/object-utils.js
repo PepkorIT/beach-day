@@ -118,5 +118,5 @@ var ObjectUtils = /** @class */ (function () {
     };
     return ObjectUtils;
 }());
-exports.default = ObjectUtils;
+exports.ObjectUtils = ObjectUtils;
 //# sourceMappingURL=object-utils.js.map

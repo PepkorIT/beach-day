@@ -16,17 +16,17 @@ describe('JasmineAsyncEnv Tests', function () {
         expect(dummyEnv['address']['street']).toBe('clifton');
     });
     it('Test JasmineAsyncEnv.checkPropDoesntExist failing', function () {
-        spyOn(object_utils_1.default, 'getProp').and.callThrough();
+        spyOn(object_utils_1.ObjectUtils, 'getProp').and.callThrough();
         dummyEnv.currentBody = { prop1: 'something' };
         dummyEnv.checkPropDoesntExist('prop1');
-        expect(object_utils_1.default.getProp).toHaveBeenCalledWith(dummyEnv.currentBody, 'prop1');
+        expect(object_utils_1.ObjectUtils.getProp).toHaveBeenCalledWith(dummyEnv.currentBody, 'prop1');
         expect(throwExpectError).toHaveBeenCalled();
     });
     it('Test JasmineAsyncEnv.checkPropDoesntExist working', function () {
-        spyOn(object_utils_1.default, 'getProp').and.callThrough();
+        spyOn(object_utils_1.ObjectUtils, 'getProp').and.callThrough();
         dummyEnv.currentBody = { prop1: 'something' };
         dummyEnv.checkPropDoesntExist('prop2');
-        expect(object_utils_1.default.getProp).toHaveBeenCalledWith(dummyEnv.currentBody, 'prop2');
+        expect(object_utils_1.ObjectUtils.getProp).toHaveBeenCalledWith(dummyEnv.currentBody, 'prop2');
         expect(throwExpectError).not.toHaveBeenCalled();
     });
     it('Test isolated props example', function () {

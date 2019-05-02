@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var __1 = require("..");
-var object_utils_1 = require("./object-utils");
 var tv4 = require("tv4");
 exports.TestUtils = {
     throwExpectError: function (message) {
@@ -31,11 +30,11 @@ exports.TestUtils = {
         var schema;
         // statusCode is populated means we need to look for a response object schema
         if (isResponse) {
-            schema = object_utils_1.default.getProp(swaggerObject, "paths." + endPoint + "." + method.toLowerCase() + ".responses." + statusCode + ".schema");
+            schema = __1.ObjectUtils.getProp(swaggerObject, "paths." + endPoint + "." + method.toLowerCase() + ".responses." + statusCode + ".schema");
         }
         // Otherwise we need to look for the body parameter
         else {
-            var parameters = object_utils_1.default.getProp(swaggerObject, "paths." + endPoint + "." + method.toLowerCase() + ".parameters");
+            var parameters = __1.ObjectUtils.getProp(swaggerObject, "paths." + endPoint + "." + method.toLowerCase() + ".parameters");
             // Now look for the body object
             if (parameters) {
                 for (var i = 0; i < parameters.length; i++) {

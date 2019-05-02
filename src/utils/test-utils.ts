@@ -1,5 +1,4 @@
-import {console} from '..';
-import ObjectUtils from './object-utils';
+import {console, ObjectUtils} from '..';
 import * as tv4 from 'tv4';
 
 export var TestUtils = {

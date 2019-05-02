@@ -2,12 +2,12 @@ import {JasmineAsyncEnv} from '../utils/jasmine-async-env';
 import {console, ReporterAPI} from '../reporter/beach-day-reporter';
 import {TestUtils} from '../utils/test-utils';
 import {CallConfig, IAllowErrorFunc, IRequestCallbackResponse} from './call-config';
-import ObjectUtils from '../utils/object-utils';
 import {IRequestResponse} from './i-request-response';
 import * as _ from 'lodash';
 import * as request from 'request';
 import * as URL from 'url';
 import * as escapeHtml from 'escape-html';
+import {ObjectUtils} from '..';
 
 export interface PollCompleteFunc {
     (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):{ complete:boolean, nextPollDelay:number };

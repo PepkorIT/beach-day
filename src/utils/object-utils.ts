@@ -1,4 +1,4 @@
-export default class ObjectUtils {
+export class ObjectUtils {
 
 
     public static getProp(source:Object | Array<any>, propertyAccessor:string, convertUndefinedToNull:boolean = true):any {

@@ -1,6 +1,6 @@
 import {ReporterAPI} from '../reporter/beach-day-reporter';
-import ObjectUtils from './object-utils';
 import {MatcherUtils} from './matcher-utils';
+import {ObjectUtils} from './object-utils';
 
 var counter = 0;
 

@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var beach_day_reporter_1 = require("../reporter/beach-day-reporter");
 var test_utils_1 = require("../utils/test-utils");
 var call_config_1 = require("./call-config");
-var object_utils_1 = require("../utils/object-utils");
 var _ = require("lodash");
 var request = require("request");
 var URL = require("url");
 var escapeHtml = require("escape-html");
+var __1 = require("..");
 var RequestRunner = /** @class */ (function () {
     function RequestRunner() {
     }
@@ -235,8 +235,8 @@ var RequestRunner = /** @class */ (function () {
      * Pretty logging for the reporter of the request and repsonse
      */
     RequestRunner.logRequestResponse = function (error, res, parsedResponseBody, options, isError, parsePassed) {
-        var requestBody = object_utils_1.default.getProp(res, 'request.body');
-        var requestHeaders = object_utils_1.default.getProp(res, 'request.headers');
+        var requestBody = __1.ObjectUtils.getProp(res, 'request.body');
+        var requestHeaders = __1.ObjectUtils.getProp(res, 'request.headers');
         // Pretty print the request response if we deem it to be of type JSON
         if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, 'content-type', 'application/json')) {
             requestBody = JSON.stringify(JSON.parse(requestBody), null, 4);
@@ -254,8 +254,8 @@ var RequestRunner = /** @class */ (function () {
         if (!isError) {
             beach_day_reporter_1.console.log('<strong>REQUEST</strong>');
             beach_day_reporter_1.console.log('<hr class="short" />');
-            beach_day_reporter_1.console.log('URL: ' + object_utils_1.default.getProp(res, 'request.uri.href'));
-            beach_day_reporter_1.console.log('Method: ' + object_utils_1.default.getProp(res, 'request.method'));
+            beach_day_reporter_1.console.log('URL: ' + __1.ObjectUtils.getProp(res, 'request.uri.href'));
+            beach_day_reporter_1.console.log('Method: ' + __1.ObjectUtils.getProp(res, 'request.method'));
             beach_day_reporter_1.console.log('Request Headers:\n' + JSON.stringify(requestHeaders, null, 4));
             beach_day_reporter_1.console.log('Body:\n' + requestBody);
             beach_day_reporter_1.console.log('');
@@ -271,8 +271,8 @@ var RequestRunner = /** @class */ (function () {
             beach_day_reporter_1.console.log(JSON.stringify(error, null, 4));
             beach_day_reporter_1.console.log('<strong>REQUEST</strong>');
             beach_day_reporter_1.console.log('<hr class="short"/>');
-            beach_day_reporter_1.console.log('URL: ' + object_utils_1.default.getProp(res, 'request.uri.href'));
-            beach_day_reporter_1.console.log('Method: ' + object_utils_1.default.getProp(res, 'request.method'));
+            beach_day_reporter_1.console.log('URL: ' + __1.ObjectUtils.getProp(res, 'request.uri.href'));
+            beach_day_reporter_1.console.log('Method: ' + __1.ObjectUtils.getProp(res, 'request.method'));
             beach_day_reporter_1.console.log('Request Headers:\n' + JSON.stringify(requestHeaders, null, 4));
             beach_day_reporter_1.console.log('Body:\n' + requestBody);
             beach_day_reporter_1.console.log('');

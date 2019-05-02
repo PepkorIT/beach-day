@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var object_utils_1 = require("./object-utils");
 var test_utils_1 = require("./test-utils");
+var object_utils_1 = require("./object-utils");
 var stringifyObject = require('stringify-object');
 var MatcherUtils = /** @class */ (function () {
     function MatcherUtils() {
@@ -13,7 +13,7 @@ var MatcherUtils = /** @class */ (function () {
             expect(currentBody).throwExpectError('Expected property \'' + propertyName + '\' to be present on response but response was ' + currentBody);
         }
         else {
-            var currObject = object_utils_1.default.getProp(currentBody, propertyName);
+            var currObject = object_utils_1.ObjectUtils.getProp(currentBody, propertyName);
             if (currObject == null) {
                 expect(currentBody).throwExpectError('Expected property \'' + propertyName + '\' to be present on response but failed to locate it');
             }
@@ -23,7 +23,7 @@ var MatcherUtils = /** @class */ (function () {
     MatcherUtils.checkPropDoesntExist = function (currentBody, propertyName) {
         if (propertyName == null)
             throw new Error('propertyName cannot be null');
-        var currObject = object_utils_1.default.getProp(currentBody, propertyName);
+        var currObject = object_utils_1.ObjectUtils.getProp(currentBody, propertyName);
         if (currObject != null) {
             test_utils_1.TestUtils.throwExpectError('Expected property \'' + propertyName + '\' NOT to be present on response');
         }
@@ -37,7 +37,7 @@ var MatcherUtils = /** @class */ (function () {
             test_utils_1.TestUtils.throwExpectError("Expected property '" + propertyName + "' to be present on response but response was " + currentBody);
         }
         else {
-            var value = object_utils_1.default.getProp(currentBody, propertyName, false);
+            var value = object_utils_1.ObjectUtils.getProp(currentBody, propertyName, false);
             var stringify = function (value) {
                 return stringifyObject(value, { singleQuotes: false }).replace(/(\r\n|\n|\r|\t)/gm, '');
             };

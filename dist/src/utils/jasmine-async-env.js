@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var beach_day_reporter_1 = require("../reporter/beach-day-reporter");
-var object_utils_1 = require("./object-utils");
 var matcher_utils_1 = require("./matcher-utils");
+var object_utils_1 = require("./object-utils");
 var counter = 0;
 var JasmineAsyncEnv = /** @class */ (function () {
     /**
@@ -95,7 +95,7 @@ var JasmineAsyncEnv = /** @class */ (function () {
             throw new Error('destinationName cannot be null');
         var value = this.checkProp(sourceName);
         if (value != null) {
-            object_utils_1.default.setProp(this, destinationName, value);
+            object_utils_1.ObjectUtils.setProp(this, destinationName, value);
         }
         return value;
     };
