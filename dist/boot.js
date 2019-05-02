@@ -29,9 +29,7 @@ var config = {
     spec_files: [
         'dist/src/**/*.spec.js'
     ],
-    helpers: [
-    //'helpers/**/*.js'
-    ],
+    helpers: [],
     stopSpecOnExpectationFailure: false,
     random: false
 };

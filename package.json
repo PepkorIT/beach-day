@@ -22,14 +22,14 @@
   "scripts": {
     "test": "tsc && node ./dist/boot.js",
     "report": "tsc && node ./dist/src/reporter/test-report.js",
-    "docs": "tsc && typedoc --ignoreCompilerErrors --excludeExternals --excludePrivate --options typedoc.json node_modules/@types"
+    "docs": "tsc && typedoc --ignoreCompilerErrors --excludeExternals --excludePrivate --options typedoc.json ./src"
   },
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "devDependencies": {
     "minami": "1.1.1",
     "mock-promises": "0.8.1",
-    "typedoc": "0.5.3",
+    "typedoc": "0.14.2",
     "typescript": "3.4.5"
   },
   "dependencies": {

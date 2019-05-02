@@ -4,5 +4,6 @@
     "out": "docs/api-reference/typedoc",
     "mode": "file",
     "theme": "default",
-    "includes": "**/node_modules/@types/**"
+    "includes": "**/node_modules/@types/**",
+    "exclude": "**/*+(.spec).ts"
 }
