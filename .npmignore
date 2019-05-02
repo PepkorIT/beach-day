@@ -1,3 +1,9 @@
 /src
 /dist/boot.*
 /dist/**/*.spec*
+/docs
+/boot.ts
+/jsdoc.json
+/readme.md
+/tsconfig.json
+/typedoc.json
