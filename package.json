@@ -20,20 +20,12 @@
     "testing"
   ],
   "scripts": {
-    "test": "tsc && node ./boot.js",
-    "report": "tsc && node lib/reporter/test-report.js",
+    "test": "tsc && node ./dist/boot.js",
+    "report": "tsc && node ./dist/src/reporter/test-report.js",
     "docs": "tsc && typedoc --ignoreCompilerErrors --excludeExternals --excludePrivate --options typedoc.json node_modules/@types"
   },
-  "main": "index.js",
-  "module": "index.js",
-  "typings": "index.d.ts",
-  "files": [
-    "lib/**/*.d.ts",
-    "lib/**/*.js",
-    "lib/templates/*",
-    "index.d.ts",
-    "index.js"
-  ],
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "devDependencies": {
     "minami": "1.1.1",
     "mock-promises": "0.8.1",

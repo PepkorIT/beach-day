@@ -1,20 +1,19 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es5",
+        "outDir": "dist",
+        "sourceRoot": ".",
         "declaration": true,
-        "sourceMap": false,
+        "sourceMap": true,
+        "target": "es5",
         "removeComments": false,
         "preserveConstEnums": true,
-        "lib": ["es6", "dom"],
+        "lib": [
+            "es6",
+            "dom"
+        ],
         "typeRoots": [
             "node_modules/@types"
         ]
-    },
-    "exclude": [
-        "node_modules"
-    ],
-    "include": [
-        "**/*.ts"
-    ]
+    }
 }

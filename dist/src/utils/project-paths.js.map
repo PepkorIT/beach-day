@@ -1,0 +1,1 @@
+{"version":3,"file":"project-paths.js","sourceRoot":"./","sources":["src/utils/project-paths.ts"],"names":[],"mappings":";;AAAA,2BAA6B;AAE7B,gCAAgC;AAChC,IAAM,IAAI,GAAG,IAAI,CAAC,IAAI,CAAC,SAAS,EAAE,WAAW,CAAC,CAAC;AAElC,QAAA,YAAY,GAAG;IACxB,IAAI,EAAO,IAAI;IACf,SAAS,EAAE,IAAI,CAAC,IAAI,CAAC,IAAI,EAAE,eAAe,CAAC;CAC9C,CAAC"}
