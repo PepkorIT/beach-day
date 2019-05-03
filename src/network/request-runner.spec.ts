@@ -27,11 +27,10 @@ describe('RequestRunner tester', function () {
             requestCB      = cb;
         });
 
-        throwImplementationError           = jasmine.createSpy('throwImplementationError');
-        throwExpectError                   = jasmine.createSpy('throwExpectError');
-        TestUtils.throwImplementationError = throwImplementationError;
-        TestUtils.throwExpectError         = throwExpectError;
+        throwImplementationError = spyOn(TestUtils, 'throwImplementationError');
+        throwExpectError         = spyOn(TestUtils, 'throwExpectError');
     });
+    //afterEach(() => this.removeAllSpies());
 
     it('Ensure errors for null props', function () {
         RequestRunner.run(new CallConfig(), dummyEnv);

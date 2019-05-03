@@ -2,14 +2,25 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var __1 = require("..");
 var tv4 = require("tv4");
-exports.TestUtils = {
-    throwExpectError: function (message) {
+var TestUtils = /** @class */ (function () {
+    function TestUtils() {
+    }
+    TestUtils.expect = function (testFunction, errorMessage) {
+        if (typeof testFunction === 'function') {
+            if (!testFunction())
+                this.throwExpectError(errorMessage);
+        }
+        else if (!testFunction) {
+            this.throwExpectError(errorMessage);
+        }
+    };
+    TestUtils.throwExpectError = function (message) {
         expect(true).throwExpectError(message);
-    },
-    throwImplementationError: function (message) {
+    };
+    TestUtils.throwImplementationError = function (message) {
         expect(true).throwImplementationError(message);
-    },
-    isValidISO8601DateFormat: function (data) {
+    };
+    TestUtils.isValidISO8601DateFormat = function (data) {
         var dateReg = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
         // Valid for null
         if (data == null) {
@@ -23,8 +34,8 @@ exports.TestUtils = {
         else {
             return dateReg.test(data);
         }
-    },
-    validateSwaggerSchema: function (data, swaggerObject, endPoint, method, isResponse, statusCode, banUnknownProperties) {
+    };
+    TestUtils.validateSwaggerSchema = function (data, swaggerObject, endPoint, method, isResponse, statusCode, banUnknownProperties) {
         if (banUnknownProperties === void 0) { banUnknownProperties = false; }
         var valid = false;
         var schema;
@@ -53,8 +64,8 @@ exports.TestUtils = {
             valid = this.validateSchema(data, schema, isResponse, banUnknownProperties).valid;
         }
         return valid;
-    },
-    validateSchema: function (data, schema, isResponse, banUnknownProperties) {
+    };
+    TestUtils.validateSchema = function (data, schema, isResponse, banUnknownProperties) {
         var _this = this;
         tv4.addFormat('date-time', function (data, schema) {
             var valid = _this.isValidISO8601DateFormat(data);
@@ -83,6 +94,8 @@ exports.TestUtils = {
             }
         }
         return result;
-    }
-};
+    };
+    return TestUtils;
+}());
+exports.TestUtils = TestUtils;
 //# sourceMappingURL=test-utils.js.map

@@ -1,5 +1,4 @@
-/src
-!/src/templates
+/src/**/*.ts
 /dist/boot.*
 /dist/**/*.spec*
 /docs

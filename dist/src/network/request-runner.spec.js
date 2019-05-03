@@ -17,11 +17,10 @@ describe('RequestRunner tester', function () {
             requestOptions = options;
             requestCB = cb;
         });
-        throwImplementationError = jasmine.createSpy('throwImplementationError');
-        throwExpectError = jasmine.createSpy('throwExpectError');
-        __1.TestUtils.throwImplementationError = throwImplementationError;
-        __1.TestUtils.throwExpectError = throwExpectError;
+        throwImplementationError = spyOn(__1.TestUtils, 'throwImplementationError');
+        throwExpectError = spyOn(__1.TestUtils, 'throwExpectError');
     });
+    //afterEach(() => this.removeAllSpies());
     it('Ensure errors for null props', function () {
         request_runner_1.RequestRunner.run(new call_config_1.CallConfig(), dummyEnv);
         expect(throwImplementationError.calls.count()).toBe(1);

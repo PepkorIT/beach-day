@@ -4,10 +4,9 @@ var jasmine_async_env_1 = require("./jasmine-async-env");
 var test_utils_1 = require("./test-utils");
 var object_utils_1 = require("./object-utils");
 describe('JasmineAsyncEnv Tests', function () {
-    var dummyEnv, throwExpectError, getProp;
+    var dummyEnv, throwExpectError;
     beforeEach(function () {
-        throwExpectError = jasmine.createSpy('throwExpectError');
-        test_utils_1.TestUtils.throwExpectError = throwExpectError;
+        throwExpectError = spyOn(test_utils_1.TestUtils, 'throwExpectError');
         dummyEnv = new jasmine_async_env_1.JasmineAsyncEnv();
     });
     it('Test setProp() can handle dot syntax on destination and source', function () {

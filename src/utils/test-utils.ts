@@ -1,16 +1,25 @@
 import {console, ObjectUtils} from '..';
 import * as tv4 from 'tv4';
 
-export var TestUtils = {
-    throwExpectError: function (message:string):void {
+export class TestUtils {
+    static expect(testFunction:(() => boolean) | boolean, errorMessage:string){
+        if (typeof testFunction === 'function'){
+            if (!testFunction()) this.throwExpectError(errorMessage);
+        }
+        else if (!testFunction){
+            this.throwExpectError(errorMessage);
+        }
+    }
+
+    static throwExpectError(message:string):void {
         expect(true).throwExpectError(message);
-    },
+    }
 
-    throwImplementationError: function (message:string):void {
+    static throwImplementationError(message:string):void {
         expect(true).throwImplementationError(message);
-    },
+    }
 
-    isValidISO8601DateFormat: function (data):boolean {
+    static isValidISO8601DateFormat(data):boolean {
         var dateReg = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
         // Valid for null
         if (data == null) {
@@ -24,8 +33,9 @@ export var TestUtils = {
         else {
             return dateReg.test(data);
         }
-    },
-    validateSwaggerSchema   : function (data:any, swaggerObject:Object, endPoint:string, method:string, isResponse:boolean, statusCode?:number, banUnknownProperties:boolean = false):boolean {
+    }
+
+    static validateSwaggerSchema(data:any, swaggerObject:Object, endPoint:string, method:string, isResponse:boolean, statusCode?:number, banUnknownProperties:boolean = false):boolean {
         var valid = false;
         var schema;
         // statusCode is populated means we need to look for a response object schema
@@ -54,9 +64,9 @@ export var TestUtils = {
         }
 
         return valid;
-    },
+    }
 
-    validateSchema: function (data:any, schema:tv4.JsonSchema, isResponse:boolean, banUnknownProperties:boolean) {
+    static validateSchema(data:any, schema:tv4.JsonSchema, isResponse:boolean, banUnknownProperties:boolean) {
 
         tv4.addFormat('date-time', (data, schema) => {
             var valid = this.isValidISO8601DateFormat(data);
@@ -92,4 +102,4 @@ export var TestUtils = {
 
         return result;
     }
-};
+}

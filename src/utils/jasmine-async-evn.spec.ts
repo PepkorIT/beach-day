@@ -11,13 +11,11 @@ interface MockEnv extends JasmineAsyncEnv {
 describe('JasmineAsyncEnv Tests', function () {
 
     let dummyEnv:MockEnv,
-        throwExpectError:jasmine.Spy,
-        getProp:jasmine.Spy;
+        throwExpectError:jasmine.Spy;
 
     beforeEach(function () {
-        throwExpectError           = jasmine.createSpy('throwExpectError');
-        TestUtils.throwExpectError = throwExpectError;
-        dummyEnv                   = new JasmineAsyncEnv();
+        throwExpectError = spyOn(TestUtils, 'throwExpectError');
+        dummyEnv         = new JasmineAsyncEnv();
     });
 
     it('Test setProp() can handle dot syntax on destination and source', function () {
