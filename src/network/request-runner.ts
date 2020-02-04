@@ -61,7 +61,7 @@ export class RequestRunner {
         let sendBody;
         if (call.method != 'GET') {
             let data = call.getDataImpl(env);
-            console.log('data after fetch: ', data);
+            //console.log('data after fetch: ', data);
             if (data) {
                 requestPassed = call.checkSchemaImpl(env, data, true, null);
                 if (call.dataSerialisationFunc != null) {
@@ -94,10 +94,10 @@ export class RequestRunner {
                 timeout: call.timeout
             });
 
-            console.log('running request() with:');
-            console.log(options);
-            console.log('isFormParams: ', isFormParams);
-            console.log('sendBody: ', sendBody);
+            //console.log('running request() with:');
+            //console.log(options);
+            //console.log('isFormParams: ', isFormParams);
+            //console.log('sendBody: ', sendBody);
 
             // Fetch the current spec ID from the reporter so we can
             // ensure the test is still running when we complete the request call
@@ -284,26 +284,30 @@ export class RequestRunner {
      * Pretty logging for the reporter of the request and response
      */
     public static logRequestResponse(call:CallConfig, env:JasmineAsyncEnv, error:any, res:IRequestResponse, parsedResponseBody:any, options:any, isError:boolean, parsePassed:boolean) {
-        var requestBody    = ObjectUtils.getProp(res, 'request.body');
-        var form           = ObjectUtils.getProp(res, 'request.form');
-        var requestHeaders = ObjectUtils.getProp(res, 'request.headers');
+        var requestBody          = ObjectUtils.getProp(res, 'request.body');
+        var form                 = ObjectUtils.getProp(res, 'request.form');
+        var requestHeaders       = ObjectUtils.getProp(res, 'request.headers');
+        let requestBodyFormatted = '';
 
         // Pretty print the request response if we deem it to be of type JSON
         if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.JSON_C_TYPE)) {
-            let body    = JSON.parse(requestBody);
-            body        = call.obfuscateFuncImpl('reqBody', env, body, res);
-            requestBody = JSON.stringify(body, null, 4);
+            let body             = JSON.parse(requestBody);
+            body                 = call.obfuscateFuncImpl('reqBody', env, body, res);
+            requestBodyFormatted = JSON.stringify(body, null, 4);
         }
         else if (requestHeaders && form && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE)) {
-            form            = call.obfuscateFuncImpl('reqBody', env, form, res);
-            const keyValues = [];
-            Object.keys(form).forEach(key => keyValues.push(`${key}=${form[key]}`));
-            requestBody = keyValues.join('\n');
+            form                 = call.obfuscateFuncImpl('reqBody', env, form, res);
+            const keyValues      = Object.keys(form).map(key => `${key}=${form[key]}`);
+            requestBodyFormatted = keyValues.join('\n');
+            console.log('keyValues: ', keyValues);
         }
+        console.log('requestHeaders: ', requestHeaders);
+        console.log('requestBodyFormatted: ', requestBodyFormatted);
+        console.log('hasHeader: ', RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE));
 
         if (requestHeaders) requestHeaders = call.obfuscateFuncImpl('reqHeaders', env, requestHeaders, res);
 
-        if (requestBody == null) requestBody = '';
+        if (requestBodyFormatted == null) requestBodyFormatted = '';
 
         // Obfuscate the response body & headers
         let responseHeaders = res.headers;
@@ -329,7 +333,7 @@ export class RequestRunner {
             console.log('URL: ' + ObjectUtils.getProp(res, 'request.uri.href'));
             console.log('Method: ' + ObjectUtils.getProp(res, 'request.method'));
             console.log('Request Headers:\n' + JSON.stringify(requestHeaders, null, 4));
-            console.log('Body:\n' + requestBody);
+            console.log('Body:\n' + requestBodyFormatted);
 
             console.log('');
 
@@ -349,7 +353,7 @@ export class RequestRunner {
             console.log('URL: ' + ObjectUtils.getProp(res, 'request.uri.href'));
             console.log('Method: ' + ObjectUtils.getProp(res, 'request.method'));
             console.log('Request Headers:\n' + JSON.stringify(requestHeaders, null, 4));
-            console.log('Body:\n' + requestBody);
+            console.log('Body:\n' + requestBodyFormatted);
 
             console.log('');
             console.log('HTTP Timeout Used: ' + (options.timeout / 1000) + 's');

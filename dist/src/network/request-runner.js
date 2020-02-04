@@ -41,7 +41,7 @@ var RequestRunner = /** @class */ (function () {
         var sendBody;
         if (call.method != 'GET') {
             var data = call.getDataImpl(env);
-            beach_day_reporter_1.console.log('data after fetch: ', data);
+            //console.log('data after fetch: ', data);
             if (data) {
                 requestPassed = call.checkSchemaImpl(env, data, true, null);
                 if (call.dataSerialisationFunc != null) {
@@ -71,10 +71,10 @@ var RequestRunner = /** @class */ (function () {
                 form: isFormParams ? sendBody : undefined,
                 timeout: call.timeout
             });
-            beach_day_reporter_1.console.log('running request() with:');
-            beach_day_reporter_1.console.log(options_1);
-            beach_day_reporter_1.console.log('isFormParams: ', isFormParams);
-            beach_day_reporter_1.console.log('sendBody: ', sendBody);
+            //console.log('running request() with:');
+            //console.log(options);
+            //console.log('isFormParams: ', isFormParams);
+            //console.log('sendBody: ', sendBody);
             // Fetch the current spec ID from the reporter so we can
             // ensure the test is still running when we complete the request call
             var currSpecId_1 = beach_day_reporter_1.ReporterAPI.getCurrentSpecId();
@@ -243,22 +243,26 @@ var RequestRunner = /** @class */ (function () {
         var requestBody = __1.ObjectUtils.getProp(res, 'request.body');
         var form = __1.ObjectUtils.getProp(res, 'request.form');
         var requestHeaders = __1.ObjectUtils.getProp(res, 'request.headers');
+        var requestBodyFormatted = '';
         // Pretty print the request response if we deem it to be of type JSON
         if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.JSON_C_TYPE)) {
             var body = JSON.parse(requestBody);
             body = call.obfuscateFuncImpl('reqBody', env, body, res);
-            requestBody = JSON.stringify(body, null, 4);
+            requestBodyFormatted = JSON.stringify(body, null, 4);
         }
         else if (requestHeaders && form && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE)) {
             form = call.obfuscateFuncImpl('reqBody', env, form, res);
-            var keyValues_1 = [];
-            Object.keys(form).forEach(function (key) { return keyValues_1.push(key + "=" + form[key]); });
-            requestBody = keyValues_1.join('\n');
+            var keyValues = Object.keys(form).map(function (key) { return key + "=" + form[key]; });
+            requestBodyFormatted = keyValues.join('\n');
+            beach_day_reporter_1.console.log('keyValues: ', keyValues);
         }
+        beach_day_reporter_1.console.log('requestHeaders: ', requestHeaders);
+        beach_day_reporter_1.console.log('requestBodyFormatted: ', requestBodyFormatted);
+        beach_day_reporter_1.console.log('hasHeader: ', RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE));
         if (requestHeaders)
             requestHeaders = call.obfuscateFuncImpl('reqHeaders', env, requestHeaders, res);
-        if (requestBody == null)
-            requestBody = '';
+        if (requestBodyFormatted == null)
+            requestBodyFormatted = '';
         // Obfuscate the response body & headers
         var responseHeaders = res.headers;
         if (parsedResponseBody) {
@@ -281,7 +285,7 @@ var RequestRunner = /** @class */ (function () {
             beach_day_reporter_1.console.log('URL: ' + __1.ObjectUtils.getProp(res, 'request.uri.href'));
             beach_day_reporter_1.console.log('Method: ' + __1.ObjectUtils.getProp(res, 'request.method'));
             beach_day_reporter_1.console.log('Request Headers:\n' + JSON.stringify(requestHeaders, null, 4));
-            beach_day_reporter_1.console.log('Body:\n' + requestBody);
+            beach_day_reporter_1.console.log('Body:\n' + requestBodyFormatted);
             beach_day_reporter_1.console.log('');
             beach_day_reporter_1.console.log('<strong>RESPONSE</strong>');
             beach_day_reporter_1.console.log('<hr class="short"/>');
@@ -298,7 +302,7 @@ var RequestRunner = /** @class */ (function () {
             beach_day_reporter_1.console.log('URL: ' + __1.ObjectUtils.getProp(res, 'request.uri.href'));
             beach_day_reporter_1.console.log('Method: ' + __1.ObjectUtils.getProp(res, 'request.method'));
             beach_day_reporter_1.console.log('Request Headers:\n' + JSON.stringify(requestHeaders, null, 4));
-            beach_day_reporter_1.console.log('Body:\n' + requestBody);
+            beach_day_reporter_1.console.log('Body:\n' + requestBodyFormatted);
             beach_day_reporter_1.console.log('');
             beach_day_reporter_1.console.log('HTTP Timeout Used: ' + (options.timeout / 1000) + 's');
             beach_day_reporter_1.console.log('');
