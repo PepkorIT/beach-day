@@ -50,6 +50,9 @@ var RequestRunner = /** @class */ (function () {
                 else if (RequestRunner.hasHeader(sendHeaders, this.HEADER_CONTENT_TYPE, this.JSON_C_TYPE)) {
                     sendBody = JSON.stringify(data);
                 }
+                else {
+                    sendBody = data;
+                }
             }
         }
         if (!requestPassed) {
