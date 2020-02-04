@@ -155,6 +155,8 @@ var RequestRunner = /** @class */ (function () {
                                     beach_day_reporter_1.console.log(escapeHtml(body));
                                 }
                             }
+                            // Manually apply the form params as not not the source
+                            res.request.form = sendBody;
                             // Set the body on the environment
                             env.currentBody = body;
                             // Log out the request and response
@@ -256,6 +258,7 @@ var RequestRunner = /** @class */ (function () {
             requestBodyFormatted = keyValues.join('\n');
             beach_day_reporter_1.console.log('keyValues: ', keyValues);
         }
+        beach_day_reporter_1.console.log('form: ', form);
         beach_day_reporter_1.console.log('requestHeaders: ', requestHeaders);
         beach_day_reporter_1.console.log('requestBodyFormatted: ', requestBodyFormatted);
         beach_day_reporter_1.console.log('hasHeader: ', RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE));

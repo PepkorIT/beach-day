@@ -184,6 +184,8 @@ export class RequestRunner {
                                     console.log(escapeHtml(body));
                                 }
                             }
+                            // Manually apply the form params as not not the source
+                            res.request.form = sendBody;
 
                             // Set the body on the environment
                             env.currentBody = body;
@@ -301,6 +303,7 @@ export class RequestRunner {
             requestBodyFormatted = keyValues.join('\n');
             console.log('keyValues: ', keyValues);
         }
+        console.log('form: ', form);
         console.log('requestHeaders: ', requestHeaders);
         console.log('requestBodyFormatted: ', requestBodyFormatted);
         console.log('hasHeader: ', RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE));
