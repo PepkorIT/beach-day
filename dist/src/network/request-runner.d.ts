@@ -22,7 +22,7 @@ export declare class RequestRunner {
     static runPoll(call: CallConfig, env: JasmineAsyncEnv, pollComplete: PollCompleteFunc, maximumRunTime: number): void;
     static hasHeader(headers: any, name: string, value?: string): boolean;
     /**
-     * Pretty logging for the reporter of the request and repsonse
+     * Pretty logging for the reporter of the request and response
      */
-    static logRequestResponse(error: any, res: IRequestResponse, parsedResponseBody: any, options: any, isError: boolean, parsePassed: boolean): void;
+    static logRequestResponse(call: CallConfig, env: JasmineAsyncEnv, error: any, res: IRequestResponse, parsedResponseBody: any, options: any, isError: boolean, parsePassed: boolean): void;
 }

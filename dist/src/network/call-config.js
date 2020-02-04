@@ -98,13 +98,39 @@ var CallConfig = /** @class */ (function (_super) {
     /**
      * Proxy for all obfuscations
      */
-    CallConfig.prototype.obfuscateFuncImpl = function (env, body, res) {
+    /*public obfuscateFuncImpl(env:JasmineAsyncEnv, body:any, headers:any, res:IRequestResponse) {
         if (this.obfuscateArr) {
             for (var i = 0; i < this.obfuscateArr.length; i++) {
                 var func = this.obfuscateArr[i];
                 func(env, this, body, res);
             }
         }
+    }*/
+    CallConfig.prototype.obfuscateFuncImpl = function (type, env, data, res) {
+        var _this = this;
+        var arr;
+        switch (type) {
+            case 'reqBody':
+                arr = this.obfuscateRequestBodyArr;
+                break;
+            case 'reqHeaders':
+                arr = this.obfuscateRequestHeadersArr;
+                break;
+            case 'resBody':
+                arr = this.obfuscateResponseBodyArr;
+                break;
+            case 'resHeaders':
+                arr = this.obfuscateResponseHeadersArr;
+                break;
+        }
+        if (arr) {
+            // Deep Clone
+            data = JSON.parse(JSON.stringify(data));
+            arr.forEach(function (func) {
+                data = func(env, _this, data, res);
+            });
+        }
+        return data;
     };
     /**
      * Proxy for running schema checks

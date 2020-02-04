@@ -110,11 +110,11 @@ var RequestRunner = /** @class */ (function () {
                                     uri: URL.parse(options_1.uri),
                                     method: options_1['method'],
                                     headers: options_1['sendHeaders'],
-                                    body: options_1['body']
+                                    body: options_1['body'],
+                                    form: options_1['form']
                                 }
                             };
-                            call.obfuscateFuncImpl(env, null, fakeResponse);
-                            RequestRunner.logRequestResponse(error, fakeResponse, body, options_1, true, true);
+                            RequestRunner.logRequestResponse(call, env, error, fakeResponse, body, options_1, true, true);
                             if (call.allowHTTPErrors != null) {
                                 if (call.allowHTTPErrors === true) {
                                     // Do nothing
@@ -151,11 +151,8 @@ var RequestRunner = /** @class */ (function () {
                             }
                             // Set the body on the environment
                             env.currentBody = body;
-                            // Run obfuscation
-                            if (parsePassed)
-                                call.obfuscateFuncImpl(env, body, res);
                             // Log out the request and response
-                            RequestRunner.logRequestResponse(error, res, body, options_1, false, parsePassed);
+                            RequestRunner.logRequestResponse(call, env, error, res, body, options_1, false, parsePassed);
                             // Check schemas if setup
                             if (parsePassed)
                                 call.checkSchemaImpl(env, body, false, res);
@@ -234,23 +231,36 @@ var RequestRunner = /** @class */ (function () {
         return hasHeader;
     };
     /**
-     * Pretty logging for the reporter of the request and repsonse
+     * Pretty logging for the reporter of the request and response
      */
-    RequestRunner.logRequestResponse = function (error, res, parsedResponseBody, options, isError, parsePassed) {
+    RequestRunner.logRequestResponse = function (call, env, error, res, parsedResponseBody, options, isError, parsePassed) {
         var requestBody = __1.ObjectUtils.getProp(res, 'request.body');
-        var formData = __1.ObjectUtils.getProp(res, 'request.formData');
+        var form = __1.ObjectUtils.getProp(res, 'request.form');
         var requestHeaders = __1.ObjectUtils.getProp(res, 'request.headers');
         // Pretty print the request response if we deem it to be of type JSON
         if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.JSON_C_TYPE)) {
-            requestBody = JSON.stringify(JSON.parse(requestBody), null, 4);
+            var body = JSON.parse(requestBody);
+            body = call.obfuscateFuncImpl('reqBody', env, body, res);
+            requestBody = JSON.stringify(body, null, 4);
         }
-        else if (requestHeaders && formData && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE)) {
+        else if (requestHeaders && form && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE)) {
+            form = call.obfuscateFuncImpl('reqBody', env, form, res);
             var keyValues_1 = [];
-            Object.keys(formData).forEach(function (key) { return keyValues_1.push(key + "=" + formData[key]); });
+            Object.keys(form).forEach(function (key) { return keyValues_1.push(key + "=" + form[key]); });
             requestBody = keyValues_1.join('\n');
         }
+        if (requestHeaders)
+            requestHeaders = call.obfuscateFuncImpl('reqHeaders', env, requestHeaders, res);
         if (requestBody == null)
             requestBody = '';
+        // Obfuscate the response body & headers
+        var responseHeaders = res.headers;
+        if (parsedResponseBody) {
+            parsedResponseBody = call.obfuscateFuncImpl('resBody', env, parsedResponseBody, res);
+        }
+        if (responseHeaders) {
+            responseHeaders = call.obfuscateFuncImpl('resHeaders', env, responseHeaders, res);
+        }
         // Pretty print the response body only if it is already an object
         if (parsedResponseBody && typeof parsedResponseBody == 'object') {
             parsedResponseBody = JSON.stringify(parsedResponseBody, null, 4);
@@ -270,7 +280,7 @@ var RequestRunner = /** @class */ (function () {
             beach_day_reporter_1.console.log('<strong>RESPONSE</strong>');
             beach_day_reporter_1.console.log('<hr class="short"/>');
             beach_day_reporter_1.console.log('Status Code: ' + res.statusCode);
-            beach_day_reporter_1.console.log('Response Headers:\n' + JSON.stringify(res.headers, null, 4));
+            beach_day_reporter_1.console.log('Response Headers:\n' + JSON.stringify(responseHeaders, null, 4));
             beach_day_reporter_1.console.log('Body:\n' + parsedResponseBody);
             beach_day_reporter_1.console.log('');
         }

@@ -138,12 +138,12 @@ export class RequestRunner {
                                     uri    : URL.parse(<string>options.uri),
                                     method : options['method'],
                                     headers: options['sendHeaders'],
-                                    body   : options['body']
+                                    body   : options['body'],
+                                    form   : options['form']
                                 }
                             };
-                            call.obfuscateFuncImpl(env, null, fakeResponse);
 
-                            RequestRunner.logRequestResponse(error, fakeResponse, body, options, true, true);
+                            RequestRunner.logRequestResponse(call, env, error, fakeResponse, body, options, true, true);
                             if (call.allowHTTPErrors != null) {
                                 if (call.allowHTTPErrors === true) {
                                     // Do nothing
@@ -182,11 +182,8 @@ export class RequestRunner {
                             // Set the body on the environment
                             env.currentBody = body;
 
-                            // Run obfuscation
-                            if (parsePassed) call.obfuscateFuncImpl(env, body, res);
-
                             // Log out the request and response
-                            RequestRunner.logRequestResponse(error, res, body, options, false, parsePassed);
+                            RequestRunner.logRequestResponse(call, env, error, res, body, options, false, parsePassed);
 
                             // Check schemas if setup
                             if (parsePassed) call.checkSchemaImpl(env, body, false, res);
@@ -278,24 +275,38 @@ export class RequestRunner {
     }
 
     /**
-     * Pretty logging for the reporter of the request and repsonse
+     * Pretty logging for the reporter of the request and response
      */
-    public static logRequestResponse(error:any, res:IRequestResponse, parsedResponseBody:any, options:any, isError:boolean, parsePassed:boolean) {
+    public static logRequestResponse(call:CallConfig, env:JasmineAsyncEnv, error:any, res:IRequestResponse, parsedResponseBody:any, options:any, isError:boolean, parsePassed:boolean) {
         var requestBody    = ObjectUtils.getProp(res, 'request.body');
-        var formData       = ObjectUtils.getProp(res, 'request.formData');
+        var form           = ObjectUtils.getProp(res, 'request.form');
         var requestHeaders = ObjectUtils.getProp(res, 'request.headers');
 
         // Pretty print the request response if we deem it to be of type JSON
         if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.JSON_C_TYPE)) {
-            requestBody = JSON.stringify(JSON.parse(requestBody), null, 4);
+            let body    = JSON.parse(requestBody);
+            body        = call.obfuscateFuncImpl('reqBody', env, body, res);
+            requestBody = JSON.stringify(body, null, 4);
         }
-        else if (requestHeaders && formData && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE)) {
+        else if (requestHeaders && form && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE)) {
+            form            = call.obfuscateFuncImpl('reqBody', env, form, res);
             const keyValues = [];
-            Object.keys(formData).forEach(key => keyValues.push(`${key}=${formData[key]}`));
+            Object.keys(form).forEach(key => keyValues.push(`${key}=${form[key]}`));
             requestBody = keyValues.join('\n');
         }
 
+        if (requestHeaders) requestHeaders = call.obfuscateFuncImpl('reqHeaders', env, requestHeaders, res);
+
         if (requestBody == null) requestBody = '';
+
+        // Obfuscate the response body & headers
+        let responseHeaders = res.headers;
+        if (parsedResponseBody) {
+            parsedResponseBody = call.obfuscateFuncImpl('resBody', env, parsedResponseBody, res);
+        }
+        if (responseHeaders) {
+            responseHeaders = call.obfuscateFuncImpl('resHeaders', env, responseHeaders, res);
+        }
 
         // Pretty print the response body only if it is already an object
         if (parsedResponseBody && typeof parsedResponseBody == 'object') {
@@ -319,7 +330,7 @@ export class RequestRunner {
             console.log('<strong>RESPONSE</strong>');
             console.log('<hr class="short"/>');
             console.log('Status Code: ' + res.statusCode);
-            console.log('Response Headers:\n' + JSON.stringify(res.headers, null, 4));
+            console.log('Response Headers:\n' + JSON.stringify(responseHeaders, null, 4));
             console.log('Body:\n' + parsedResponseBody);
             console.log('');
         }

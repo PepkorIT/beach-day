@@ -145,12 +145,12 @@ describe('RequestRunner tester', function () {
         mockPromises.tickAllTheWay();
         expect(dataDeSerialisationFunc).toHaveBeenCalled();
     });
-    it('Ensure obsfucate is called', function () {
+    it('Ensure obfuscate is called', function () {
         var obsfu = jasmine.createSpy('dataDeSerialisationFunc');
         request_runner_1.RequestRunner.run(defaultConf.extend({
-            obfuscateArr: [obsfu]
+            obfuscateResponseBodyArr: [obsfu]
         }), dummyEnv);
-        requestCB(null, {}, '');
+        requestCB(null, {}, {});
         mockPromises.tickAllTheWay();
         expect(obsfu).toHaveBeenCalled();
     });

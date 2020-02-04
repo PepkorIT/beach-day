@@ -18,7 +18,7 @@ describe('Config system used to power the framework calls', function () {
             baseURL: 'http://www.something.com//',
             assertFuncArr: [assertSpy1],
             dataArr: [{ id: 1 }],
-            obfuscateArr: [obfuSpy1],
+            obfuscateResponseBodyArr: [obfuSpy1],
             headers: { param1: '1' },
             headersArr: [{ param2: '2' }],
             checkRequestSchemaFunc: checkRequestSchemaSpy,
@@ -32,7 +32,7 @@ describe('Config system used to power the framework calls', function () {
             dataArr: [function (env) {
                     return { name: 'jon' };
                 }],
-            obfuscateArr: [obfuSpy2],
+            obfuscateResponseBodyArr: [obfuSpy2],
             headersArr: [function (env, call) {
                     return { param2: '3' };
                 }]
@@ -53,9 +53,9 @@ describe('Config system used to power the framework calls', function () {
         expect(assertSpy1).toHaveBeenCalledWith(env, config, null, null);
         expect(assertSpy2).toHaveBeenCalledWith(env, config, null, null);
         // Check obfuscate execution
-        config.obfuscateFuncImpl(env, null, null);
-        expect(obfuSpy1).toHaveBeenCalledWith(env, config, null, null);
-        expect(obfuSpy2).toHaveBeenCalledWith(env, config, null, null);
+        config.obfuscateFuncImpl('resBody', env, null, null);
+        expect(obfuSpy1).toHaveBeenCalled();
+        expect(obfuSpy2).toHaveBeenCalled();
         // Check schema execution
         config.checkSchemaImpl(env, null, true, null);
         expect(checkRequestSchemaSpy).toHaveBeenCalledWith(env, config, null, null);

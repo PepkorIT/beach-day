@@ -65,9 +65,27 @@ export interface ICallConfigParams {
 
     /**
      * Array of obfuscation functions, will be called before any logging is done
-     * should be used to obfuscate any sensitive data from the log
+     * should be used to obfuscate any sensitive data from the log then return it
      */
-    obfuscateArr?:Array<IObfuscateFunc>;
+    obfuscateRequestBodyArr?:IObfuscateFunc[];
+
+    /**
+     * Array of obfuscation functions, will be called before any logging is done
+     * should be used to obfuscate any sensitive data from the log then return it
+     */
+    obfuscateRequestHeadersArr?:IObfuscateFunc[];
+
+    /**
+     * Array of obfuscation functions, will be called before any logging is done
+     * should be used to obfuscate any sensitive data from the log then return it
+     */
+    obfuscateResponseBodyArr?:IObfuscateFunc[];
+
+    /**
+     * Array of obfuscation functions, will be called before any logging is done
+     * should be used to obfuscate any sensitive data from the log then return it
+     */
+    obfuscateResponseHeadersArr?:IObfuscateFunc[];
 
     /**
      * Will be called if checkRequestSchema:true
@@ -139,7 +157,7 @@ export interface IDataFunc {
 }
 
 export interface IObfuscateFunc {
-    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):void;
+    (env:JasmineAsyncEnv, call:CallConfig, data:any, res:IRequestResponse):any;
 }
 
 export interface ISchemaFunc {
@@ -165,7 +183,10 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams {
     public dataSerialisationFunc:ISerialiseFunc;
     public dataDeSerialisationFunc:IDeSerialiseFunc;
     public assertFuncArr:Array<IAssertFunc>;
-    public obfuscateArr:Array<IObfuscateFunc>;
+    public obfuscateRequestBodyArr:IObfuscateFunc[];
+    public obfuscateRequestHeadersArr:IObfuscateFunc[];
+    public obfuscateResponseBodyArr:IObfuscateFunc[];
+    public obfuscateResponseHeadersArr:IObfuscateFunc[];
     public checkRequestSchemaFunc:ISchemaFunc;
     public checkResponseSchemaFunc:ISchemaFunc;
     public checkRequestSchema:boolean;
@@ -258,13 +279,40 @@ export class CallConfig extends ExtendingObject implements ICallConfigParams {
     /**
      * Proxy for all obfuscations
      */
-    public obfuscateFuncImpl(env:JasmineAsyncEnv, body:any, res:IRequestResponse) {
+
+    /*public obfuscateFuncImpl(env:JasmineAsyncEnv, body:any, headers:any, res:IRequestResponse) {
         if (this.obfuscateArr) {
             for (var i = 0; i < this.obfuscateArr.length; i++) {
                 var func = this.obfuscateArr[i];
                 func(env, this, body, res);
             }
         }
+    }*/
+
+    public obfuscateFuncImpl(type:'reqBody' | 'reqHeaders' | 'resBody' | 'resHeaders', env:JasmineAsyncEnv, data:any, res:IRequestResponse) {
+        let arr:IObfuscateFunc[];
+        switch (type) {
+            case 'reqBody':
+                arr = this.obfuscateRequestBodyArr;
+                break;
+            case 'reqHeaders':
+                arr = this.obfuscateRequestHeadersArr;
+                break;
+            case 'resBody':
+                arr = this.obfuscateResponseBodyArr;
+                break;
+            case 'resHeaders':
+                arr = this.obfuscateResponseHeadersArr;
+                break;
+        }
+        if (arr) {
+            // Deep Clone
+            data = JSON.parse(JSON.stringify(data));
+            arr.forEach(func => {
+                data = func(env, this, data, res);
+            });
+        }
+        return data;
     }
 
     /**

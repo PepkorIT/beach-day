@@ -47,9 +47,24 @@ export interface ICallConfigParams {
     assertFuncArr?: Array<IAssertFunc>;
     /**
      * Array of obfuscation functions, will be called before any logging is done
-     * should be used to obfuscate any sensitive data from the log
+     * should be used to obfuscate any sensitive data from the log then return it
      */
-    obfuscateArr?: Array<IObfuscateFunc>;
+    obfuscateRequestBodyArr?: IObfuscateFunc[];
+    /**
+     * Array of obfuscation functions, will be called before any logging is done
+     * should be used to obfuscate any sensitive data from the log then return it
+     */
+    obfuscateRequestHeadersArr?: IObfuscateFunc[];
+    /**
+     * Array of obfuscation functions, will be called before any logging is done
+     * should be used to obfuscate any sensitive data from the log then return it
+     */
+    obfuscateResponseBodyArr?: IObfuscateFunc[];
+    /**
+     * Array of obfuscation functions, will be called before any logging is done
+     * should be used to obfuscate any sensitive data from the log then return it
+     */
+    obfuscateResponseHeadersArr?: IObfuscateFunc[];
     /**
      * Will be called if checkRequestSchema:true
      * It is up to the implementation to complete this method
@@ -106,7 +121,7 @@ export interface IDataFunc {
     (env: JasmineAsyncEnv, call: CallConfig): any;
 }
 export interface IObfuscateFunc {
-    (env: JasmineAsyncEnv, call: CallConfig, body: any, res: IRequestResponse): void;
+    (env: JasmineAsyncEnv, call: CallConfig, data: any, res: IRequestResponse): any;
 }
 export interface ISchemaFunc {
     (env: JasmineAsyncEnv, call: CallConfig, data: any, res: IRequestResponse): boolean;
@@ -129,7 +144,10 @@ export declare class CallConfig extends ExtendingObject implements ICallConfigPa
     dataSerialisationFunc: ISerialiseFunc;
     dataDeSerialisationFunc: IDeSerialiseFunc;
     assertFuncArr: Array<IAssertFunc>;
-    obfuscateArr: Array<IObfuscateFunc>;
+    obfuscateRequestBodyArr: IObfuscateFunc[];
+    obfuscateRequestHeadersArr: IObfuscateFunc[];
+    obfuscateResponseBodyArr: IObfuscateFunc[];
+    obfuscateResponseHeadersArr: IObfuscateFunc[];
     checkRequestSchemaFunc: ISchemaFunc;
     checkResponseSchemaFunc: ISchemaFunc;
     checkRequestSchema: boolean;
@@ -157,7 +175,7 @@ export declare class CallConfig extends ExtendingObject implements ICallConfigPa
     /**
      * Proxy for all obfuscations
      */
-    obfuscateFuncImpl(env: JasmineAsyncEnv, body: any, res: IRequestResponse): void;
+    obfuscateFuncImpl(type: 'reqBody' | 'reqHeaders' | 'resBody' | 'resHeaders', env: JasmineAsyncEnv, data: any, res: IRequestResponse): any;
     /**
      * Proxy for running schema checks
      */
