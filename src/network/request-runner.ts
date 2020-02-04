@@ -81,13 +81,13 @@ export class RequestRunner {
 
             // Create the options from the options in the config then the derived data
             let options = <request.UriOptions>_.extend({}, call.requestOptions, <request.CoreOptions>{
-                uri     : call.getFullURL(env),
-                method  : call.method.toUpperCase(),
-                headers : sendHeaders,
-                json    : false, // This is done manually so we can catch errors
-                body    : !isFormParams ? sendBody : undefined,
-                formData: isFormParams ? sendBody : undefined,
-                timeout : call.timeout
+                uri    : call.getFullURL(env),
+                method : call.method.toUpperCase(),
+                headers: sendHeaders,
+                json   : false, // This is done manually so we can catch errors
+                body   : !isFormParams ? sendBody : undefined,
+                form   : isFormParams ? sendBody : undefined,
+                timeout: call.timeout
             });
 
             //console.log("running request() with:");

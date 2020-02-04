@@ -64,7 +64,7 @@ var RequestRunner = /** @class */ (function () {
                 headers: sendHeaders,
                 json: false,
                 body: !isFormParams ? sendBody : undefined,
-                formData: isFormParams ? sendBody : undefined,
+                form: isFormParams ? sendBody : undefined,
                 timeout: call.timeout
             });
             //console.log("running request() with:");
