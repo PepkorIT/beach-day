@@ -256,12 +256,12 @@ var RequestRunner = /** @class */ (function () {
             form = call.obfuscateFuncImpl('reqBody', env, form, res);
             var keyValues = Object.keys(form).map(function (key) { return key + "=" + form[key]; });
             requestBodyFormatted = keyValues.join('\n');
-            beach_day_reporter_1.console.log('keyValues: ', keyValues);
+            //console.log('keyValues: ', keyValues);
         }
-        beach_day_reporter_1.console.log('form: ', form);
-        beach_day_reporter_1.console.log('requestHeaders: ', requestHeaders);
-        beach_day_reporter_1.console.log('requestBodyFormatted: ', requestBodyFormatted);
-        beach_day_reporter_1.console.log('hasHeader: ', RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE));
+        //console.log('form: ', form);
+        //console.log('requestHeaders: ', requestHeaders);
+        //console.log('requestBodyFormatted: ', requestBodyFormatted);
+        //console.log('hasHeader: ', RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE));
         if (requestHeaders)
             requestHeaders = call.obfuscateFuncImpl('reqHeaders', env, requestHeaders, res);
         if (requestBodyFormatted == null)

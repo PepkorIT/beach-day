@@ -301,12 +301,12 @@ export class RequestRunner {
             form                 = call.obfuscateFuncImpl('reqBody', env, form, res);
             const keyValues      = Object.keys(form).map(key => `${key}=${form[key]}`);
             requestBodyFormatted = keyValues.join('\n');
-            console.log('keyValues: ', keyValues);
+            //console.log('keyValues: ', keyValues);
         }
-        console.log('form: ', form);
-        console.log('requestHeaders: ', requestHeaders);
-        console.log('requestBodyFormatted: ', requestBodyFormatted);
-        console.log('hasHeader: ', RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE));
+        //console.log('form: ', form);
+        //console.log('requestHeaders: ', requestHeaders);
+        //console.log('requestBodyFormatted: ', requestBodyFormatted);
+        //console.log('hasHeader: ', RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE));
 
         if (requestHeaders) requestHeaders = call.obfuscateFuncImpl('reqHeaders', env, requestHeaders, res);
 
