@@ -34,8 +34,8 @@ var RequestRunner = /** @class */ (function () {
         // Header generation
         var sendHeaders = call.getHeadersImpl(env) || {};
         // Default headers to use json
-        if (!RequestRunner.hasHeader(sendHeaders, 'content-type')) {
-            sendHeaders['content-type'] = 'application/json';
+        if (!RequestRunner.hasHeader(sendHeaders, this.HEADER_CONTENT_TYPE)) {
+            sendHeaders[this.HEADER_CONTENT_TYPE] = this.JSON_C_TYPE;
         }
         var requestPassed = true;
         var sendBody;
@@ -56,13 +56,15 @@ var RequestRunner = /** @class */ (function () {
             env.done();
         }
         else {
+            var isFormParams = RequestRunner.hasHeader(sendHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE);
             // Create the options from the options in the config then the derived data
             var options_1 = _.extend({}, call.requestOptions, {
                 uri: call.getFullURL(env),
                 method: call.method.toUpperCase(),
                 headers: sendHeaders,
                 json: false,
-                body: sendBody,
+                body: !isFormParams ? sendBody : undefined,
+                formData: isFormParams ? sendBody : undefined,
                 timeout: call.timeout
             });
             //console.log("running request() with:");
@@ -236,10 +238,16 @@ var RequestRunner = /** @class */ (function () {
      */
     RequestRunner.logRequestResponse = function (error, res, parsedResponseBody, options, isError, parsePassed) {
         var requestBody = __1.ObjectUtils.getProp(res, 'request.body');
+        var formData = __1.ObjectUtils.getProp(res, 'request.formData');
         var requestHeaders = __1.ObjectUtils.getProp(res, 'request.headers');
         // Pretty print the request response if we deem it to be of type JSON
-        if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, 'content-type', 'application/json')) {
+        if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.JSON_C_TYPE)) {
             requestBody = JSON.stringify(JSON.parse(requestBody), null, 4);
+        }
+        else if (requestHeaders && formData && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE)) {
+            var keyValues_1 = [];
+            Object.keys(formData).forEach(function (key) { return keyValues_1.push(key + "=" + formData[key]); });
+            requestBody = keyValues_1.join('\n');
         }
         if (requestBody == null)
             requestBody = '';
@@ -282,6 +290,9 @@ var RequestRunner = /** @class */ (function () {
     };
     RequestRunner.request = request;
     RequestRunner.globalDefaults = new call_config_1.CallConfig();
+    RequestRunner.HEADER_CONTENT_TYPE = 'content-type';
+    RequestRunner.JSON_C_TYPE = 'application/json';
+    RequestRunner.FORM_C_TYPE = 'application/x-www-form-urlencoded';
     return RequestRunner;
 }());
 exports.RequestRunner = RequestRunner;

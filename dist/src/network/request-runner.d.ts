@@ -11,6 +11,9 @@ export interface PollCompleteFunc {
 export declare class RequestRunner {
     static request: request.RequestAPI<request.Request, request.CoreOptions, request.RequiredUriUrl>;
     static globalDefaults: CallConfig;
+    static HEADER_CONTENT_TYPE: string;
+    static JSON_C_TYPE: string;
+    static FORM_C_TYPE: string;
     /**
      * Utility helper method for executing a request package
      * call using a CallConfig and an environment

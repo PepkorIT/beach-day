@@ -19,6 +19,10 @@ export class RequestRunner {
 
     public static globalDefaults = new CallConfig();
 
+    public static HEADER_CONTENT_TYPE = 'content-type';
+    public static JSON_C_TYPE         = 'application/json';
+    public static FORM_C_TYPE         = 'application/x-www-form-urlencoded';
+
     /**
      * Utility helper method for executing a request package
      * call using a CallConfig and an environment
@@ -48,8 +52,8 @@ export class RequestRunner {
         let sendHeaders = call.getHeadersImpl(env) || {};
 
         // Default headers to use json
-        if (!RequestRunner.hasHeader(sendHeaders, 'content-type')) {
-            sendHeaders['content-type'] = 'application/json';
+        if (!RequestRunner.hasHeader(sendHeaders, this.HEADER_CONTENT_TYPE)) {
+            sendHeaders[this.HEADER_CONTENT_TYPE] = this.JSON_C_TYPE;
         }
 
         let requestPassed = true;
@@ -73,14 +77,17 @@ export class RequestRunner {
             env.done();
         }
         else {
+            const isFormParams = RequestRunner.hasHeader(sendHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE);
+
             // Create the options from the options in the config then the derived data
             let options = <request.UriOptions>_.extend({}, call.requestOptions, <request.CoreOptions>{
-                uri    : call.getFullURL(env),
-                method : call.method.toUpperCase(),
-                headers: sendHeaders,
-                json   : false, // This is done manually so we can catch errors
-                body   : sendBody,
-                timeout: call.timeout
+                uri     : call.getFullURL(env),
+                method  : call.method.toUpperCase(),
+                headers : sendHeaders,
+                json    : false, // This is done manually so we can catch errors
+                body    : !isFormParams ? sendBody : undefined,
+                formData: isFormParams ? sendBody : undefined,
+                timeout : call.timeout
             });
 
             //console.log("running request() with:");
@@ -275,12 +282,19 @@ export class RequestRunner {
      */
     public static logRequestResponse(error:any, res:IRequestResponse, parsedResponseBody:any, options:any, isError:boolean, parsePassed:boolean) {
         var requestBody    = ObjectUtils.getProp(res, 'request.body');
+        var formData       = ObjectUtils.getProp(res, 'request.formData');
         var requestHeaders = ObjectUtils.getProp(res, 'request.headers');
 
         // Pretty print the request response if we deem it to be of type JSON
-        if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, 'content-type', 'application/json')) {
+        if (requestHeaders && requestBody && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.JSON_C_TYPE)) {
             requestBody = JSON.stringify(JSON.parse(requestBody), null, 4);
         }
+        else if (requestHeaders && formData && RequestRunner.hasHeader(requestHeaders, this.HEADER_CONTENT_TYPE, this.FORM_C_TYPE)) {
+            const keyValues = [];
+            Object.keys(formData).forEach(key => keyValues.push(`${key}=${formData[key]}`));
+            requestBody = keyValues.join('\n');
+        }
+
         if (requestBody == null) requestBody = '';
 
         // Pretty print the response body only if it is already an object
@@ -313,7 +327,7 @@ export class RequestRunner {
             console.log('<strong>Request library error:</strong>');
             console.log(JSON.stringify(error, null, 4));
 
-            console.log('<strong>REQUEST</strong>');    
+            console.log('<strong>REQUEST</strong>');
             console.log('<hr class="short"/>');
             console.log('URL: ' + ObjectUtils.getProp(res, 'request.uri.href'));
             console.log('Method: ' + ObjectUtils.getProp(res, 'request.method'));
