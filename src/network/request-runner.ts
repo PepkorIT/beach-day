@@ -66,7 +66,7 @@ export class RequestRunner {
                 if (call.dataSerialisationFunc != null) {
                     sendBody = call.dataSerialisationFunc(env, call, data);
                 }
-                else {
+                else if (RequestRunner.hasHeader(sendHeaders, this.HEADER_CONTENT_TYPE, this.JSON_C_TYPE)) {
                     sendBody = JSON.stringify(data);
                 }
             }
@@ -90,8 +90,8 @@ export class RequestRunner {
                 timeout: call.timeout
             });
 
-            //console.log("running request() with:");
-            //console.log(options);
+            console.log('running request() with:');
+            console.log(options);
 
             // Fetch the current spec ID from the reporter so we can
             // ensure the test is still running when we complete the request call

@@ -46,7 +46,7 @@ var RequestRunner = /** @class */ (function () {
                 if (call.dataSerialisationFunc != null) {
                     sendBody = call.dataSerialisationFunc(env, call, data);
                 }
-                else {
+                else if (RequestRunner.hasHeader(sendHeaders, this.HEADER_CONTENT_TYPE, this.JSON_C_TYPE)) {
                     sendBody = JSON.stringify(data);
                 }
             }
@@ -67,8 +67,8 @@ var RequestRunner = /** @class */ (function () {
                 form: isFormParams ? sendBody : undefined,
                 timeout: call.timeout
             });
-            //console.log("running request() with:");
-            //console.log(options);
+            beach_day_reporter_1.console.log('running request() with:');
+            beach_day_reporter_1.console.log(options_1);
             // Fetch the current spec ID from the reporter so we can
             // ensure the test is still running when we complete the request call
             var currSpecId_1 = beach_day_reporter_1.ReporterAPI.getCurrentSpecId();
