@@ -41,6 +41,7 @@ var RequestRunner = /** @class */ (function () {
         var sendBody;
         if (call.method != 'GET') {
             var data = call.getDataImpl(env);
+            beach_day_reporter_1.console.log('data after fetch: ', data);
             if (data) {
                 requestPassed = call.checkSchemaImpl(env, data, true, null);
                 if (call.dataSerialisationFunc != null) {
@@ -69,6 +70,8 @@ var RequestRunner = /** @class */ (function () {
             });
             beach_day_reporter_1.console.log('running request() with:');
             beach_day_reporter_1.console.log(options_1);
+            beach_day_reporter_1.console.log('isFormParams: ', isFormParams);
+            beach_day_reporter_1.console.log('sendBody: ', sendBody);
             // Fetch the current spec ID from the reporter so we can
             // ensure the test is still running when we complete the request call
             var currSpecId_1 = beach_day_reporter_1.ReporterAPI.getCurrentSpecId();

@@ -61,6 +61,7 @@ export class RequestRunner {
         let sendBody;
         if (call.method != 'GET') {
             let data = call.getDataImpl(env);
+            console.log('data after fetch: ', data);
             if (data) {
                 requestPassed = call.checkSchemaImpl(env, data, true, null);
                 if (call.dataSerialisationFunc != null) {
@@ -92,6 +93,8 @@ export class RequestRunner {
 
             console.log('running request() with:');
             console.log(options);
+            console.log('isFormParams: ', isFormParams);
+            console.log('sendBody: ', sendBody);
 
             // Fetch the current spec ID from the reporter so we can
             // ensure the test is still running when we complete the request call
