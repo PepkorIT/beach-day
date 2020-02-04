@@ -156,6 +156,9 @@ var RequestRunner = /** @class */ (function () {
                                 }
                             }
                             // Manually apply the form params as not not the source
+                            // Null check for tests
+                            if (!res.request)
+                                res.request = {};
                             res.request.form = sendBody;
                             // Set the body on the environment
                             env.currentBody = body;
