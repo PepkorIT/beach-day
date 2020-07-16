@@ -2,6 +2,7 @@ import {SwaggerUtils} from './swagger-utils';
 import {ProjectPaths} from './project-paths';
 import * as path from 'path';
 import * as tv4 from 'tv4';
+import * as fs from 'fs';
 import {SwaggerUtilsSpecData} from './swagger-utils.spec.data';
 
 describe('SwaggerUtilsTest Tests', () => {
@@ -81,6 +82,20 @@ describe('SwaggerUtilsTest Tests', () => {
         expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).toContain('number');
         expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).toContain('string');
         expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).not.toContain('null');
+    });
+
+    xit('Test data swaggers', () => {
+        const run = (path:string) => {
+            console.log('testing swagger: ' + path);
+            const jsonStr = fs.readFileSync(path, 'utf8');
+            const swagger = JSON.parse(jsonStr);
+            SwaggerUtils.recurseSwagger(swagger, true);
+        };
+
+        run('swagger/external-supplier-api-swagger.json');
+        run('swagger/mobile-api-swagger.json');
+        run('swagger/pmm-api-swagger.json');
+        console.log('done');
     });
 
 });

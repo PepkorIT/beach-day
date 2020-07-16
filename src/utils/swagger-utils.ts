@@ -8,7 +8,7 @@ const loopObject = (loopObj, callback) => {
         // Run through the entire object and update the type of all schemas to include null if x-isnullable is set to true
         for (var propName in currObject) {
             var value = currObject[propName];
-            if (typeof value == 'object' && value[loopProcess] == null) {
+            if (typeof value == 'object' && value != null && value[loopProcess] == null) {
                 value[loopProcess] = 'done';
                 runIteration(value);
             }

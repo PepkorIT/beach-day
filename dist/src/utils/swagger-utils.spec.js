@@ -4,6 +4,7 @@ var swagger_utils_1 = require("./swagger-utils");
 var project_paths_1 = require("./project-paths");
 var path = require("path");
 var tv4 = require("tv4");
+var fs = require("fs");
 var swagger_utils_spec_data_1 = require("./swagger-utils.spec.data");
 describe('SwaggerUtilsTest Tests', function () {
     var converted, rootPath;
@@ -74,6 +75,18 @@ describe('SwaggerUtilsTest Tests', function () {
         expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).toContain('number');
         expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).toContain('string');
         expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).not.toContain('null');
+    });
+    xit('Test data swaggers', function () {
+        var run = function (path) {
+            console.log('testing swagger: ' + path);
+            var jsonStr = fs.readFileSync(path, 'utf8');
+            var swagger = JSON.parse(jsonStr);
+            swagger_utils_1.SwaggerUtils.recurseSwagger(swagger, true);
+        };
+        run('swagger/external-supplier-api-swagger.json');
+        run('swagger/mobile-api-swagger.json');
+        run('swagger/pmm-api-swagger.json');
+        console.log('done');
     });
 });
 //# sourceMappingURL=swagger-utils.spec.js.map
