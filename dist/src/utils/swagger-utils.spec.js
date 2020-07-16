@@ -74,7 +74,6 @@ describe('SwaggerUtilsTest Tests', function () {
         expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).toContain('number');
         expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).toContain('string');
         expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).not.toContain('null');
-        console.log(JSON.stringify(res, null, 4));
     });
 });
 //# sourceMappingURL=swagger-utils.spec.js.map

@@ -114,7 +114,7 @@ var convertStringsToAllowNumbers = function (propName, currObject, value) {
                 currObject.type.push('number');
             }
         }
-        else if (currObject.type.toLowerCase() === 'string') {
+        else if (typeof currObject.type === 'string' && currObject.type === 'string') {
             currObject.type = ['number', 'string'];
         }
     }
