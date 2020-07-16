@@ -2,6 +2,7 @@ import {SwaggerUtils} from './swagger-utils';
 import {ProjectPaths} from './project-paths';
 import * as path from 'path';
 import * as tv4 from 'tv4';
+import {SwaggerUtilsSpecData} from './swagger-utils.spec.data';
 
 describe('SwaggerUtilsTest Tests', () => {
     var converted,
@@ -72,6 +73,15 @@ describe('SwaggerUtilsTest Tests', () => {
         expect(() => {
             SwaggerUtils.recurseSwagger(obj);
         }).not.toThrow();
+    });
+
+    it('Test recurseSwagger() allow strings to be numbers', () => {
+        const res = SwaggerUtils.recurseSwagger(SwaggerUtilsSpecData, true);
+        expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['fault']['type']).toBe('string');
+        expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).toContain('number');
+        expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).toContain('string');
+        expect(res['paths']['/fetchStartupData']['post']['responses']['401']['schema']['properties']['message']['type']).not.toContain('null');
+        console.log(JSON.stringify(res, null, 4));
     });
 
 });

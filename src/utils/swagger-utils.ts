@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 const loopProcess = '__loop__process__';
 
-function loopObject(loopObj, callback) {
+const loopObject = (loopObj, callback) => {
 
     const runIteration = (currObject) => {
         // Run through the entire object and update the type of all schemas to include null if x-isnullable is set to true
@@ -33,17 +33,17 @@ function loopObject(loopObj, callback) {
     cleanIteration(result);
 
     return result;
-}
+};
 
-function convertXIsNullable(propName, currObject, value) {
+const convertXIsNullable = (propName, currObject, value) => {
     // Shift this property
     if (propName == 'x-isnullable' && value === true && currObject.hasOwnProperty('type')) {
         currObject.type = [currObject.type, 'null'];
     }
     return value;
-}
+};
 
-function convertNullableBasedOnRequired(sourcePropName, currObject, value) {
+const convertNullableBasedOnRequired = (sourcePropName, currObject, value) => {
     // Update the non required properties to be nullable
     if (sourcePropName == 'properties') {
         // First create a hash of required props
@@ -105,11 +105,37 @@ function convertNullableBasedOnRequired(sourcePropName, currObject, value) {
         }
     }
     return value;
-}
+};
+
+const convertStringsToAllowNumbers = (propName:string, currObject, value) => {
+    // If there is a type & there is no enums which ties strings explicitly to the data type
+    if (currObject.hasOwnProperty('type') && !currObject.hasOwnProperty('enum')) {
+        if (currObject.type instanceof Array) {
+            let containsNumber = false;
+            let containsString = false;
+            currObject.type.forEach(type => {
+                if (type === 'string') {
+                    containsString = true;
+                }
+                else if (type === 'number') {
+                    containsNumber = true;
+                }
+            });
+            if (containsString && !containsNumber) {
+                currObject.type.push('number');
+            }
+        }
+        else if (currObject.type.toLowerCase() === 'string') {
+            currObject.type = ['number', 'string'];
+        }
+    }
+    return value;
+};
 
 
 export class SwaggerUtils {
     /**
+     *
      * Utility to load and parse a swagger JSON file
      * Note this method updates the swagger object by looking for schema keys of 'x-isnullable'
      * Then updating the object type to to be an array or original type and null
@@ -118,27 +144,34 @@ export class SwaggerUtils {
      *
      * @param swaggerJSONPath {Object} The path the the JSON file
      * @param doNullableConversions {Object} Weather or not to do the nullable conversions, defaults to true
+     * @param allowStringsToBeNumbers {Boolean} If true all string values will permit numbers too, defautls defaults to false
      * @returns {*}
      */
-    public static parseSwaggerJSON(swaggerJSONPath:string, doNullableConversions:boolean = true) {
+    public static parseSwaggerJSON(swaggerJSONPath:string, doNullableConversions:boolean = true, allowStringsToBeNumbers:boolean = false) {
         // Load the swagger file
         var swaggerJSONStr = fs.readFileSync(swaggerJSONPath, {encoding: 'utf-8'});
         // Parse file from JSON
         var swaggerObj     = JSON.parse(swaggerJSONStr);
 
         // Process and return
-        if (doNullableConversions === true) {
-            swaggerObj = SwaggerUtils.recurseSwagger(swaggerObj);
+        if (doNullableConversions) {
+            swaggerObj = loopObject(swaggerObj, convertXIsNullable);
+            swaggerObj = loopObject(swaggerObj, convertNullableBasedOnRequired);
+        }
+        if (allowStringsToBeNumbers) {
+            swaggerObj = loopObject(swaggerObj, convertStringsToAllowNumbers);
         }
 
         return swaggerObj;
     }
 
-    public static recurseSwagger(swaggerObj:any):any {
+    public static recurseSwagger(swaggerObj:any, allowStringsToBeNumbers:boolean = false):any {
         // Process and return
         swaggerObj = loopObject(swaggerObj, convertXIsNullable);
         swaggerObj = loopObject(swaggerObj, convertNullableBasedOnRequired);
-
+        if (allowStringsToBeNumbers) {
+            swaggerObj = loopObject(swaggerObj, convertStringsToAllowNumbers);
+        }
         return swaggerObj;
     }
 }

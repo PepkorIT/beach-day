@@ -1,5 +1,6 @@
 export declare class SwaggerUtils {
     /**
+     *
      * Utility to load and parse a swagger JSON file
      * Note this method updates the swagger object by looking for schema keys of 'x-isnullable'
      * Then updating the object type to to be an array or original type and null
@@ -8,8 +9,9 @@ export declare class SwaggerUtils {
      *
      * @param swaggerJSONPath {Object} The path the the JSON file
      * @param doNullableConversions {Object} Weather or not to do the nullable conversions, defaults to true
+     * @param allowStringsToBeNumbers {Boolean} If true all string values will permit numbers too, defautls defaults to false
      * @returns {*}
      */
-    static parseSwaggerJSON(swaggerJSONPath: string, doNullableConversions?: boolean): any;
-    static recurseSwagger(swaggerObj: any): any;
+    static parseSwaggerJSON(swaggerJSONPath: string, doNullableConversions?: boolean, allowStringsToBeNumbers?: boolean): any;
+    static recurseSwagger(swaggerObj: any, allowStringsToBeNumbers?: boolean): any;
 }
