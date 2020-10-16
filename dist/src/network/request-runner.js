@@ -215,6 +215,7 @@ var RequestRunner = /** @class */ (function () {
                 // Check the run time against the maximum
                 if (currentLength + response.nextPollDelay >= maximumRunTime) {
                     test_utils_1.TestUtils.throwExpectError('Poll maximum run time met');
+                    test_utils_1.TestUtils.throwExpectError(response.failureMessage);
                     env.done = originalDone;
                     env.done();
                 }

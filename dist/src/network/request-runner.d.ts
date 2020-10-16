@@ -6,6 +6,7 @@ export interface PollCompleteFunc {
     (env: JasmineAsyncEnv, call: CallConfig, body: any, res: IRequestResponse): {
         complete: boolean;
         nextPollDelay: number;
+        failureMessage: string;
     };
 }
 export declare class RequestRunner {

@@ -10,7 +10,7 @@ import * as escapeHtml from 'escape-html';
 import {ObjectUtils} from '..';
 
 export interface PollCompleteFunc {
-    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):{ complete:boolean, nextPollDelay:number };
+    (env:JasmineAsyncEnv, call:CallConfig, body:any, res:IRequestResponse):{ complete:boolean, nextPollDelay:number, failureMessage:string };
 }
 
 export class RequestRunner {
@@ -254,6 +254,7 @@ export class RequestRunner {
                 // Check the run time against the maximum
                 if (currentLength + response.nextPollDelay >= maximumRunTime) {
                     TestUtils.throwExpectError('Poll maximum run time met');
+                    TestUtils.throwExpectError(response.failureMessage);
                     env.done = originalDone;
                     env.done();
                 }
