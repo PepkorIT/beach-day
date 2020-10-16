@@ -75,13 +75,13 @@
 			<section class="tsd-panel">
 				<h3 class="tsd-before-signature">Callable</h3>
 				<ul class="tsd-signatures tsd-kind-interface">
-					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>env<span class="tsd-signature-symbol">: </span><a href="../classes/jasmineasyncenv.html" class="tsd-signature-type">JasmineAsyncEnv</a>, call<span class="tsd-signature-symbol">: </span><a href="../classes/callconfig.html" class="tsd-signature-type">CallConfig</a>, body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, res<span class="tsd-signature-symbol">: </span><a href="irequestresponse.html" class="tsd-signature-type">IRequestResponse</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>complete<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>nextPollDelay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></li>
+					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>env<span class="tsd-signature-symbol">: </span><a href="../classes/jasmineasyncenv.html" class="tsd-signature-type">JasmineAsyncEnv</a>, call<span class="tsd-signature-symbol">: </span><a href="../classes/callconfig.html" class="tsd-signature-type">CallConfig</a>, body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, res<span class="tsd-signature-symbol">: </span><a href="irequestresponse.html" class="tsd-signature-type">IRequestResponse</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>complete<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>failureMessage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>nextPollDelay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/PepkorIT/beach-day/blob/8df90c1/src/network/request-runner.ts#L12">src/network/request-runner.ts:12</a></li>
+								<li>Defined in src/network/request-runner.ts:12</li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -99,10 +99,13 @@
 								<h5>res: <a href="irequestresponse.html" class="tsd-signature-type">IRequestResponse</a></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>complete<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>nextPollDelay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>complete<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>failureMessage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>nextPollDelay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
 								<h5>complete<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>failure<wbr>Message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
 							</li>
 							<li class="tsd-parameter">
 								<h5>next<wbr>Poll<wbr>Delay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
